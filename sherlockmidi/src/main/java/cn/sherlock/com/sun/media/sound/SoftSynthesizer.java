@@ -138,7 +138,7 @@ public class SoftSynthesizer implements AudioSynthesizer,
 
         public WeakAudioStream(AudioInputStream stream) {
             this.stream = stream;
-            weak_stream_link = new WeakReference<AudioInputStream>(stream);
+            weak_stream_link = new WeakReference<>(stream);
             converter = AudioFloatConverter.getConverter(stream.getFormat());
             samplesize = stream.getFormat().getFrameSize() / stream.getFormat().getChannels();
             framesize = stream.getFormat().getFrameSize();
@@ -225,11 +225,11 @@ public class SoftSynthesizer implements AudioSynthesizer,
     private SoftVoice[] voices;
 
     private Map<String, SoftTuning> tunings
-            = new HashMap<String, SoftTuning>();
+            = new HashMap<>();
     private Map<String, SoftInstrument> inslist
-            = new HashMap<String, SoftInstrument>();
+            = new HashMap<>();
     private Map<String, ModelInstrument> loadedlist
-            = new HashMap<String, ModelInstrument>();
+            = new HashMap<>();
 
     private ArrayList<MidiDeviceReceiver> recvslist = new ArrayList<>();
 
@@ -255,7 +255,7 @@ public class SoftSynthesizer implements AudioSynthesizer,
     private boolean loadSamples(List<ModelInstrument> instruments) {
         if (largemode)
             return true;
-        List<ModelByteBuffer> buffers = new ArrayList<ModelByteBuffer>();
+        List<ModelByteBuffer> buffers = new ArrayList<>();
         for (ModelInstrument instrument : instruments)
             getBuffers(instrument, buffers);
         try {
@@ -725,7 +725,7 @@ public class SoftSynthesizer implements AudioSynthesizer,
 
     public AudioSynthesizerPropertyInfo[] getPropertyInfo(Map<String, Object> info) {
         List<AudioSynthesizerPropertyInfo> list =
-                new ArrayList<AudioSynthesizerPropertyInfo>();
+                new ArrayList<>();
 
         AudioSynthesizerPropertyInfo item;
 
