@@ -1094,10 +1094,7 @@ public class SoftMainMixer {
 
         switch (cmd) {
         case ShortMessage.NOTE_ON:
-            if(delay_midievent != 0)
-                softchannel.noteOn(data1, data2, delay_midievent);
-            else
-                softchannel.noteOn(data1, data2);
+            softchannel.noteOn(data1, data2, delay_midievent);
             break;
         case ShortMessage.NOTE_OFF:
             softchannel.noteOff(data1, data2);

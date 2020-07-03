@@ -414,7 +414,7 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
     /* A special noteOn with delay parameter, which is used to
      * start note within control buffers.   
      */
-    protected void noteOn(int noteNumber, int velocity, int delay) {
+    public void noteOn(int noteNumber, int velocity, int delay) {
         noteNumber = restrict7Bit(noteNumber);
         velocity = restrict7Bit(velocity);        
         noteOn_internal(noteNumber, velocity, delay);
