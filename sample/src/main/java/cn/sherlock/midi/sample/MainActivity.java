@@ -36,18 +36,14 @@ public class MainActivity extends Activity {
 			synth.getChannels()[0].programChange(0);
 			synth.getChannels()[1].programChange(1);
 			recv = synth.getReceiver();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (MidiUnavailableException e) {
+		} catch (IOException | MidiUnavailableException e) {
 			e.printStackTrace();
 		}
-
 
 		this.findViewById(R.id.piano).setOnTouchListener(new View.OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				int action = MotionEventCompat.getActionMasked(event);
-				if (action == MotionEvent.ACTION_DOWN) {
+				if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
 					try {
 						ShortMessage msg = new ShortMessage();
 						msg.setMessage(ShortMessage.NOTE_ON, 0, 60, 127);
@@ -55,66 +51,10 @@ public class MainActivity extends Activity {
 					} catch (InvalidMidiDataException e) {
 						e.printStackTrace();
 					}
-				} else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
-					try {
-						ShortMessage msg = new ShortMessage();
-						msg.setMessage(ShortMessage.NOTE_OFF, 0, 60, 127);
-						recv.send(msg, -1);
-					} catch (InvalidMidiDataException e) {
-						e.printStackTrace();
-					}
 				}
 				return true;
 			}
 		});
-
-		this.findViewById(R.id.woodblock).setOnTouchListener(new View.OnTouchListener() {
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				int action = MotionEventCompat.getActionMasked(event);
-				if (action == MotionEvent.ACTION_DOWN) {
-					try {
-						ShortMessage msg = new ShortMessage();
-						msg.setMessage(ShortMessage.NOTE_ON, 1, 60, 127);
-						recv.send(msg, -1);
-					} catch (InvalidMidiDataException e) {
-						e.printStackTrace();
-					}
-				} else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
-					try {
-						ShortMessage msg = new ShortMessage();
-						msg.setMessage(ShortMessage.NOTE_OFF, 1, 60, 127);
-						recv.send(msg, -1);
-					} catch (InvalidMidiDataException e) {
-						e.printStackTrace();
-					}
-				}
-				return true;
-			}
-		});
-	}
-
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-	}
-
-	@Override
-	protected void onStart() {
-		super.onStart();
-		if (synth != null) {
-		}
-	}
-
-	@Override
-	protected void onPause() {
-		super.onPause();
-	}
-
-	@Override
-	protected void onStop() {
-		super.onStop();
 	}
 
 	@Override
