@@ -26,7 +26,7 @@ package cn.sherlock.com.sun.media.sound;
 
 import android.support.annotation.NonNull;
 
-import jp.kshoji.javax.sound.midi.MidiMessage;
+import jp.kshoji.javax.sound.midi.ShortMessage;
 
 /**
  * A Receiver with reference to it's MidiDevice object. 
@@ -36,11 +36,11 @@ import jp.kshoji.javax.sound.midi.MidiMessage;
 public interface MidiDeviceReceiver {
 
     /**
-     * Called at {@link MidiMessage} receiving
+     * Called at {@link ShortMessage} receiving
      *
      * @param message the received message
      */
-    void send(@NonNull MidiMessage message);
+    void send(@NonNull ShortMessage message);
 
     /**
      * Close the {@link MidiDeviceReceiver}

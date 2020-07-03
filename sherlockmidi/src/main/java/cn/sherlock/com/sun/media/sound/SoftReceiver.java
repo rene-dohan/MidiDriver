@@ -28,7 +28,7 @@ import android.support.annotation.NonNull;
 
 import java.util.TreeMap;
 
-import jp.kshoji.javax.sound.midi.MidiMessage;
+import jp.kshoji.javax.sound.midi.ShortMessage;
 
 /**
  * Software synthesizer MIDI receiver class.
@@ -56,7 +56,7 @@ public class SoftReceiver implements MidiDeviceReceiver {
     }    
 
     @Override
-    public void send(@NonNull MidiMessage message) {
+    public void send(@NonNull ShortMessage message) {
         synchronized (control_mutex) {
             if (!open)
                 throw new IllegalStateException("Receiver is not open");
