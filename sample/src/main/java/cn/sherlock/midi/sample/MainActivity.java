@@ -54,33 +54,33 @@ public class MainActivity extends Activity {
 		public void run() {
 			try {
 				ShortMessage sm = new ShortMessage(ShortMessage.NOTE_ON, 1, 60, 64);
-				recv.send(sm, -1);
-				recv.send(new ShortMessage(ShortMessage.NOTE_ON, 1, 64, 64), -1);
-				recv.send(new ShortMessage(ShortMessage.NOTE_ON, 1, 67, 64), -1);
+				recv.send(sm);
+				recv.send(new ShortMessage(ShortMessage.NOTE_ON, 1, 64, 64));
+				recv.send(new ShortMessage(ShortMessage.NOTE_ON, 1, 67, 64));
 				Thread.sleep(pause);
-				recv.send(new ShortMessage(ShortMessage.NOTE_OFF, 1, 60, 64), -1);
-				recv.send(new ShortMessage(ShortMessage.NOTE_OFF, 1, 64, 64), -1);
-				recv.send(new ShortMessage(ShortMessage.NOTE_OFF, 1, 67, 64), -1);
+				recv.send(new ShortMessage(ShortMessage.NOTE_OFF, 1, 60, 64));
+				recv.send(new ShortMessage(ShortMessage.NOTE_OFF, 1, 64, 64));
+				recv.send(new ShortMessage(ShortMessage.NOTE_OFF, 1, 67, 64));
 
-				recv.send(new ShortMessage(ShortMessage.NOTE_ON, 1, 60, 64), -1);
+				recv.send(new ShortMessage(ShortMessage.NOTE_ON, 1, 60, 64));
 				Thread.sleep(pause);
-				recv.send(new ShortMessage(ShortMessage.NOTE_OFF, 1, 60, 64), -1);
+				recv.send(new ShortMessage(ShortMessage.NOTE_OFF, 1, 60, 64));
 
-				recv.send(new ShortMessage(ShortMessage.NOTE_ON, 1, 64, 64), -1);
+				recv.send(new ShortMessage(ShortMessage.NOTE_ON, 1, 64, 64));
 				Thread.sleep(pause);
-				recv.send(new ShortMessage(ShortMessage.NOTE_OFF, 1, 64, 64), -1);
+				recv.send(new ShortMessage(ShortMessage.NOTE_OFF, 1, 64, 64));
 
-				recv.send(new ShortMessage(ShortMessage.NOTE_ON, 1, 67, 64), -1);
+				recv.send(new ShortMessage(ShortMessage.NOTE_ON, 1, 67, 64));
 				Thread.sleep(pause);
-				recv.send(new ShortMessage(ShortMessage.NOTE_OFF, 1, 67, 64), -1);
+				recv.send(new ShortMessage(ShortMessage.NOTE_OFF, 1, 67, 64));
 
-				recv.send(new ShortMessage(ShortMessage.NOTE_ON, 1, 64, 64), -1);
+				recv.send(new ShortMessage(ShortMessage.NOTE_ON, 1, 64, 64));
 				Thread.sleep(pause);
-				recv.send(new ShortMessage(ShortMessage.NOTE_OFF, 1, 64, 64), -1);
+				recv.send(new ShortMessage(ShortMessage.NOTE_OFF, 1, 64, 64));
 
-				recv.send(new ShortMessage(ShortMessage.NOTE_ON, 1, 60, 64), -1);
+				recv.send(new ShortMessage(ShortMessage.NOTE_ON, 1, 60, 64));
 				Thread.sleep(pause);
-				recv.send(new ShortMessage(ShortMessage.NOTE_OFF, 1, 60, 64), -1);
+				recv.send(new ShortMessage(ShortMessage.NOTE_OFF, 1, 60, 64));
 			} catch (InvalidMidiDataException | InterruptedException e) {
 				throw new RuntimeException(e);
 			}

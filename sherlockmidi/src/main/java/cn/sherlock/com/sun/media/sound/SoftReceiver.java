@@ -24,10 +24,11 @@
  */
 package cn.sherlock.com.sun.media.sound;
 
+import android.support.annotation.NonNull;
+
 import java.util.TreeMap;
 
 import jp.kshoji.javax.sound.midi.MidiMessage;
-import jp.kshoji.javax.sound.midi.ShortMessage;
 
 /**
  * Software synthesizer MIDI receiver class.
@@ -37,7 +38,7 @@ import jp.kshoji.javax.sound.midi.ShortMessage;
 public class SoftReceiver implements MidiDeviceReceiver {
 
     protected boolean open = true;
-    private Object control_mutex;
+    private final Object control_mutex;
     private SoftSynthesizer synth;
     protected TreeMap<Long, Object> midimessages;
     protected SoftMainMixer mainmixer;
@@ -54,28 +55,13 @@ public class SoftReceiver implements MidiDeviceReceiver {
         return synth;
     }    
 
-    public void send(MidiMessage message, long timeStamp) {
-
+    @Override
+    public void send(@NonNull MidiMessage message) {
         synchronized (control_mutex) {
             if (!open)
                 throw new IllegalStateException("Receiver is not open");
         }
-
-        if (timeStamp != -1) {
-            synchronized (control_mutex) {
-                mainmixer.activity();
-                while (midimessages.get(timeStamp) != null)
-                    timeStamp++;
-                if (message instanceof ShortMessage
-                        && (((ShortMessage)message).getChannel() > 0xF)) {
-                    midimessages.put(timeStamp, message.clone());
-                } else {
-                    midimessages.put(timeStamp, message.getMessage());
-                }
-            }
-        } else {
-            mainmixer.processMessage(message);
-        }
+        mainmixer.processMessage(message);
     }
 
     public void close() {
