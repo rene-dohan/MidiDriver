@@ -29,7 +29,7 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		try {
-			SF2Soundbank sf = new SF2Soundbank(getAssets().open("SmallTimGM6mb.sf2"));
+			SF2Soundbank sf = new SF2Soundbank(getAssets().open("gm.sf2"));
 			synth = new SoftSynthesizer();
 			synth.open();
 			synth.loadAllInstruments(sf);
