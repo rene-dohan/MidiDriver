@@ -27,7 +27,6 @@ package cn.sherlock.com.sun.media.sound;
 
 
 import jp.kshoji.javax.sound.midi.MidiUnavailableException;
-import jp.kshoji.javax.sound.midi.Receiver;
 import jp.kshoji.javax.sound.midi.Transmitter;
 
 /**
@@ -43,7 +42,7 @@ public interface ReferenceCountingDevice {
 	 * This method is similar to MidiDevice.getReceiver(). However, by calling this one,
 	 * the device is opened implicitly. This is needed by MidiSystem.getReceiver().
 	 */
-	public Receiver getReceiverReferenceCounting() throws MidiUnavailableException;
+	public MidiDeviceReceiver getReceiverReferenceCounting() throws MidiUnavailableException;
 
 	/**
 	 * Retrieve a Transmitter that opens the device implicitly.

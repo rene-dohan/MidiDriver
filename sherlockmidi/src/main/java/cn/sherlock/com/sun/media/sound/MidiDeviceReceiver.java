@@ -24,18 +24,32 @@
  */
 package cn.sherlock.com.sun.media.sound;
 
-import jp.kshoji.javax.sound.midi.MidiDevice;
-import jp.kshoji.javax.sound.midi.Receiver;
+import android.support.annotation.NonNull;
+
+import jp.kshoji.javax.sound.midi.MidiMessage;
 
 /**
  * A Receiver with reference to it's MidiDevice object. 
  *
  * @author Karl Helgason
  */
-public interface MidiDeviceReceiver extends Receiver {
+public interface MidiDeviceReceiver {
+
+    /**
+     * Called at {@link MidiMessage} receiving
+     *
+     * @param message the received message
+     * @param timeStamp -1 if the timeStamp information is not available
+     */
+    void send(@NonNull MidiMessage message, long timeStamp);
+
+    /**
+     * Close the {@link MidiDeviceReceiver}
+     */
+    void close();
 
     /** Obtains the MidiDevice object associated with this Receiver.
      */
-    public MidiDevice getMidiDevice();
+    public AudioSynthesizer getMidiDevice();
 
 }

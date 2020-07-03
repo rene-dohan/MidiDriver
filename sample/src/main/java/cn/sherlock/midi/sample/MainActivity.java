@@ -8,17 +8,17 @@ import android.view.View;
 
 import java.io.IOException;
 
+import cn.sherlock.com.sun.media.sound.MidiDeviceReceiver;
 import cn.sherlock.com.sun.media.sound.SF2Soundbank;
 import cn.sherlock.com.sun.media.sound.SoftSynthesizer;
 import jp.kshoji.javax.sound.midi.InvalidMidiDataException;
 import jp.kshoji.javax.sound.midi.MidiUnavailableException;
-import jp.kshoji.javax.sound.midi.Receiver;
 import jp.kshoji.javax.sound.midi.ShortMessage;
 
 public class MainActivity extends Activity {
 
 	private SoftSynthesizer synth;
-	private Receiver recv;
+	private MidiDeviceReceiver recv;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

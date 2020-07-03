@@ -42,10 +42,8 @@ import java.util.prefs.Preferences;
 
 import jp.kshoji.javax.sound.midi.Instrument;
 import jp.kshoji.javax.sound.midi.MidiChannel;
-import jp.kshoji.javax.sound.midi.MidiDevice;
 import jp.kshoji.javax.sound.midi.MidiUnavailableException;
 import jp.kshoji.javax.sound.midi.Patch;
-import jp.kshoji.javax.sound.midi.Receiver;
 import jp.kshoji.javax.sound.midi.Soundbank;
 import jp.kshoji.javax.sound.midi.Transmitter;
 import jp.kshoji.javax.sound.midi.VoiceStatus;
@@ -159,7 +157,7 @@ public class SoftSynthesizer implements AudioSynthesizer,
         }
     }
 
-    private static class Info extends MidiDevice.Info {
+    private static class Info extends AudioSynthesizer.Info {
         public Info() {
             super(INFO_NAME, INFO_VENDOR, INFO_DESCRIPTION, INFO_VERSION);
         }
@@ -169,7 +167,7 @@ public class SoftSynthesizer implements AudioSynthesizer,
     protected static final String INFO_VENDOR = "OpenJDK";
     protected static final String INFO_DESCRIPTION = "Software MIDI Synthesizer";
     protected static final String INFO_VERSION = "1.0";
-    protected final static MidiDevice.Info info = new Info();
+    protected final static AudioSynthesizer.Info info = new Info();
 
     private static SourceDataLine testline = null;
 
@@ -233,7 +231,7 @@ public class SoftSynthesizer implements AudioSynthesizer,
     private Map<String, ModelInstrument> loadedlist
             = new HashMap<String, ModelInstrument>();
 
-    private ArrayList<Receiver> recvslist = new ArrayList<Receiver>();
+    private ArrayList<MidiDeviceReceiver> recvslist = new ArrayList<>();
 
     private void getBuffers(ModelInstrument instrument,
             List<ModelByteBuffer> buffers) {
@@ -365,7 +363,7 @@ public class SoftSynthesizer implements AudioSynthesizer,
         this.format = format;
     }
 
-    protected void removeReceiver(Receiver recv) {
+    protected void removeReceiver(MidiDeviceReceiver recv) {
         boolean perform_close = false;
         synchronized (control_mutex) {
             if (recvslist.remove(recv)) {
@@ -696,7 +694,7 @@ public class SoftSynthesizer implements AudioSynthesizer,
         }
     }
 
-    public MidiDevice.Info getDeviceInfo() {
+    public AudioSynthesizer.Info getDeviceInfo() {
         return info;
     }
     
@@ -1064,7 +1062,7 @@ public class SoftSynthesizer implements AudioSynthesizer,
             for (SoftVoice voice: getVoices())
                 voice.resampler = resampler.openStreamer();
 
-            for (Receiver recv: getReceivers()) {
+            for (MidiDeviceReceiver recv: getReceivers()) {
                 SoftReceiver srecv = ((SoftReceiver)recv);
                 srecv.open = open;
                 srecv.mainmixer = mainmixer;
@@ -1157,7 +1155,7 @@ public class SoftSynthesizer implements AudioSynthesizer,
         return 0;
     }
 
-    public Receiver getReceiver() throws MidiUnavailableException {
+    public MidiDeviceReceiver getReceiver() throws MidiUnavailableException {
 
         synchronized (control_mutex) {
             SoftReceiver receiver = new SoftReceiver(this);
@@ -1167,10 +1165,10 @@ public class SoftSynthesizer implements AudioSynthesizer,
         }
     }
 
-    public List<Receiver> getReceivers() {
+    public List<MidiDeviceReceiver> getReceivers() {
 
         synchronized (control_mutex) {
-            ArrayList<Receiver> recvs = new ArrayList<Receiver>();
+            ArrayList<MidiDeviceReceiver> recvs = new ArrayList<>();
             recvs.addAll(recvslist);
             return recvs;
         }
@@ -1186,7 +1184,7 @@ public class SoftSynthesizer implements AudioSynthesizer,
         return new ArrayList<Transmitter>();
     }
 
-    public Receiver getReceiverReferenceCounting()
+    public MidiDeviceReceiver getReceiverReferenceCounting()
             throws MidiUnavailableException {
 
         if (!isOpen()) {

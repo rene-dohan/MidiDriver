@@ -24,25 +24,341 @@
  */
 package cn.sherlock.com.sun.media.sound;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import java.util.List;
 import java.util.Map;
 
+import jp.kshoji.javax.sound.midi.Instrument;
+import jp.kshoji.javax.sound.midi.MidiChannel;
 import jp.kshoji.javax.sound.midi.MidiUnavailableException;
-import jp.kshoji.javax.sound.midi.Synthesizer;
+import jp.kshoji.javax.sound.midi.Patch;
+import jp.kshoji.javax.sound.midi.Soundbank;
 import cn.sherlock.javax.sound.sampled.AudioFormat;
 import cn.sherlock.javax.sound.sampled.AudioInputStream;
 import cn.sherlock.javax.sound.sampled.SourceDataLine;
+import jp.kshoji.javax.sound.midi.Transmitter;
+import jp.kshoji.javax.sound.midi.VoiceStatus;
 
 /**
  * <code>AudioSynthesizer</code> is a <code>Synthesizer</code>
  * which renders it's output audio into <code>SourceDataLine</code>
  * or <code>AudioInputStream</code>.
  *
- * @see MidiSystem#getSynthesizer
- * @see Synthesizer
- *
  * @author Karl Helgason
  */
-public interface AudioSynthesizer extends Synthesizer {
+public interface AudioSynthesizer {
+
+    /**
+     * Get the device information
+     *
+     * @return the device information
+     */
+    @NonNull
+    Info getDeviceInfo();
+
+    /**
+     * Open the {@link AudioSynthesizer}. This method must be called at getting the new instance.
+     *
+     * @throws MidiUnavailableException
+     */
+    void open() throws MidiUnavailableException;
+
+    /**
+     * Close the {@link AudioSynthesizer}. This method must be called at finishing to use the instance.
+     */
+    void close();
+
+    /**
+     * Check if the {@link AudioSynthesizer} opened.
+     *
+     * @return true if already opened
+     */
+    boolean isOpen();
+
+    /**
+     * Get the {@link AudioSynthesizer}'s timeStamp.
+     * @return -1 if the timeStamp not supported.
+     */
+    long getMicrosecondPosition();
+
+    /**
+     * Get the number of the {@link MidiDeviceReceiver}s.
+     *
+     * @return the number of the {@link MidiDeviceReceiver}s.
+     */
+    int getMaxReceivers();
+
+    /**
+     * Get the number of the {@link Transmitter}s.
+     *
+     * @return the number of the {@link Transmitter}s.
+     */
+    int getMaxTransmitters();
+
+    /**
+     * Get the default {@link MidiDeviceReceiver}.
+     *
+     * @return the default {@link MidiDeviceReceiver}.
+     * @throws MidiUnavailableException
+     */
+    @NonNull
+    MidiDeviceReceiver getReceiver() throws MidiUnavailableException;
+
+    /**
+     * Get the all of {@link MidiDeviceReceiver}s.
+     *
+     * @return the all of {@link MidiDeviceReceiver}s.
+     */
+    @NonNull
+    List<MidiDeviceReceiver> getReceivers();
+
+    /**
+     * Get the default {@link Transmitter}.
+     *
+     * @return the default {@link Transmitter}.
+     * @throws MidiUnavailableException
+     */
+    @NonNull
+    Transmitter getTransmitter() throws MidiUnavailableException;
+
+    /**
+     * Get the all of {@link Transmitter}s.
+     *
+     * @return the all of {@link Transmitter}s.
+     */
+    @NonNull
+    List<Transmitter> getTransmitters();
+
+    /**
+     * Represents the {@link AudioSynthesizer}'s information
+     *
+     * @author K.Shoji
+     */
+    class Info {
+        private final String name;
+        private final String vendor;
+        private final String description;
+        private final String version;
+
+        /**
+         * Constructor
+         *
+         * @param name the name string
+         * @param vendor the vendor string
+         * @param description the description string
+         * @param version the version string
+         */
+        public Info(@NonNull final String name, @NonNull final String vendor, @NonNull final String description, @NonNull final String version) {
+            this.name = name;
+            this.vendor = vendor;
+            this.description = description;
+            this.version = version;
+        }
+
+        /**
+         * Get the name of {@link AudioSynthesizer}
+         *
+         * @return the name of {@link AudioSynthesizer}
+         */
+        @NonNull
+        public final String getName() {
+            return name;
+        }
+
+        /**
+         * Get the vendor of {@link AudioSynthesizer}
+         *
+         * @return the vendor of {@link AudioSynthesizer}
+         */
+        @NonNull
+        public final String getVendor() {
+            return vendor;
+        }
+
+        /**
+         * Get the description of {@link AudioSynthesizer}
+         *
+         * @return the description of {@link AudioSynthesizer}
+         */
+        @NonNull
+        public final String getDescription() {
+            return description;
+        }
+
+        /**
+         * Get the version of {@link AudioSynthesizer}
+         *
+         * @return the version of {@link AudioSynthesizer}
+         */
+        @NonNull
+        public final String getVersion() {
+            return version;
+        }
+
+        @NonNull
+        @Override
+        public final String toString() {
+            return name;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + description.hashCode();
+            result = prime * result + name.hashCode();
+            result = prime * result + vendor.hashCode();
+            result = prime * result + version.hashCode();
+            return result;
+        }
+
+        @Override
+        public boolean equals(final Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final Info other = (Info) obj;
+            if (!description.equals(other.description)) {
+                return false;
+            }
+            if (!name.equals(other.name)) {
+                return false;
+            }
+            if (!vendor.equals(other.vendor)) {
+                return false;
+            }
+            if (!version.equals(other.version)) {
+                return false;
+            }
+            return true;
+        }
+    }
+
+    /**
+     * Get the all of {@link MidiChannel}s
+     *
+     * @return the array of MidiChannel
+     */
+    @NonNull
+    MidiChannel[] getChannels();
+
+    /**
+     * Get the latency in microseconds
+     *
+     * @return the latency in microseconds
+     */
+    long getLatency();
+
+    /**
+     * Get the maximum count of polyphony
+     *
+     * @return the maximum count of polyphony
+     */
+    int getMaxPolyphony();
+
+    /**
+     * Get the current {@link VoiceStatus} of the Synthesizer
+     *
+     * @return the array of VoiceStatus
+     */
+    @NonNull
+    VoiceStatus[] getVoiceStatus();
+
+    /**
+     * Get the default {@link Soundbank}
+     *
+     * @return the Soundbank
+     */
+    @Nullable
+    Soundbank getDefaultSoundbank();
+
+    /**
+     * Check if the specified {@link Soundbank} is supported
+     *
+     * @param soundbank the Soundbank
+     * @return true if the Soundbank is supported
+     */
+    boolean isSoundbankSupported(@NonNull Soundbank soundbank);
+
+    /**
+     * Get the all available {@link Instrument}s
+     *
+     * @return the array of Instrument
+     */
+    @NonNull
+    Instrument[] getAvailableInstruments();
+
+    /**
+     * Get the all loaded {@link Instrument}s
+     *
+     * @return the array of Instrument
+     */
+    @NonNull
+    Instrument[] getLoadedInstruments();
+
+    /**
+     * Remap an Instrument
+     *
+     * @param from to be replaced
+     * @param to the new Instrument
+     * @return true if succeed to remap
+     */
+    boolean remapInstrument(@NonNull Instrument from, @NonNull Instrument to);
+
+    /**
+     * Load all instruments belongs specified {@link Soundbank}
+     *
+     * @param soundbank the Soundbank
+     * @return true if succeed to load
+     */
+    boolean loadAllInstruments(@NonNull Soundbank soundbank);
+
+    /**
+     * Unload all instruments belongs specified {@link Soundbank}
+     *
+     * @param soundbank the Soundbank
+     */
+    void unloadAllInstruments(@NonNull Soundbank soundbank);
+
+    /**
+     * Load the specified {@link Instrument}
+     *
+     * @param instrument the instrument
+     * @return true if succeed to load
+     */
+    boolean loadInstrument(@NonNull Instrument instrument);
+
+    /**
+     * Unload the specified {@link Instrument}
+     *
+     * @param instrument the instrument
+     */
+    void unloadInstrument(@NonNull Instrument instrument);
+
+    /**
+     * Load all instruments belongs specified {@link Soundbank} and {@link Patch}es
+     *
+     * @param soundbank the the Soundbank
+     * @param patchList the array of Patch
+     * @return true if succeed to load
+     */
+    boolean loadInstruments(@NonNull Soundbank soundbank, @NonNull Patch[] patchList);
+
+    /**
+     * Unload all instruments belongs specified {@link Soundbank} and {@link Patch}es
+     *
+     * @param soundbank the the Soundbank
+     * @param patchList the array of Patch
+     */
+    void unloadInstruments(@NonNull Soundbank soundbank, @NonNull Patch[] patchList);
 
     /**
      * Obtains the current format (encoding, sample rate, number of channels,

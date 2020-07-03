@@ -24,25 +24,47 @@
  */
 package cn.sherlock.com.sun.media.sound;
 
-import jp.kshoji.javax.sound.midi.MidiDevice;
-import jp.kshoji.javax.sound.midi.MidiDevice.Info;
-import jp.kshoji.javax.sound.midi.spi.MidiDeviceProvider;
+import android.support.annotation.NonNull;
 
 /**
  * Software synthesizer provider class.
  *
  * @author Karl Helgason
  */
-public class SoftProvider extends MidiDeviceProvider {
+public class SoftProvider {
 
-    protected final static Info softinfo = SoftSynthesizer.info;
-    private static Info[] softinfos = {softinfo};
+    /**
+     * Constructor
+     */
+    public SoftProvider() {
+    }
 
-    public MidiDevice.Info[] getDeviceInfo() {
+    /**
+     * Check if the specified Device is supported
+     *
+     * @param info the information
+     * @return true if the Device is supported
+     */
+    public boolean isDeviceSupported(@NonNull AudioSynthesizer.Info info) {
+        AudioSynthesizer.Info[] informationArray = getDeviceInfo();
+
+        for (AudioSynthesizer.Info information : informationArray) {
+            if (info.equals(information)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected final static AudioSynthesizer.Info softinfo = SoftSynthesizer.info;
+    private static AudioSynthesizer.Info[] softinfos = {softinfo};
+
+    public AudioSynthesizer.Info[] getDeviceInfo() {
         return softinfos;
     }
 
-    public MidiDevice getDevice(MidiDevice.Info info) {
+    public AudioSynthesizer getDevice(AudioSynthesizer.Info info) {
         if (info == softinfo) {
             return new SoftSynthesizer();
         }
