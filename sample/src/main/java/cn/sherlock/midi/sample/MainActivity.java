@@ -15,14 +15,10 @@ import jp.kshoji.javax.sound.midi.MidiUnavailableException;
 import jp.kshoji.javax.sound.midi.Receiver;
 import jp.kshoji.javax.sound.midi.ShortMessage;
 
-
 public class MainActivity extends Activity {
 
 	private SoftSynthesizer synth;
 	private Receiver recv;
-	private boolean isPianoOn = false;
-	private boolean isWoodblockOn = false;
-	private boolean isBothOn = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,25 +33,59 @@ public class MainActivity extends Activity {
 			synth.getChannels()[1].programChange(1);
 			recv = synth.getReceiver();
 		} catch (IOException | MidiUnavailableException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 
 		this.findViewById(R.id.piano).setOnTouchListener(new View.OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
-					try {
-						ShortMessage msg = new ShortMessage();
-						msg.setMessage(ShortMessage.NOTE_ON, 0, 60, 127);
-						recv.send(msg, -1);
-					} catch (InvalidMidiDataException e) {
-						e.printStackTrace();
-					}
+					new Thread(playRunnable).start();
 				}
 				return true;
 			}
 		});
 	}
+
+	private Runnable playRunnable = new Runnable() {
+		private int pause = 500;
+
+		@Override
+		public void run() {
+			try {
+				ShortMessage sm = new ShortMessage(ShortMessage.NOTE_ON, 1, 60, 64);
+				recv.send(sm, -1);
+				recv.send(new ShortMessage(ShortMessage.NOTE_ON, 1, 64, 64), -1);
+				recv.send(new ShortMessage(ShortMessage.NOTE_ON, 1, 67, 64), -1);
+				Thread.sleep(pause);
+				recv.send(new ShortMessage(ShortMessage.NOTE_OFF, 1, 60, 64), -1);
+				recv.send(new ShortMessage(ShortMessage.NOTE_OFF, 1, 64, 64), -1);
+				recv.send(new ShortMessage(ShortMessage.NOTE_OFF, 1, 67, 64), -1);
+
+				recv.send(new ShortMessage(ShortMessage.NOTE_ON, 1, 60, 64), -1);
+				Thread.sleep(pause);
+				recv.send(new ShortMessage(ShortMessage.NOTE_OFF, 1, 60, 64), -1);
+
+				recv.send(new ShortMessage(ShortMessage.NOTE_ON, 1, 64, 64), -1);
+				Thread.sleep(pause);
+				recv.send(new ShortMessage(ShortMessage.NOTE_OFF, 1, 64, 64), -1);
+
+				recv.send(new ShortMessage(ShortMessage.NOTE_ON, 1, 67, 64), -1);
+				Thread.sleep(pause);
+				recv.send(new ShortMessage(ShortMessage.NOTE_OFF, 1, 67, 64), -1);
+
+				recv.send(new ShortMessage(ShortMessage.NOTE_ON, 1, 64, 64), -1);
+				Thread.sleep(pause);
+				recv.send(new ShortMessage(ShortMessage.NOTE_OFF, 1, 64, 64), -1);
+
+				recv.send(new ShortMessage(ShortMessage.NOTE_ON, 1, 60, 64), -1);
+				Thread.sleep(pause);
+				recv.send(new ShortMessage(ShortMessage.NOTE_OFF, 1, 60, 64), -1);
+			} catch (InvalidMidiDataException | InterruptedException e) {
+				throw new RuntimeException(e);
+			}
+		}
+	};
 
 	@Override
 	protected void onDestroy() {
@@ -65,4 +95,3 @@ public class MainActivity extends Activity {
 		}
 	}
 }
-
