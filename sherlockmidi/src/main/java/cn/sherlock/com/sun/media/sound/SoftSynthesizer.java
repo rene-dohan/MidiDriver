@@ -175,7 +175,7 @@ public class SoftSynthesizer implements AudioSynthesizer,
 
     protected WeakAudioStream weakstream = null;
 
-    protected Object control_mutex = this;
+    protected final Object control_mutex = this;
 
     protected int voiceIDCounter = 0;
 

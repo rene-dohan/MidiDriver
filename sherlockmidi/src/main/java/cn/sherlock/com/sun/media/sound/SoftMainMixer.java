@@ -73,7 +73,7 @@ public class SoftMainMixer {
     private int pusher_silent_count = 0;
     private long sample_pos = 0;
     protected boolean readfully = true;
-    private Object control_mutex;
+    private final Object control_mutex;
     private SoftSynthesizer synth;
     private float samplerate = 44100;
     private int nrofchannels = 2;
