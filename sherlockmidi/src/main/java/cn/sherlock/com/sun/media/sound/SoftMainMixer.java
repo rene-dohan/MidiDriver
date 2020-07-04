@@ -1072,7 +1072,7 @@ public class SoftMainMixer {
         synchronized (synth.control_mutex) {
             activity();
         }
-
+        // TODO: Delete this code if needed
         if (cmd == 0xF0) {
             int status = cmd | ch;
             switch (status) {
