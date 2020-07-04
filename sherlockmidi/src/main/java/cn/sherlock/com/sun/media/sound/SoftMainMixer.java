@@ -24,19 +24,20 @@
  */
 package cn.sherlock.com.sun.media.sound;
 
+import android.support.annotation.NonNull;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 
-import jp.kshoji.javax.sound.midi.MidiMessage;
-import jp.kshoji.javax.sound.midi.Patch;
-import jp.kshoji.javax.sound.midi.ShortMessage;
 import cn.sherlock.javax.sound.sampled.AudioInputStream;
 import cn.sherlock.javax.sound.sampled.AudioSystem;
+import jp.kshoji.javax.sound.midi.Patch;
+import jp.kshoji.javax.sound.midi.ShortMessage;
 
 /**
  * Software synthesizer main audio mixer.
@@ -47,7 +48,7 @@ public class SoftMainMixer {
 
     // A private class thats contains a ModelChannelMixer and it's private buffers.
     // This becomes necessary when we want to have separate delay buffers for each channel mixer.
-    private class SoftChannelMixerContainer
+    private static class SoftChannelMixerContainer
     {
         ModelChannelMixer mixer;
         SoftAudioBuffer[] buffers;
@@ -71,22 +72,22 @@ public class SoftMainMixer {
     private long msec_last_activity = -1;
     private boolean pusher_silent = false;
     private int pusher_silent_count = 0;
-    private long sample_pos = 0;
+    private long sample_pos;
     protected boolean readfully = true;
     private final Object control_mutex;
     private SoftSynthesizer synth;
-    private float samplerate = 44100;
-    private int nrofchannels = 2;
-    private SoftVoice[] voicestatus = null;
+    private float samplerate;
+    private int nrofchannels;
+    private SoftVoice[] voicestatus;
     private SoftAudioBuffer[] buffers;
     private SoftReverb reverb;
     private SoftAudioProcessor chorus;
     private SoftAudioProcessor agc;
-    private long msec_buffer_len = 0;
-    private int buffer_len = 0;
-    protected TreeMap<Long, Object> midimessages = new TreeMap<Long, Object>();
+    private long msec_buffer_len;
+    private int buffer_len;
+    protected TreeMap<Long, Object> midimessages = new TreeMap<>();
     private int delay_midievent = 0;
-    private int max_delay_midievent = 0;
+    private int max_delay_midievent;
     double last_volume_left = 1.0;
     double last_volume_right = 1.0;
     private double[] co_master_balance = new double[1];
@@ -245,8 +246,7 @@ public class SoftMainMixer {
                                 setBalance(val);
                             else if (subid2 == 0x03)
                                 setFineTuning(val);
-                            else if (subid2 == 0x04)
-                                setCoarseTuning(val);
+                            else setCoarseTuning(val);
                             break;
                         case 0x05: // Global Parameter Control
                             int ix = 5;
@@ -290,10 +290,10 @@ public class SoftMainMixer {
                                     data[5] & 0xFF));
                             tuning.load(data);
                             SoftVoice[] voices = synth.getVoices();
-                            for (int i = 0; i < voices.length; i++)
-                                if (voices[i].active)
-                                    if (voices[i].tuning == tuning)
-                                        voices[i].updateTuning(tuning);
+                            for (SoftVoice voice : voices)
+                                if (voice.active)
+                                    if (voice.tuning == tuning)
+                                        voice.updateTuning(tuning);
                             break;
                         }
                         case 0x07:  // SINGLE NOTE TUNING CHANGE (REAL-TIME)
@@ -304,10 +304,10 @@ public class SoftMainMixer {
                                     data[5] & 0xFF, data[6] & 0xFF));
                             tuning.load(data);
                             SoftVoice[] voices = synth.getVoices();
-                            for (int i = 0; i < voices.length; i++)
-                                if (voices[i].active)
-                                    if (voices[i].tuning == tuning)
-                                        voices[i].updateTuning(tuning);
+                            for (SoftVoice voice : voices)
+                                if (voice.active)
+                                    if (voice.tuning == tuning)
+                                        voice.updateTuning(tuning);
                             break;
                         }
                         case 0x08:  // scale/octave tuning 1-byte form
@@ -324,10 +324,10 @@ public class SoftMainMixer {
                                 if ((channelmask & (1 << i)) != 0)
                                     channels[i].tuning = tuning;
                             SoftVoice[] voices = synth.getVoices();
-                            for (int i = 0; i < voices.length; i++)
-                                if (voices[i].active)
-                                    if ((channelmask & (1 << (voices[i].channel))) != 0)
-                                        voices[i].updateTuning(tuning);
+                            for (SoftVoice voice : voices)
+                                if (voice.active)
+                                    if ((channelmask & (1 << (voice.channel))) != 0)
+                                        voice.updateTuning(tuning);
                             break;
                         }
                         default:
@@ -394,8 +394,7 @@ public class SoftMainMixer {
                     case 0x0A:  // Key Based Instrument Control
                     {
                         subid2 = data[4] & 0xFF;
-                        switch (subid2) {
-                        case 0x01: // Basic Message
+                        if (subid2 == 0x01) { // Basic Message
                             int channel = data[5] & 0xFF;
                             int keynumber = data[6] & 0xFF;
                             SoftChannel softchannel = synth.channels[channel];
@@ -405,9 +404,6 @@ public class SoftMainMixer {
                                 softchannel.controlChangePerNote(keynumber,
                                         controlnumber, controlvalue);
                             }
-                            break;
-                        default:
-                            break;
                         }
                         break;
                     }
@@ -500,9 +496,9 @@ public class SoftMainMixer {
 
             }
 
-            for (int i = 0; i < voicestatus.length; i++)
-                if (voicestatus[i].active)
-                    voicestatus[i].processControlLogic();
+            for (SoftVoice softVoice : voicestatus)
+                if (softVoice.active)
+                    softVoice.processControlLogic();
             sample_pos += buffer_len;
 
             double volume = co_master_volume[0];
@@ -585,10 +581,10 @@ public class SoftMainMixer {
                     cbuffer[1] = buffers[CHANNEL_RIGHT].array();
                 
                 boolean hasactivevoices = false;
-                for (int i = 0; i < voicestatus.length; i++)
-                    if (voicestatus[i].active)
-                        if (voicestatus[i].channelmixer == cmixer.mixer) {
-                            voicestatus[i].processAudioLogic(buffers);
+                for (SoftVoice softVoice : voicestatus)
+                    if (softVoice.active)
+                        if (softVoice.channelmixer == cmixer.mixer) {
+                            softVoice.processAudioLogic(buffers);
                             hasactivevoices = true;
                         }
                 
@@ -649,10 +645,10 @@ public class SoftMainMixer {
 
         }
 
-        for (int i = 0; i < voicestatus.length; i++)
-            if (voicestatus[i].active)
-                if (voicestatus[i].channelmixer == null)
-                    voicestatus[i].processAudioLogic(buffers);
+        for (SoftVoice softVoice : voicestatus)
+            if (softVoice.active)
+                if (softVoice.channelmixer == null)
+                    softVoice.processAudioLogic(buffers);
 
         if(!buffers[CHANNEL_MONO].isSilent())
         {
@@ -769,7 +765,7 @@ public class SoftMainMixer {
             if(synth.weakstream != null)
             {
                 synth.weakstream.setInputStream(ais);
-                silent_samples = synth.weakstream.silent_samples;;
+                silent_samples = synth.weakstream.silent_samples;
             }
         }
         msec_last_activity = (long)((sample_pos + silent_samples)
@@ -778,13 +774,13 @@ public class SoftMainMixer {
 
     public void stopMixer(ModelChannelMixer mixer) {
         if (stoppedMixers == null)
-            stoppedMixers = new HashSet<ModelChannelMixer>();
+            stoppedMixers = new HashSet<>();
         stoppedMixers.add(mixer);
     }
 
     public void registerMixer(ModelChannelMixer mixer) {
         if (registeredMixers == null)
-            registeredMixers = new HashSet<SoftChannelMixerContainer>();
+            registeredMixers = new HashSet<>();
         SoftChannelMixerContainer mixercontainer = new SoftChannelMixerContainer();
         mixercontainer.buffers = new SoftAudioBuffer[6];
         for (int i = 0; i < mixercontainer.buffers.length; i++) {
@@ -884,7 +880,7 @@ public class SoftMainMixer {
                 bbuffer_pos = 0;
             }
 
-            public int read(byte[] b, int off, int len) {
+            public int read(@NonNull byte[] b, int off, int len) {
                 int bbuffer_len = bbuffer.length;
                 int offlen = off + len;
                 int orgoff = off;
@@ -944,15 +940,15 @@ public class SoftMainMixer {
                 channels[i].programChange(0, 0);
         }
         setVolume(0x7F * 128 + 0x7F);
-        setBalance(0x40 * 128 + 0x00);
-        setCoarseTuning(0x40 * 128 + 0x00);
-        setFineTuning(0x40 * 128 + 0x00);
+        setBalance(0x40 * 128);
+        setCoarseTuning(0x40 * 128);
+        setFineTuning(0x40 * 128);
         // Reset Reverb
         globalParameterControlChange(
-                new int[]{0x01 * 128 + 0x01}, new long[]{0}, new long[]{4});
+                new int[]{128 + 0x01}, new long[]{0}, new long[]{4});
         // Reset Chorus
         globalParameterControlChange(
-                new int[]{0x01 * 128 + 0x02}, new long[]{0}, new long[]{2});
+                new int[]{128 + 0x02}, new long[]{0}, new long[]{2});
     }
 
     public void setVolume(int value) {
@@ -1012,13 +1008,13 @@ public class SoftMainMixer {
 
             // slothpath: 01xx are reserved only for GM2
 
-            if (slothpath[0] == 0x01 * 128 + 0x01) {
+            if (slothpath[0] == 128 + 0x01) {
                 for (int i = 0; i < paramsvalue.length; i++) {
                     reverb.globalParameterControlChange(slothpath, params[i],
                             paramsvalue[i]);
                 }
             }
-            if (slothpath[0] == 0x01 * 128 + 0x02) {
+            if (slothpath[0] == 128 + 0x02) {
                 for (int i = 0; i < paramsvalue.length; i++) {
                     chorus.globalParameterControlChange(slothpath, params[i],
                             paramsvalue[i]);
@@ -1032,8 +1028,11 @@ public class SoftMainMixer {
     public void processMessage(Object object) {
         if (object instanceof byte[])
             processMessage((byte[]) object);
-        if (object instanceof MidiMessage)
-            processMessage((MidiMessage)object);
+        if (object instanceof ShortMessage) {
+            // TODO Check carefully this code
+            throw new RuntimeException("La regue");
+            // processMessage((ShortMessage) object);
+        }
     }
 
     public void processMessage(ShortMessage sms) {
@@ -1075,14 +1074,10 @@ public class SoftMainMixer {
         // TODO: Delete this code if needed
         if (cmd == 0xF0) {
             int status = cmd | ch;
-            switch (status) {
-            case ShortMessage.ACTIVE_SENSING:
+            if (status == ShortMessage.ACTIVE_SENSING) {
                 synchronized (synth.control_mutex) {
                     active_sensing_on = true;
                 }
-                break;
-            default:
-                break;
             }
             return;
         }
