@@ -25,6 +25,8 @@
 
 package cn.sherlock.com.sun.media.sound;
 
+import android.support.annotation.NonNull;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
@@ -37,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
@@ -67,8 +70,8 @@ public class SoftSynthesizer implements AudioSynthesizer,
         public SoftAudioPusher pusher = null;
         public AudioInputStream jitter_stream = null;
         public SourceDataLine sourceDataLine = null;
-        public volatile long silent_samples = 0;
-        private int framesize = 0;
+        public AtomicLong silent_samples = new AtomicLong(0);
+        private int framesize;
         private WeakReference<AudioInputStream> weak_stream_link;
         private AudioFloatConverter converter;
         private float[] silentbuffer = null;
@@ -93,7 +96,7 @@ public class SoftSynthesizer implements AudioSynthesizer,
              return b[0] & 0xFF;
         }
 
-        public int read(byte[] b, int off, int len) throws IOException {
+        public int read(@NonNull byte[] b, int off, int len) throws IOException {
              AudioInputStream local_stream = stream;
              if(local_stream != null)
                  return local_stream.read(b, off, len);
@@ -104,7 +107,7 @@ public class SoftSynthesizer implements AudioSynthesizer,
                      silentbuffer = new float[flen];
                  converter.toByteArray(silentbuffer, flen, b, off);
 
-                 silent_samples += (long)((len / framesize));
+                 silent_samples.addAndGet(len / framesize);
 
                  if(pusher != null)
                  if(weak_stream_link.get() == null)
@@ -415,9 +418,7 @@ public class SoftSynthesizer implements AudioSynthesizer,
                 return current_instrument;
             // Instrument not found fallback to MSB:0, LSB:0, program=0
             current_instrument = inslist.get(p_plaf + program + "0.0");
-            if (current_instrument != null)
-                return current_instrument;
-            return null;
+            return current_instrument;
         }
 
         // Channel 10 uses percussion instruments
@@ -437,9 +438,7 @@ public class SoftSynthesizer implements AudioSynthesizer,
             return current_instrument;
         // Instrument not found fallback to MSB:0, LSB:0, program=0
         current_instrument = inslist.get(p_plaf + "0.0");
-        if (current_instrument != null)
-            return current_instrument;
-        return null;
+        return current_instrument;
     }
 
     protected int getVoiceAllocationMode() {
@@ -494,6 +493,7 @@ public class SoftSynthesizer implements AudioSynthesizer,
         }
     }
 
+    @NonNull
     public MidiChannel[] getChannels() {
 
         synchronized (control_mutex) {
@@ -510,12 +510,12 @@ public class SoftSynthesizer implements AudioSynthesizer,
                 ret = new MidiChannel[channels.length];
             else
                 ret = new MidiChannel[16];
-            for (int i = 0; i < ret.length; i++)
-                ret[i] = external_channels[i];
+            System.arraycopy(external_channels, 0, ret, 0, ret.length);
             return ret;
         }
     }
 
+    @NonNull
     public VoiceStatus[] getVoiceStatus() {
         if (!isOpen()) {
             VoiceStatus[] tempVoiceStatusArray
@@ -557,18 +557,18 @@ public class SoftSynthesizer implements AudioSynthesizer,
         return true;
     }
 
-    public boolean loadInstrument(Instrument instrument) {
-        if (instrument == null || (!(instrument instanceof ModelInstrument))) {
+    public boolean loadInstrument(@NonNull Instrument instrument) {
+        if ((!(instrument instanceof ModelInstrument))) {
             throw new IllegalArgumentException("Unsupported instrument: " +
                     instrument);
         }
-        List<ModelInstrument> instruments = new ArrayList<ModelInstrument>();
+        List<ModelInstrument> instruments = new ArrayList<>();
         instruments.add((ModelInstrument)instrument);
         return loadInstruments(instruments);
     }
 
-    public void unloadInstrument(Instrument instrument) {
-        if (instrument == null || (!(instrument instanceof ModelInstrument))) {
+    public void unloadInstrument(@NonNull Instrument instrument) {
+        if ((!(instrument instanceof ModelInstrument))) {
             throw new IllegalArgumentException("Unsupported instrument: " +
                     instrument);
         }
@@ -581,18 +581,14 @@ public class SoftSynthesizer implements AudioSynthesizer,
                 c.current_instrument = null;
             inslist.remove(pat);
             loadedlist.remove(pat);
-            for (int i = 0; i < channels.length; i++) {
-                channels[i].allSoundOff();
+            for (SoftChannel channel : channels) {
+                channel.allSoundOff();
             }
         }
     }
 
-    public boolean remapInstrument(Instrument from, Instrument to) {
+    public boolean remapInstrument(@NonNull Instrument from, @NonNull Instrument to) {
 
-        if (from == null)
-            throw new NullPointerException();
-        if (to == null)
-            throw new NullPointerException();
         if (!(from instanceof ModelInstrument)) {
             throw new IllegalArgumentException("Unsupported instrument: " +
                     from.toString());
@@ -618,6 +614,7 @@ public class SoftSynthesizer implements AudioSynthesizer,
     	return null;
     }
 
+    @NonNull
     public Instrument[] getAvailableInstruments() {
         Soundbank defsbk = getDefaultSoundbank();
         if (defsbk == null)
@@ -627,6 +624,7 @@ public class SoftSynthesizer implements AudioSynthesizer,
         return inslist_array;
     }
 
+    @NonNull
     public Instrument[] getLoadedInstruments() {
         if (!isOpen())
             return new Instrument[0];
@@ -641,9 +639,9 @@ public class SoftSynthesizer implements AudioSynthesizer,
     }
 
     public boolean loadAllInstruments(Soundbank soundbank) {
-        List<ModelInstrument> instruments = new ArrayList<ModelInstrument>();
+        List<ModelInstrument> instruments = new ArrayList<>();
         for (Instrument ins: soundbank.getInstruments()) {
-            if (ins == null || !(ins instanceof ModelInstrument)) {
+            if (!(ins instanceof ModelInstrument)) {
                 throw new IllegalArgumentException(
                         "Unsupported instrument: " + ins);
             }
@@ -652,8 +650,8 @@ public class SoftSynthesizer implements AudioSynthesizer,
         return loadInstruments(instruments);
     }
 
-    public void unloadAllInstruments(Soundbank soundbank) {
-        if (soundbank == null || !isSoundbankSupported(soundbank))
+    public void unloadAllInstruments(@NonNull Soundbank soundbank) {
+        if (!isSoundbankSupported(soundbank))
             throw new IllegalArgumentException("Unsupported soundbank: " + soundbank);
 
         if (!isOpen())
@@ -666,11 +664,11 @@ public class SoftSynthesizer implements AudioSynthesizer,
         }
     }
 
-    public boolean loadInstruments(Soundbank soundbank, Patch[] patchList) {
-        List<ModelInstrument> instruments = new ArrayList<ModelInstrument>();
+    public boolean loadInstruments(@NonNull Soundbank soundbank, Patch[] patchList) {
+        List<ModelInstrument> instruments = new ArrayList<>();
         for (Patch patch: patchList) {
             Instrument ins = soundbank.getInstrument(patch);
-            if (ins == null || !(ins instanceof ModelInstrument)) {
+            if (!(ins instanceof ModelInstrument)) {
                 throw new IllegalArgumentException(
                         "Unsupported instrument: " + ins);
             }
@@ -679,8 +677,8 @@ public class SoftSynthesizer implements AudioSynthesizer,
         return loadInstruments(instruments);
     }
 
-    public void unloadInstruments(Soundbank soundbank, Patch[] patchList) {
-        if (soundbank == null || !isSoundbankSupported(soundbank))
+    public void unloadInstruments(@NonNull Soundbank soundbank, @NonNull Patch[] patchList) {
+        if (!isSoundbankSupported(soundbank))
             throw new IllegalArgumentException("Unsupported soundbank: " + soundbank);
 
         if (!isOpen())
@@ -694,6 +692,7 @@ public class SoftSynthesizer implements AudioSynthesizer,
         }
     }
 
+    @NonNull
     public AudioSynthesizer.Info getDeviceInfo() {
         return info;
     }
@@ -715,8 +714,8 @@ public class SoftSynthesizer implements AudioSynthesizer,
                                         p.setProperty(prefs_key, val);
                                 }
                             }
-                        } catch (BackingStoreException e) {
-                        } catch (SecurityException e) {
+                        } catch (BackingStoreException ignored) {
+                        } catch (SecurityException ignored) {
                         }
                         return p;
                     }
@@ -762,19 +761,19 @@ public class SoftSynthesizer implements AudioSynthesizer,
         item.description = "Maximum polyphony";
         list.add(item);
 
-        item = new AudioSynthesizerPropertyInfo("reverb", o?reverb_on:true);
+        item = new AudioSynthesizerPropertyInfo("reverb", !o || reverb_on);
         item.description = "Turn reverb effect on or off";
         list.add(item);
 
-        item = new AudioSynthesizerPropertyInfo("chorus", o?chorus_on:true);
+        item = new AudioSynthesizerPropertyInfo("chorus", !o || chorus_on);
         item.description = "Turn chorus effect on or off";
         list.add(item);
 
-        item = new AudioSynthesizerPropertyInfo("auto gain control", o?agc_on:true);
+        item = new AudioSynthesizerPropertyInfo("auto gain control", !o || agc_on);
         item.description = "Turn auto gain control on or off";
         list.add(item);
 
-        item = new AudioSynthesizerPropertyInfo("large mode", o?largemode:false);
+        item = new AudioSynthesizerPropertyInfo("large mode", o && largemode);
         item.description = "Turn large mode on or off.";
         list.add(item);
 
@@ -782,20 +781,20 @@ public class SoftSynthesizer implements AudioSynthesizer,
         item.description = "Number of midi channels.";
         list.add(item);
 
-        item = new AudioSynthesizerPropertyInfo("jitter correction", o?jitter_correction:true);
+        item = new AudioSynthesizerPropertyInfo("jitter correction", !o || jitter_correction);
         item.description = "Turn jitter correction on or off.";
         list.add(item);
 
-        item = new AudioSynthesizerPropertyInfo("light reverb", o?reverb_light:true);
+        item = new AudioSynthesizerPropertyInfo("light reverb", !o || reverb_light);
         item.description = "Turn light reverb mode on or off";
         list.add(item);
         
-        item = new AudioSynthesizerPropertyInfo("load default soundbank", o?load_default_soundbank:true);
+        item = new AudioSynthesizerPropertyInfo("load default soundbank", !o || load_default_soundbank);
         item.description = "Enabled/disable loading default soundbank";
         list.add(item);
         
         AudioSynthesizerPropertyInfo[] items;
-        items = list.toArray(new AudioSynthesizerPropertyInfo[list.size()]);
+        items = list.toArray(new AudioSynthesizerPropertyInfo[0]);
         
         Properties storedProperties = getStoredProperties();
         
@@ -840,7 +839,7 @@ public class SoftSynthesizer implements AudioSynthesizer,
                             }
                             item2.value = new AudioFormat(sampleRate, bits,
                                     channels, signed, bigendian);
-                        } catch (NumberFormatException e) {
+                        } catch (NumberFormatException ignored) {
                         }
 
                     } else
@@ -857,22 +856,22 @@ public class SoftSynthesizer implements AudioSynthesizer,
                                 item2.value = Float.valueOf(s);
                             else if (c == Double.class)
                                 item2.value = Double.valueOf(s);
-                        } catch (NumberFormatException e) {
+                        } catch (NumberFormatException ignored) {
                         }
                 } else if (v instanceof Number) {
                     Number n = (Number) v;
                     if (c == Byte.class)
-                        item2.value = Byte.valueOf(n.byteValue());
+                        item2.value = n.byteValue();
                     if (c == Short.class)
-                        item2.value = Short.valueOf(n.shortValue());
+                        item2.value = n.shortValue();
                     if (c == Integer.class)
-                        item2.value = Integer.valueOf(n.intValue());
+                        item2.value = n.intValue();
                     if (c == Long.class)
-                        item2.value = Long.valueOf(n.longValue());
+                        item2.value = n.longValue();
                     if (c == Float.class)
-                        item2.value = Float.valueOf(n.floatValue());
+                        item2.value = n.floatValue();
                     if (c == Double.class)
-                        item2.value = Double.valueOf(n.doubleValue());
+                        item2.value = n.doubleValue();
                 }
             }
         }
@@ -940,7 +939,7 @@ public class SoftSynthesizer implements AudioSynthesizer,
                 int controlbuffersize = 512;
                 try {
                     controlbuffersize = ais.available();
-                } catch (IOException e) {
+                } catch (IOException ignored) {
                 }
 
                 // Tell mixer not fill read buffers fully.
@@ -1040,20 +1039,6 @@ public class SoftSynthesizer implements AudioSynthesizer,
                     external_channels = new SoftChannelProxy[channels.length];
                 for (int i = 0; i < external_channels.length; i++)
                     external_channels[i] = new SoftChannelProxy();
-            } else {
-                // We must resize external_channels array
-                // but we must also copy the old SoftChannelProxy
-                // into the new one
-                if (channels.length > external_channels.length) {
-                    SoftChannelProxy[] new_external_channels
-                            = new SoftChannelProxy[channels.length];
-                    for (int i = 0; i < external_channels.length; i++)
-                        new_external_channels[i] = external_channels[i];
-                    for (int i = external_channels.length;
-                            i < new_external_channels.length; i++) {
-                        new_external_channels[i] = new SoftChannelProxy();
-                    }
-                }
             }
 
             for (int i = 0; i < channels.length; i++)
@@ -1113,8 +1098,8 @@ public class SoftSynthesizer implements AudioSynthesizer,
             channels = null;
 
             if (external_channels != null)
-                for (int i = 0; i < external_channels.length; i++)
-                    external_channels[i].setChannel(null);
+                for (SoftChannelProxy external_channel : external_channels)
+                    external_channel.setChannel(null);
 
             if (sourceDataLine != null) {
                 sourceDataLine.close();
@@ -1155,7 +1140,8 @@ public class SoftSynthesizer implements AudioSynthesizer,
         return 0;
     }
 
-    public MidiDeviceReceiver getReceiver() throws MidiUnavailableException {
+    @NonNull
+    public MidiDeviceReceiver getReceiver() {
 
         synchronized (control_mutex) {
             SoftReceiver receiver = new SoftReceiver(this);
@@ -1165,23 +1151,24 @@ public class SoftSynthesizer implements AudioSynthesizer,
         }
     }
 
+    @NonNull
     public List<MidiDeviceReceiver> getReceivers() {
 
         synchronized (control_mutex) {
-            ArrayList<MidiDeviceReceiver> recvs = new ArrayList<>();
-            recvs.addAll(recvslist);
-            return recvs;
+            return new ArrayList<>(recvslist);
         }
     }
 
+    @NonNull
     public Transmitter getTransmitter() throws MidiUnavailableException {
 
         throw new MidiUnavailableException("No transmitter available");
     }
 
+    @NonNull
     public List<Transmitter> getTransmitters() {
 
-        return new ArrayList<Transmitter>();
+        return new ArrayList<>();
     }
 
     public MidiDeviceReceiver getReceiverReferenceCounting()

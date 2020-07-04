@@ -436,10 +436,10 @@ public class SoftMainMixer {
 
     protected void processAudioBuffers() {
 
-        if(synth.weakstream != null && synth.weakstream.silent_samples != 0)
+        if(synth.weakstream != null && synth.weakstream.silent_samples.get() != 0)
         {
-            sample_pos += synth.weakstream.silent_samples;
-            synth.weakstream.silent_samples = 0;
+            sample_pos += synth.weakstream.silent_samples.get();
+            synth.weakstream.silent_samples.set(0);
         }
         
         for (int i = 0; i < buffers.length; i++) {                        
@@ -765,7 +765,7 @@ public class SoftMainMixer {
             if(synth.weakstream != null)
             {
                 synth.weakstream.setInputStream(ais);
-                silent_samples = synth.weakstream.silent_samples;
+                silent_samples = synth.weakstream.silent_samples.get();
             }
         }
         msec_last_activity = (long)((sample_pos + silent_samples)
@@ -1120,7 +1120,7 @@ public class SoftMainMixer {
         {
             if(synth.weakstream != null)
             {
-                return (long)((sample_pos  + synth.weakstream.silent_samples)
+                return (long)((sample_pos  + synth.weakstream.silent_samples.get())
                         * (1000000.0 / samplerate));  
             }            
         }
