@@ -98,7 +98,7 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
     private boolean mute = false;
     private boolean solo = false;
     private boolean solomute = false;
-    private Object control_mutex;
+    private final Object control_mutex;
     private int channel;
     private SoftVoice[] voices;
     private int bank;
