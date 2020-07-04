@@ -24,6 +24,8 @@
  */
 package cn.sherlock.com.sun.media.sound;
 
+import android.support.annotation.NonNull;
+
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -57,7 +59,7 @@ public class RIFFReader extends InputStream {
 
         // Check for RIFF null paddings,
         int b;
-        while (true) {
+        do {
             b = read();
             if (b == -1) {
                 fourcc = ""; // don't put null value into fourcc,
@@ -67,9 +69,7 @@ public class RIFFReader extends InputStream {
                 avail = 0;
                 return;
             }
-            if (b != 0)
-                break;
-        }
+        } while (b == 0);
 
         byte[] fourcc = new byte[4];
         fourcc[0] = (byte) b;
@@ -86,7 +86,7 @@ public class RIFFReader extends InputStream {
         }
     }
 
-    public long getFilePointer() throws IOException {
+    public long getFilePointer() {
         return root.filepointer;
     }
 
@@ -128,7 +128,7 @@ public class RIFFReader extends InputStream {
         return b;
     }
 
-    public int read(byte[] b, int offset, int len) throws IOException {
+    public int read(@NonNull byte[] b, int offset, int len) throws IOException {
         if (avail == 0)
             return -1;
         if (len > avail) {
@@ -147,11 +147,11 @@ public class RIFFReader extends InputStream {
         }
     }
 
-    public final void readFully(byte b[]) throws IOException {
+    public final void readFully(byte[] b) throws IOException {
         readFully(b, 0, b.length);
     }
 
-    public final void readFully(byte b[], int off, int len) throws IOException {
+    public final void readFully(byte[] b, int off, int len) throws IOException {
         if (len < 0)
             throw new IndexOutOfBoundsException();
         while (len > 0) {
@@ -165,19 +165,16 @@ public class RIFFReader extends InputStream {
         }
     }
 
-    public final long skipBytes(long n) throws IOException {
+    public final void skipBytes(long n) throws IOException {
         if (n < 0)
-            return 0;
+            return;
         long skipped = 0;
         while (skipped != n) {
             long s = skip(n - skipped);
-            if (s < 0)
-                break;
             if (s == 0)
                 Thread.yield();
             skipped += s;
         }
-        return skipped;
     }
 
     public long skip(long n) throws IOException {
@@ -185,14 +182,11 @@ public class RIFFReader extends InputStream {
             return -1;
         if (n > avail) {
             long len = stream.skip(avail);
-            if (len != -1)
-                filepointer += len;
+            filepointer += len;
             avail = 0;
             return len;
         } else {
             long ret = stream.skip(n);
-            if (ret == -1)
-                return -1;
             avail -= ret;
             filepointer += ret;
             return ret;

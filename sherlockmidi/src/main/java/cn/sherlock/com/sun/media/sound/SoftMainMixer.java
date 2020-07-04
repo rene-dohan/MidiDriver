@@ -1036,7 +1036,11 @@ public class SoftMainMixer {
     }
 
     public void processMessage(ShortMessage sms) {
-        processMessage(sms.getChannel(), sms.getCommand(), sms.getData1(), sms.getData2());
+        int channel = sms.getChannel();
+        int command = sms.getCommand();
+        int data1 = sms.getData1();
+        int data2 = sms.getData2();
+        processMessage(channel, command, data1, data2);
     }
 
     public void processMessage(byte[] data) {

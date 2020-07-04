@@ -24,6 +24,8 @@
  */
 package cn.sherlock.com.sun.media.sound;
 
+import android.support.annotation.NonNull;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -140,30 +142,42 @@ public class SF2Soundbank implements Soundbank {
         while (riff.hasNextChunk()) {
             RIFFReader chunk = riff.nextChunk();
             String format = chunk.getFormat();
-            if (format.equals("ifil")) {
-                major = chunk.readUnsignedShort();
-                minor = chunk.readUnsignedShort();
-            } else if (format.equals("isng")) {
-                this.targetEngine = chunk.readString(chunk.available());
-            } else if (format.equals("INAM")) {
-                this.name = chunk.readString(chunk.available());
-            } else if (format.equals("irom")) {
-                this.romName = chunk.readString(chunk.available());
-            } else if (format.equals("iver")) {
-                romVersionMajor = chunk.readUnsignedShort();
-                romVersionMinor = chunk.readUnsignedShort();
-            } else if (format.equals("ICRD")) {
-                this.creationDate = chunk.readString(chunk.available());
-            } else if (format.equals("IENG")) {
-                this.engineers = chunk.readString(chunk.available());
-            } else if (format.equals("IPRD")) {
-                this.product = chunk.readString(chunk.available());
-            } else if (format.equals("ICOP")) {
-                this.copyright = chunk.readString(chunk.available());
-            } else if (format.equals("ICMT")) {
-                this.comments = chunk.readString(chunk.available());
-            } else if (format.equals("ISFT")) {
-                this.tools = chunk.readString(chunk.available());
+            switch (format) {
+                case "ifil":
+                    major = chunk.readUnsignedShort();
+                    minor = chunk.readUnsignedShort();
+                    break;
+                case "isng":
+                    this.targetEngine = chunk.readString(chunk.available());
+                    break;
+                case "INAM":
+                    this.name = chunk.readString(chunk.available());
+                    break;
+                case "irom":
+                    this.romName = chunk.readString(chunk.available());
+                    break;
+                case "iver":
+                    romVersionMajor = chunk.readUnsignedShort();
+                    romVersionMinor = chunk.readUnsignedShort();
+                    break;
+                case "ICRD":
+                    this.creationDate = chunk.readString(chunk.available());
+                    break;
+                case "IENG":
+                    this.engineers = chunk.readString(chunk.available());
+                    break;
+                case "IPRD":
+                    this.product = chunk.readString(chunk.available());
+                    break;
+                case "ICOP":
+                    this.copyright = chunk.readString(chunk.available());
+                    break;
+                case "ICMT":
+                    this.comments = chunk.readString(chunk.available());
+                    break;
+                case "ISFT":
+                    this.tools = chunk.readString(chunk.available());
+                    break;
             }
 
         }
@@ -224,19 +238,19 @@ public class SF2Soundbank implements Soundbank {
 
     private void readPdtaChunk(RIFFReader riff) throws IOException {
 
-        List<SF2Instrument> presets = new ArrayList<SF2Instrument>();
-        List<Integer> presets_bagNdx = new ArrayList<Integer>();
+        List<SF2Instrument> presets = new ArrayList<>();
+        List<Integer> presets_bagNdx = new ArrayList<>();
         List<SF2InstrumentRegion> presets_splits_gen
-                = new ArrayList<SF2InstrumentRegion>();
+                = new ArrayList<>();
         List<SF2InstrumentRegion> presets_splits_mod
-                = new ArrayList<SF2InstrumentRegion>();
+                = new ArrayList<>();
 
-        List<SF2Layer> instruments = new ArrayList<SF2Layer>();
-        List<Integer> instruments_bagNdx = new ArrayList<Integer>();
+        List<SF2Layer> instruments = new ArrayList<>();
+        List<Integer> instruments_bagNdx = new ArrayList<>();
         List<SF2LayerRegion> instruments_splits_gen
-                = new ArrayList<SF2LayerRegion>();
+                = new ArrayList<>();
         List<SF2LayerRegion> instruments_splits_mod
-                = new ArrayList<SF2LayerRegion>();
+                = new ArrayList<>();
 
         while (riff.hasNextChunk()) {
             RIFFReader chunk = riff.nextChunk();
@@ -451,9 +465,7 @@ public class SF2Soundbank implements Soundbank {
             }
         }
 
-        Iterator<SF2Layer> liter = this.layers.iterator();
-        while (liter.hasNext()) {
-            SF2Layer layer = liter.next();
+        for (SF2Layer layer : this.layers) {
             Iterator<SF2LayerRegion> siter = layer.regions.iterator();
             SF2Region globalsplit = null;
             while (siter.hasNext()) {
@@ -477,9 +489,7 @@ public class SF2Soundbank implements Soundbank {
         }
 
 
-        Iterator<SF2Instrument> iiter = this.instruments.iterator();
-        while (iiter.hasNext()) {
-            SF2Instrument instrument = iiter.next();
+        for (SF2Instrument instrument : this.instruments) {
             Iterator<SF2InstrumentRegion> siter = instrument.regions.iterator();
             SF2Region globalsplit = null;
             while (siter.hasNext()) {
@@ -617,8 +627,8 @@ public class SF2Soundbank implements Soundbank {
 
     private void writeGenerators(RIFFWriter writer, Map<Integer, Short> generators)
             throws IOException {
-        Short keyrange = (Short) generators.get(SF2Region.GENERATOR_KEYRANGE);
-        Short velrange = (Short) generators.get(SF2Region.GENERATOR_VELRANGE);
+        Short keyrange = generators.get(SF2Region.GENERATOR_KEYRANGE);
+        Short velrange = generators.get(SF2Region.GENERATOR_VELRANGE);
         if (keyrange != null) {
             writer.writeUnsignedShort(SF2Region.GENERATOR_KEYRANGE);
             writer.writeShort(keyrange);
@@ -706,7 +716,7 @@ public class SF2Soundbank implements Soundbank {
             }
             for (SF2InstrumentRegion region : preset.getRegions()) {
                 writeGenerators(pgen_chunk, region.getGenerators());
-                int ix = (int) layers.indexOf(region.layer);
+                int ix = layers.indexOf(region.layer);
                 if (ix != -1) {
                     pgen_chunk.writeUnsignedShort(SF2Region.GENERATOR_INSTRUMENT);
                     pgen_chunk.writeShort((short) ix);
@@ -814,18 +824,22 @@ public class SF2Soundbank implements Soundbank {
 
     }
 
+    @NonNull
     public String getName() {
         return name;
     }
 
+    @NonNull
     public String getVersion() {
         return major + "." + minor;
     }
 
+    @NonNull
     public String getVendor() {
         return engineers;
     }
 
+    @NonNull
     public String getDescription() {
         return comments;
     }
@@ -842,6 +856,7 @@ public class SF2Soundbank implements Soundbank {
         comments = s;
     }
 
+    @NonNull
     public SoundbankResource[] getResources() {
         SoundbankResource[] resources
                 = new SoundbankResource[layers.size() + samples.size()];
@@ -853,6 +868,7 @@ public class SF2Soundbank implements Soundbank {
         return resources;
     }
 
+    @NonNull
     public SF2Instrument[] getInstruments() {
         SF2Instrument[] inslist_array
                 = instruments.toArray(new SF2Instrument[instruments.size()]);
@@ -861,11 +877,11 @@ public class SF2Soundbank implements Soundbank {
     }
 
     public SF2Layer[] getLayers() {
-        return layers.toArray(new SF2Layer[layers.size()]);
+        return layers.toArray(new SF2Layer[0]);
     }
 
     public SF2Sample[] getSamples() {
-        return samples.toArray(new SF2Sample[samples.size()]);
+        return samples.toArray(new SF2Sample[0]);
     }
 
     public Instrument getInstrument(Patch patch) {
