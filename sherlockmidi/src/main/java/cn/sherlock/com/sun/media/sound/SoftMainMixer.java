@@ -769,7 +769,7 @@ public class SoftMainMixer {
             if(synth.weakstream != null)
             {
                 synth.weakstream.setInputStream(ais);
-                silent_samples = synth.weakstream.silent_samples;;
+                silent_samples = synth.weakstream.silent_samples;
             }
         }
         msec_last_activity = (long)((sample_pos + silent_samples)

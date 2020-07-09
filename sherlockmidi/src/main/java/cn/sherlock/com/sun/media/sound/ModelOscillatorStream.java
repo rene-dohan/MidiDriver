@@ -35,14 +35,14 @@ import jp.kshoji.javax.sound.midi.VoiceStatus;
  */
 public interface ModelOscillatorStream {
 
-    public void setPitch(float pitch); // Pitch is in cents!
+    void setPitch(float pitch); // Pitch is in cents!
 
-    public void noteOn(MidiChannel channel, VoiceStatus voice, int noteNumber,
-                       int velocity);
+    void noteOn(MidiChannel channel, VoiceStatus voice, int noteNumber,
+                int velocity);
 
-    public void noteOff(int velocity);
+    void noteOff(int velocity);
 
-    public int read(float[][] buffer, int offset, int len) throws IOException;
+    int read(float[][] buffer, int offset, int len) throws IOException;
 
-    public void close() throws IOException;
+    void close() throws IOException;
 }

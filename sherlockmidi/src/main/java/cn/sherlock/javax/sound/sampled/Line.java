@@ -57,7 +57,7 @@ public interface Line extends cn.sherlock.javax.sound.sampled.AutoCloseable {
      * line.
      * @return description of the line
      */
-    public Info getLineInfo();
+    Info getLineInfo();
 
     /**
      * Opens the line, indicating that it should acquire any required
@@ -103,7 +103,7 @@ public interface Line extends cn.sherlock.javax.sound.sampled.AutoCloseable {
      * @see Clip#open(AudioFormat, byte[], int, int)
      * @see Clip#open(AudioInputStream)
      */
-    public void open() throws LineUnavailableException;
+    void open() throws LineUnavailableException;
 
 
     /**
@@ -118,7 +118,7 @@ public interface Line extends cn.sherlock.javax.sound.sampled.AutoCloseable {
      * @see #isOpen
      * @see LineEvent
      */
-    public void close();
+    void close();
 
 
 
@@ -131,7 +131,7 @@ public interface Line extends cn.sherlock.javax.sound.sampled.AutoCloseable {
      * @see #open()
      * @see #close()
      */
-    public boolean isOpen();
+    boolean isOpen();
 
 
     /**
@@ -164,7 +164,7 @@ public interface Line extends cn.sherlock.javax.sound.sampled.AutoCloseable {
      * @see AudioSystem#isLineSupported <code>AudioSystem.isLineSupported(Line.Info)</code>
      * @since 1.3
      */
-    public static class Info {
+    class Info {
 
         /**
          * The class of the line described by the info object.
@@ -252,11 +252,7 @@ public interface Line extends cn.sherlock.javax.sound.sampled.AutoCloseable {
             //                                                          =>      this is at least as general as that
             //                                                          =>      that may be subtype of this
 
-            if (! (getLineClass().isAssignableFrom(info.getLineClass())) ) {
-                return false;
-            }
-
-            return true;
+            return getLineClass().isAssignableFrom(info.getLineClass());
         }
 
 
@@ -267,13 +263,13 @@ public interface Line extends cn.sherlock.javax.sound.sampled.AutoCloseable {
         public String toString() {
 
             String fullPackagePath = "javax.sound.sampled.";
-            String initialString = new String(getLineClass().toString());
+            String initialString = getLineClass().toString();
             String finalString;
 
             int index = initialString.indexOf(fullPackagePath);
 
             if (index != -1) {
-                finalString = initialString.substring(0, index) + initialString.substring( (index + fullPackagePath.length()), initialString.length() );
+                finalString = initialString.substring(0, index) + initialString.substring( (index + fullPackagePath.length()));
             } else {
                 finalString = initialString;
             }

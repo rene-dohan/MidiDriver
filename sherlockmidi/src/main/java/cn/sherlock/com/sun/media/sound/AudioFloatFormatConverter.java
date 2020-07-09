@@ -597,9 +597,7 @@ public class AudioFloatFormatConverter extends FormatConversionProvider {
             return false;
         if (sourceFormat.getChannels() <= 0)
             return false;
-        if (targetFormat.getChannels() <= 0)
-            return false;
-        return true;
+        return targetFormat.getChannels() > 0;
     }
 
     public boolean isConversionSupported(Encoding targetEncoding,

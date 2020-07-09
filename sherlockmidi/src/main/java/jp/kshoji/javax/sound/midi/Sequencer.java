@@ -48,10 +48,7 @@ public interface Sequencer extends MidiDevice {
                 return false;
             }
             final SyncMode other = (SyncMode) obj;
-            if (!name.equals(other.name)) {
-                return false;
-            }
-            return true;
+            return name.equals(other.name);
         }
 
         @Override

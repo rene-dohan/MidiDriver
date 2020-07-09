@@ -32,5 +32,5 @@ package cn.sherlock.com.sun.media.sound;
  */
 public interface ModelDirectedPlayer {
 
-    public void play(int performerIndex, ModelConnectionBlock[] connectionBlocks);
+    void play(int performerIndex, ModelConnectionBlock[] connectionBlocks);
 }

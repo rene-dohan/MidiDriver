@@ -133,9 +133,7 @@ public class WaveExtensibleFileReader extends AudioFileReader {
                 return false;
             if (x7 != t.x7)
                 return false;
-            if (x8 != t.x8)
-                return false;
-            return true;
+            return x8 == t.x8;
         }
 
     }

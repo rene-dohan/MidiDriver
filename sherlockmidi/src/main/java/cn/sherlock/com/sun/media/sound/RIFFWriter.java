@@ -29,6 +29,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Resource Interchange File Format (RIFF) stream encoder.
@@ -39,21 +40,21 @@ public class RIFFWriter extends OutputStream {
 
     private interface RandomAccessWriter {
 
-        public void seek(long chunksizepointer) throws IOException;
+        void seek(long chunksizepointer) throws IOException;
 
-        public long getPointer() throws IOException;
+        long getPointer() throws IOException;
 
-        public void close() throws IOException;
+        void close() throws IOException;
 
-        public void write(int b) throws IOException;
+        void write(int b) throws IOException;
 
-        public void write(byte[] b, int off, int len) throws IOException;
+        void write(byte[] b, int off, int len) throws IOException;
 
-        public void write(byte[] bytes) throws IOException;
+        void write(byte[] bytes) throws IOException;
 
-        public long length() throws IOException;
+        long length() throws IOException;
 
-        public void setLength(long i) throws IOException;
+        void setLength(long i) throws IOException;
     }
 
     private static class RandomAccessFileWriter implements RandomAccessWriter {
@@ -191,11 +192,11 @@ public class RIFFWriter extends OutputStream {
             raf.write(0);
 
         if (chunktype == 0)
-            raf.write("RIFF".getBytes("ascii"));
+            raf.write("RIFF".getBytes(StandardCharsets.US_ASCII));
         else if (chunktype == 1)
-            raf.write("LIST".getBytes("ascii"));
+            raf.write("LIST".getBytes(StandardCharsets.US_ASCII));
         else
-            raf.write((format + "    ").substring(0, 4).getBytes("ascii"));
+            raf.write((format + "    ").substring(0, 4).getBytes(StandardCharsets.US_ASCII));
 
         chunksizepointer = raf.getPointer();
         this.chunktype = 2;
@@ -203,7 +204,7 @@ public class RIFFWriter extends OutputStream {
         this.chunktype = chunktype;
         startpointer = raf.getPointer();
         if (chunktype != 2)
-            raf.write((format + "    ").substring(0, 4).getBytes("ascii"));
+            raf.write((format + "    ").substring(0, 4).getBytes(StandardCharsets.US_ASCII));
 
     }
 
@@ -259,7 +260,7 @@ public class RIFFWriter extends OutputStream {
         raf.write(b);
     }
 
-    public void write(byte b[], int off, int len) throws IOException {
+    public void write(byte[] b, int off, int len) throws IOException {
         if (!writeoverride) {
             if (chunktype != 2) {
                 throw new IllegalArgumentException(

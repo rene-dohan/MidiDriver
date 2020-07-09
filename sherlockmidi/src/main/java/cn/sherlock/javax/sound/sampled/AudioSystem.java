@@ -354,7 +354,7 @@ public class AudioSystem {
 		List codecs = getFormatConversionProviders();
 		Vector encodings = new Vector();
 
-		AudioFormat.Encoding encs[] = null;
+		AudioFormat.Encoding[] encs = null;
 
 		// gather from all the codecs
 		for (int i = 0; i < codecs.size(); i++) {
@@ -367,7 +367,7 @@ public class AudioSystem {
 				}
 			}
 		}
-		AudioFormat.Encoding encs2[] = (AudioFormat.Encoding[]) encodings
+		AudioFormat.Encoding[] encs2 = (AudioFormat.Encoding[]) encodings
 				.toArray(new AudioFormat.Encoding[0]);
 		return encs2;
 	}
@@ -470,7 +470,7 @@ public class AudioSystem {
 
         int size = 0;
         int index = 0;
-        AudioFormat fmts[] = null;
+        AudioFormat[] fmts = null;
 
         // gather from all the codecs
 
@@ -483,7 +483,7 @@ public class AudioSystem {
 
         // now build a new array
 
-        AudioFormat fmts2[] = new AudioFormat[size];
+        AudioFormat[] fmts2 = new AudioFormat[size];
         for(int i=0; i<formats.size(); i++ ) {
             fmts = (AudioFormat [])(formats.get(i));
             for(int j=0; j<fmts.length; j++ ) {

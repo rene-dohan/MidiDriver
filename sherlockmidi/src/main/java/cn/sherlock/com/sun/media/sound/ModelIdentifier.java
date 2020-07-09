@@ -154,9 +154,7 @@ public class ModelIdentifier {
             return false;
         if (!(object == null || object.equals(mobj.object)))
             return false;
-        if (!(variable == null || variable.equals(mobj.variable)))
-            return false;
-        return true;
+        return variable == null || variable.equals(mobj.variable);
     }
 
     public String toString() {

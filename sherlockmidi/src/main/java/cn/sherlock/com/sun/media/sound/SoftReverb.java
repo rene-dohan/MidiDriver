@@ -86,7 +86,7 @@ public class SoftReverb implements SoftAudioProcessor {
             this.feedback = feedback;
         }
 
-        public void processReplace(float inout[]) {
+        public void processReplace(float[] inout) {
             int len = inout.length;
             int delaybuffersize = this.delaybuffersize;
             int rovepos = this.rovepos;            
@@ -101,7 +101,7 @@ public class SoftReverb implements SoftAudioProcessor {
             this.rovepos = rovepos;                        
         }
         
-        public void processReplace(float in[], float out[]) {
+        public void processReplace(float[] in, float[] out) {
             int len = in.length;
             int delaybuffersize = this.delaybuffersize;
             int rovepos = this.rovepos;            
@@ -137,7 +137,7 @@ public class SoftReverb implements SoftAudioProcessor {
             filtercoeff2 = (1 - filtercoeff1)* feedback;
         }
 
-        public void processMix(float in[], float out[]) {
+        public void processMix(float[] in, float[] out) {
             int len = in.length;            
             int delaybuffersize = this.delaybuffersize;
             int rovepos = this.rovepos;
@@ -158,7 +158,7 @@ public class SoftReverb implements SoftAudioProcessor {
             this.rovepos = rovepos;
         }
 
-        public void processReplace(float in[], float out[]) {
+        public void processReplace(float[] in, float[] out) {
             int len = in.length;            
             int delaybuffersize = this.delaybuffersize;
             int rovepos = this.rovepos;
@@ -330,7 +330,7 @@ public class SoftReverb implements SoftAudioProcessor {
             for (int i = 4; i < combL.length-2; i+=2)
                 combL[i].processMix(input, pre1); 
             
-            combL[3].processReplace(input, pre2);;
+            combL[3].processReplace(input, pre2);
             for (int i = 5; i < combL.length-2; i+=2)            
                 combL[i].processMix(input, pre2);
                                         

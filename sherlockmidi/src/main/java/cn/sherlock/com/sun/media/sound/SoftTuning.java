@@ -25,6 +25,7 @@
 package cn.sherlock.com.sun.media.sound;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 import jp.kshoji.javax.sound.midi.Patch;
 
@@ -97,11 +98,7 @@ public class SoftTuning {
                     // http://www.midi.org/about-midi/tuning.shtml
                     //if (!checksumOK2(data))
                     //	break;
-                    try {
-                        name = new String(data, 6, 16, "ascii");
-                    } catch (UnsupportedEncodingException e) {
-                        name = null;
-                    }
+                    name = new String(data, 6, 16, StandardCharsets.US_ASCII);
                     int r = 22;
                     for (int i = 0; i < 128; i++) {
                         int xx = data[r++] & 0xFF;
@@ -133,11 +130,7 @@ public class SoftTuning {
                     // http://www.midi.org/about-midi/tuning_extens.shtml
                     if (!checksumOK(data))
                         break;
-                    try {
-                        name = new String(data, 7, 16, "ascii");
-                    } catch (UnsupportedEncodingException e) {
-                        name = null;
-                    }
+                    name = new String(data, 7, 16, StandardCharsets.US_ASCII);
                     int r = 23;
                     for (int i = 0; i < 128; i++) {
                         int xx = data[r++] & 0xFF;
@@ -154,11 +147,7 @@ public class SoftTuning {
                     // http://www.midi.org/about-midi/tuning_extens.shtml
                     if (!checksumOK(data))
                         break;
-                    try {
-                        name = new String(data, 7, 16, "ascii");
-                    } catch (UnsupportedEncodingException e) {
-                        name = null;
-                    }
+                    name = new String(data, 7, 16, StandardCharsets.US_ASCII);
                     int[] octave_tuning = new int[12];
                     for (int i = 0; i < 12; i++)
                         octave_tuning[i] = (data[i + 23] & 0xFF) - 64;
@@ -172,11 +161,7 @@ public class SoftTuning {
                     // http://www.midi.org/about-midi/tuning_extens.shtml
                     if (!checksumOK(data))
                         break;
-                    try {
-                        name = new String(data, 7, 16, "ascii");
-                    } catch (UnsupportedEncodingException e) {
-                        name = null;
-                    }
+                    name = new String(data, 7, 16, StandardCharsets.US_ASCII);
                     double[] octave_tuning = new double[12];
                     for (int i = 0; i < 12; i++) {
                         int v = (data[i * 2 + 23] & 0xFF) * 128

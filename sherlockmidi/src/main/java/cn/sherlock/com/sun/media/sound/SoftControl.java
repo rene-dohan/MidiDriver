@@ -32,5 +32,5 @@ package cn.sherlock.com.sun.media.sound;
  */
 public interface SoftControl {
 
-    public double[] get(int instance, String name);
+    double[] get(int instance, String name);
 }

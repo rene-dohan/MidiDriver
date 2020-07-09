@@ -27,6 +27,7 @@ package cn.sherlock.com.sun.media.sound;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Resource Interchange File Format (RIFF) stream decoder.
@@ -74,7 +75,7 @@ public class RIFFReader extends InputStream {
         byte[] fourcc = new byte[4];
         fourcc[0] = (byte) b;
         readFully(fourcc, 1, 3);
-        this.fourcc = new String(fourcc, "ascii");
+        this.fourcc = new String(fourcc, StandardCharsets.US_ASCII);
         ckSize = readUnsignedInt();
 
         avail = this.ckSize;
@@ -82,7 +83,7 @@ public class RIFFReader extends InputStream {
         if (getFormat().equals("RIFF") || getFormat().equals("LIST")) {
             byte[] format = new byte[4];
             readFully(format);
-            this.riff_type = new String(format, "ascii");
+            this.riff_type = new String(format, StandardCharsets.US_ASCII);
         }
     }
 
@@ -147,11 +148,11 @@ public class RIFFReader extends InputStream {
         }
     }
 
-    public final void readFully(byte b[]) throws IOException {
+    public final void readFully(byte[] b) throws IOException {
         readFully(b, 0, b.length);
     }
 
-    public final void readFully(byte b[], int off, int len) throws IOException {
+    public final void readFully(byte[] b, int off, int len) throws IOException {
         if (len < 0)
             throw new IndexOutOfBoundsException();
         while (len > 0) {
@@ -215,10 +216,10 @@ public class RIFFReader extends InputStream {
         readFully(buff);
         for (int i = 0; i < buff.length; i++) {
             if (buff[i] == 0) {
-                return new String(buff, 0, i, "ascii");
+                return new String(buff, 0, i, StandardCharsets.US_ASCII);
             }
         }
-        return new String(buff, "ascii");
+        return new String(buff, StandardCharsets.US_ASCII);
     }
 
     // Read 8 bit signed integer from stream

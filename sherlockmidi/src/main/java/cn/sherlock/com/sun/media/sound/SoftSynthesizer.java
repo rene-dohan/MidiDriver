@@ -106,7 +106,7 @@ public class SoftSynthesizer implements AudioSynthesizer,
                      silentbuffer = new float[flen];
                  converter.toByteArray(silentbuffer, flen, b, off);
 
-                 silent_samples += (long)((len / framesize));
+                 silent_samples += (len / framesize);
 
                  if(pusher != null)
                  if(weak_stream_link.get() == null)
@@ -417,9 +417,7 @@ public class SoftSynthesizer implements AudioSynthesizer,
                 return current_instrument;
             // Instrument not found fallback to MSB:0, LSB:0, program=0
             current_instrument = inslist.get(p_plaf + program + "0.0");
-            if (current_instrument != null)
-                return current_instrument;
-            return null;
+            return current_instrument;
         }
 
         // Channel 10 uses percussion instruments
@@ -439,9 +437,7 @@ public class SoftSynthesizer implements AudioSynthesizer,
             return current_instrument;
         // Instrument not found fallback to MSB:0, LSB:0, program=0
         current_instrument = inslist.get(p_plaf + "0.0");
-        if (current_instrument != null)
-            return current_instrument;
-        return null;
+        return current_instrument;
     }
 
     protected int getVoiceAllocationMode() {
@@ -764,19 +760,19 @@ public class SoftSynthesizer implements AudioSynthesizer,
         item.description = "Maximum polyphony";
         list.add(item);
 
-        item = new AudioSynthesizerPropertyInfo("reverb", o?reverb_on:true);
+        item = new AudioSynthesizerPropertyInfo("reverb", !o || reverb_on);
         item.description = "Turn reverb effect on or off";
         list.add(item);
 
-        item = new AudioSynthesizerPropertyInfo("chorus", o?chorus_on:true);
+        item = new AudioSynthesizerPropertyInfo("chorus", !o || chorus_on);
         item.description = "Turn chorus effect on or off";
         list.add(item);
 
-        item = new AudioSynthesizerPropertyInfo("auto gain control", o?agc_on:true);
+        item = new AudioSynthesizerPropertyInfo("auto gain control", !o || agc_on);
         item.description = "Turn auto gain control on or off";
         list.add(item);
 
-        item = new AudioSynthesizerPropertyInfo("large mode", o?largemode:false);
+        item = new AudioSynthesizerPropertyInfo("large mode", o && largemode);
         item.description = "Turn large mode on or off.";
         list.add(item);
 
@@ -784,15 +780,15 @@ public class SoftSynthesizer implements AudioSynthesizer,
         item.description = "Number of midi channels.";
         list.add(item);
 
-        item = new AudioSynthesizerPropertyInfo("jitter correction", o?jitter_correction:true);
+        item = new AudioSynthesizerPropertyInfo("jitter correction", !o || jitter_correction);
         item.description = "Turn jitter correction on or off.";
         list.add(item);
 
-        item = new AudioSynthesizerPropertyInfo("light reverb", o?reverb_light:true);
+        item = new AudioSynthesizerPropertyInfo("light reverb", !o || reverb_light);
         item.description = "Turn light reverb mode on or off";
         list.add(item);
         
-        item = new AudioSynthesizerPropertyInfo("load default soundbank", o?load_default_soundbank:true);
+        item = new AudioSynthesizerPropertyInfo("load default soundbank", !o || load_default_soundbank);
         item.description = "Enabled/disable loading default soundbank";
         list.add(item);
         

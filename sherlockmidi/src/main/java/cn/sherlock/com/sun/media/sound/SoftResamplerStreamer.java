@@ -33,6 +33,6 @@ import java.io.IOException;
  */
 public interface SoftResamplerStreamer extends ModelOscillatorStream {
 
-    public void open(ModelWavetable osc, float outputsamplerate)
+    void open(ModelWavetable osc, float outputsamplerate)
             throws IOException;
 }

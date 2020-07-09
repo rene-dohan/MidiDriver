@@ -120,7 +120,7 @@ public class SimpleSoundbank implements Soundbank {
 
     public void removeResource(SoundbankResource resource) {
         if (resource instanceof Instrument)
-            instruments.remove((Instrument) resource);
+            instruments.remove(resource);
         else
             resources.remove(resource);
     }

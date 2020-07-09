@@ -95,7 +95,7 @@ public class ModelByteBuffer {
             return n;
         }
 
-        public int read(byte b[], int off, int len) throws IOException {
+        public int read(byte[] b, int off, int len) throws IOException {
             if (len > left)
                 len = (int)left;
             if (left == 0)

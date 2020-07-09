@@ -31,5 +31,5 @@ package cn.sherlock.com.sun.media.sound;
  */
 public interface SoftResampler {
 
-    public SoftResamplerStreamer openStreamer();
+    SoftResamplerStreamer openStreamer();
 }

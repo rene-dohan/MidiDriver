@@ -54,7 +54,7 @@ public interface AudioSynthesizer extends Synthesizer {
      * @return current audio data format
      * @see AudioFormat
      */
-    public AudioFormat getFormat();
+    AudioFormat getFormat();
 
     /**
      * Gets information about the possible properties for the synthesizer.
@@ -64,7 +64,7 @@ public interface AudioSynthesizer extends Synthesizer {
      * describing possible properties. This array may be an empty array if
      * no properties are required.
      */
-    public AudioSynthesizerPropertyInfo[] getPropertyInfo(
+    AudioSynthesizerPropertyInfo[] getPropertyInfo(
             Map<String, Object> info);
 
     /**
@@ -94,7 +94,7 @@ public interface AudioSynthesizer extends Synthesizer {
      * @see #close
      * @see #isOpen
      */
-    public void open(SourceDataLine line, Map<String, Object> info)
+    void open(SourceDataLine line, Map<String, Object> info)
             throws MidiUnavailableException;
 
     /**
@@ -124,6 +124,6 @@ public interface AudioSynthesizer extends Synthesizer {
      * @see #close
      * @see #isOpen
      */
-    public AudioInputStream openStream(AudioFormat targetFormat,
-                                       Map<String, Object> info) throws MidiUnavailableException;
+    AudioInputStream openStream(AudioFormat targetFormat,
+                                Map<String, Object> info) throws MidiUnavailableException;
 }

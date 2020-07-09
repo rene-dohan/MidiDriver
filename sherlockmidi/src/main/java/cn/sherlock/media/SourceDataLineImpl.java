@@ -10,7 +10,7 @@ public class SourceDataLineImpl implements SourceDataLine {
 
 	private AudioTrack audioTrack;
 	private int bufferSize;
-	private AudioFormat format = new AudioFormat(44100, 16, 2, true, false);;
+	private AudioFormat format = new AudioFormat(44100, 16, 2, true, false);
 
 	public SourceDataLineImpl() {
 

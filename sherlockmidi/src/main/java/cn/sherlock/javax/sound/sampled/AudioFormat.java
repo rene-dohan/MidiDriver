@@ -383,7 +383,7 @@ public class AudioFormat {
         } else {
             ret = (Map<String,Object>) (properties.clone());
         }
-        return (Map<String,Object>) Collections.unmodifiableMap(ret);
+        return Collections.unmodifiableMap(ret);
     }
 
 
@@ -427,22 +427,19 @@ public class AudioFormat {
      *         {@code false} otherwise.
      */
     public boolean matches(AudioFormat format) {
-        if (format.getEncoding().equals(getEncoding())
+        return format.getEncoding().equals(getEncoding())
                 && (format.getChannels() == AudioSystem.NOT_SPECIFIED
-                    || format.getChannels() == getChannels())
-                && (format.getSampleRate() == (float)AudioSystem.NOT_SPECIFIED
-                    || format.getSampleRate() == getSampleRate())
+                || format.getChannels() == getChannels())
+                && (format.getSampleRate() == (float) AudioSystem.NOT_SPECIFIED
+                || format.getSampleRate() == getSampleRate())
                 && (format.getSampleSizeInBits() == AudioSystem.NOT_SPECIFIED
-                    || format.getSampleSizeInBits() == getSampleSizeInBits())
-                && (format.getFrameRate() == (float)AudioSystem.NOT_SPECIFIED
-                    || format.getFrameRate() == getFrameRate())
+                || format.getSampleSizeInBits() == getSampleSizeInBits())
+                && (format.getFrameRate() == (float) AudioSystem.NOT_SPECIFIED
+                || format.getFrameRate() == getFrameRate())
                 && (format.getFrameSize() == AudioSystem.NOT_SPECIFIED
-                    || format.getFrameSize() == getFrameSize())
+                || format.getFrameSize() == getFrameSize())
                 && (getSampleSizeInBits() <= 8
-                    || format.isBigEndian() == isBigEndian())) {
-            return true;
-        }
-        return false;
+                || format.isBigEndian() == isBigEndian());
     }
 
 

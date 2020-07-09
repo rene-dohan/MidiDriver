@@ -83,7 +83,7 @@ public interface DataLine extends Line {
      *
      * @see #flush()
      */
-    public void drain();
+    void drain();
 
     /**
      * Flushes queued data from the line.  The flushed data is discarded.
@@ -99,7 +99,7 @@ public interface DataLine extends Line {
      * @see #stop()
      * @see #drain()
      */
-    public void flush();
+    void flush();
 
     /**
      * Allows a line to engage in data I/O.  If invoked on a line
@@ -113,7 +113,7 @@ public interface DataLine extends Line {
      * @see #isRunning()
      * @see LineEvent
      */
-    public void start();
+    void start();
 
     /**
      * Stops the line.  A stopped line should cease I/O activity.
@@ -131,7 +131,7 @@ public interface DataLine extends Line {
      * @see #flush()
      * @see LineEvent
      */
-    public void stop();
+    void stop();
 
     /**
      * Indicates whether the line is running.  The default is <code>false</code>.
@@ -143,7 +143,7 @@ public interface DataLine extends Line {
      * @see #start()
      * @see #stop()
      */
-    public boolean isRunning();
+    boolean isRunning();
 
     /**
      * Indicates whether the line is engaging in active I/O (such as playback
@@ -159,7 +159,7 @@ public interface DataLine extends Line {
      * @see LineEvent
      * @see LineListener
      */
-    public boolean isActive();
+    boolean isActive();
 
     /**
      * Obtains the current format (encoding, sample rate, number of channels,
@@ -178,7 +178,7 @@ public interface DataLine extends Line {
      * @return current audio data format
      * @see AudioFormat
      */
-    public AudioFormat getFormat();
+    AudioFormat getFormat();
 
     /**
      * Obtains the maximum number of bytes of data that will fit in the data line's
@@ -190,7 +190,7 @@ public interface DataLine extends Line {
      *
      * @return the size of the buffer in bytes
      */
-    public int getBufferSize();
+    int getBufferSize();
 
     /**
      * Obtains the number of bytes of data currently available to the
@@ -211,7 +211,7 @@ public interface DataLine extends Line {
      *
      * @return the amount of data available, in bytes
      */
-    public int available();
+    int available();
 
     /**
      * Obtains the current position in the audio data, in sample frames.
@@ -223,7 +223,7 @@ public interface DataLine extends Line {
      * @return the number of frames already processed since the line was opened
      * @see #getLongFramePosition()
      */
-    public int getFramePosition();
+    int getFramePosition();
 
 
     /**
@@ -234,7 +234,7 @@ public interface DataLine extends Line {
      * @return the number of frames already processed since the line was opened
      * @since 1.5
      */
-    public long getLongFramePosition();
+    long getLongFramePosition();
 
 
     /**
@@ -248,7 +248,7 @@ public interface DataLine extends Line {
      *
      * @return the number of microseconds of data processed since the line was opened
      */
-    public long getMicrosecondPosition();
+    long getMicrosecondPosition();
 
     /**
      * Obtains the current volume level for the line.  This level is a measure
@@ -260,7 +260,7 @@ public interface DataLine extends Line {
      * @return the current amplitude of the signal in this line, or
      * <code>{@link AudioSystem#NOT_SPECIFIED}</code>
      */
-    public float getLevel();
+    float getLevel();
 
     /**
      * Besides the class information inherited from its superclass,
@@ -282,7 +282,7 @@ public interface DataLine extends Line {
      * @author Kara Kytle
      * @since 1.3
      */
-    public static class Info extends Line.Info {
+    class Info extends Line.Info {
 
         private final AudioFormat[] formats;
         private final int minBufferSize;
@@ -487,7 +487,7 @@ public interface DataLine extends Line {
                 buf.append(", and buffers of up to " + minBufferSize + " bytes");
             }
 
-            return new String(super.toString() + buf);
+            return super.toString() + buf;
         }
     } // class Info
 
