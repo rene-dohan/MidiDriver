@@ -10,28 +10,25 @@ import java.io.IOException;
 
 import cn.sherlock.com.sun.media.sound.SF2Soundbank;
 import cn.sherlock.com.sun.media.sound.SoftSynthesizer;
-import jp.kshoji.javax.sound.midi.InvalidMidiDataException;
+import jp.kshoji.javax.sound.midi.MidiChannel;
 import jp.kshoji.javax.sound.midi.MidiUnavailableException;
-import jp.kshoji.javax.sound.midi.Receiver;
-import jp.kshoji.javax.sound.midi.ShortMessage;
+import jp.kshoji.javax.sound.midi.Patch;
 
 public class MainActivity extends Activity {
 
 	private SoftSynthesizer synth;
-	private Receiver recv;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		try {
-			SF2Soundbank sf = new SF2Soundbank(getAssets().open("gm.sf2"));
 			synth = new SoftSynthesizer();
 			synth.open();
-			synth.loadAllInstruments(sf);
-			synth.getChannels()[0].programChange(0);
-			synth.getChannels()[1].programChange(1);
-			recv = synth.getReceiver();
+			synth.loadInstruments(
+					new SF2Soundbank(getAssets().open("gm.sf2")),
+					new Patch[]{new Patch(0, 1)}
+			);
 		} catch (IOException | MidiUnavailableException e) {
 			throw new RuntimeException(e);
 		}
@@ -48,40 +45,35 @@ public class MainActivity extends Activity {
 	}
 
 	private Runnable playRunnable = new Runnable() {
-		private int pause = 500;
 
 		@Override
 		public void run() {
+			int pause = 500;
+			MidiChannel channel = synth.getChannels()[0];
+			channel.programChange(1);
+
 			try {
-				ShortMessage sm = new ShortMessage(ShortMessage.NOTE_ON, 1, 60, 64);
-				recv.send(sm, -1);
-				recv.send(new ShortMessage(ShortMessage.NOTE_ON, 1, 64, 64), -1);
-				recv.send(new ShortMessage(ShortMessage.NOTE_ON, 1, 67, 64), -1);
+				channel.noteOn(60, 64);
 				Thread.sleep(pause);
-				recv.send(new ShortMessage(ShortMessage.NOTE_OFF, 1, 60, 64), -1);
-				recv.send(new ShortMessage(ShortMessage.NOTE_OFF, 1, 64, 64), -1);
-				recv.send(new ShortMessage(ShortMessage.NOTE_OFF, 1, 67, 64), -1);
+				channel.noteOff(60);
 
-				recv.send(new ShortMessage(ShortMessage.NOTE_ON, 1, 60, 64), -1);
+				channel.noteOn(62, 64);
 				Thread.sleep(pause);
-				recv.send(new ShortMessage(ShortMessage.NOTE_OFF, 1, 60, 64), -1);
+				channel.noteOff(62);
 
-				recv.send(new ShortMessage(ShortMessage.NOTE_ON, 1, 64, 64), -1);
+				channel.noteOn(64, 64);
 				Thread.sleep(pause);
-				recv.send(new ShortMessage(ShortMessage.NOTE_OFF, 1, 64, 64), -1);
+				channel.noteOff(64);
 
-				recv.send(new ShortMessage(ShortMessage.NOTE_ON, 1, 67, 64), -1);
+				channel.noteOn(65, 64);
 				Thread.sleep(pause);
-				recv.send(new ShortMessage(ShortMessage.NOTE_OFF, 1, 67, 64), -1);
+				channel.noteOff(65);
 
-				recv.send(new ShortMessage(ShortMessage.NOTE_ON, 1, 64, 64), -1);
+				channel.noteOn(67, 64);
 				Thread.sleep(pause);
-				recv.send(new ShortMessage(ShortMessage.NOTE_OFF, 1, 64, 64), -1);
+				channel.noteOff(67);
 
-				recv.send(new ShortMessage(ShortMessage.NOTE_ON, 1, 60, 64), -1);
-				Thread.sleep(pause);
-				recv.send(new ShortMessage(ShortMessage.NOTE_OFF, 1, 60, 64), -1);
-			} catch (InvalidMidiDataException | InterruptedException e) {
+			} catch (InterruptedException e) {
 				throw new RuntimeException(e);
 			}
 		}
