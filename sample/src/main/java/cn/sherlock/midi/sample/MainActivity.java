@@ -19,7 +19,7 @@ import jp.kshoji.javax.sound.midi.Soundbank;
 public class MainActivity extends Activity {
 
 	private SoftSynthesizer synth;
-	private Soundbank soundbank;
+	private SF2Soundbank soundbank;
 	private Instrument currentInstrument;
 	private MidiChannel channel;
 

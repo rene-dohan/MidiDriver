@@ -11,15 +11,6 @@ import android.support.annotation.Nullable;
 public interface Soundbank {
 
     /**
-     * Get the {@link Instrument}
-     *
-     * @param patch the {@link Patch}
-     * @return {@link Instrument} matches with patch
-     */
-    @Nullable
-    Instrument getInstrument(@NonNull Patch patch);
-
-    /**
      * Get all of {@link Instrument}s
      *
      * @return the array of {@link Instrument}s
