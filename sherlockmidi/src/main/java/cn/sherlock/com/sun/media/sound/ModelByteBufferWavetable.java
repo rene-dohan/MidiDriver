@@ -110,7 +110,7 @@ public class ModelByteBufferWavetable implements ModelWavetable {
             return true;
         }
 
-        public int available() throws IOException {
+        public int available() {
             return (int)buffer.capacity() + (int)buffer8.capacity() - pos - pos2;
         }
 
@@ -119,7 +119,7 @@ public class ModelByteBufferWavetable implements ModelWavetable {
             markpos2 = pos2;
         }
 
-        public synchronized void reset() throws IOException {
+        public synchronized void reset() {
             pos = markpos;
             pos2 = markpos2;
 

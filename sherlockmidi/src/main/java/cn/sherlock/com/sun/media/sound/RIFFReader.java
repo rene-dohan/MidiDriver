@@ -87,7 +87,7 @@ public class RIFFReader extends InputStream {
         }
     }
 
-    public long getFilePointer() throws IOException {
+    public long getFilePointer() {
         return root.filepointer;
     }
 

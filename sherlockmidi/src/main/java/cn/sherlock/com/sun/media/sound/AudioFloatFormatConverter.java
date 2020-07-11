@@ -303,7 +303,7 @@ public class AudioFloatFormatConverter extends FormatConversionProvider {
             ibuffer_len = buffer_len;
         }
 
-        public int available() throws IOException {
+        public int available() {
             return 0;
         }
 

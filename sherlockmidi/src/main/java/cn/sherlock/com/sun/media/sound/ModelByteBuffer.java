@@ -58,7 +58,7 @@ public class ModelByteBuffer {
             left = capacity();
         }
 
-        public int available() throws IOException {
+        public int available() {
             if (left > Integer.MAX_VALUE)
                 return Integer.MAX_VALUE;
             return (int)left;

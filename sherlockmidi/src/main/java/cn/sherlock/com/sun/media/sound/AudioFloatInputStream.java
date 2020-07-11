@@ -71,7 +71,7 @@ public abstract class AudioFloatInputStream {
             return buffer_len;// / format.getFrameSize();
         }
 
-        public int read(float[] b, int off, int len) throws IOException {
+        public int read(float[] b, int off, int len) {
             if (b == null)
                 throw new NullPointerException();
             if (off < 0 || len < 0 || len > b.length - off)
@@ -88,7 +88,7 @@ public abstract class AudioFloatInputStream {
             return len;
         }
 
-        public long skip(long len) throws IOException {
+        public long skip(long len) {
             if (pos >= buffer_len)
                 return -1;
             if (len <= 0)
@@ -99,11 +99,11 @@ public abstract class AudioFloatInputStream {
             return len;
         }
 
-        public int available() throws IOException {
+        public int available() {
             return buffer_len - pos;
         }
 
-        public void close() throws IOException {
+        public void close() {
         }
 
         public void mark(int readlimit) {
@@ -114,7 +114,7 @@ public abstract class AudioFloatInputStream {
             return true;
         }
 
-        public void reset() throws IOException {
+        public void reset() {
             pos = markpos;
         }
     }
