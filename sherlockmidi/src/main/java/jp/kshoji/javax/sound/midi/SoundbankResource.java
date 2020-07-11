@@ -3,13 +3,15 @@ package jp.kshoji.javax.sound.midi;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import cn.sherlock.com.sun.media.sound.SF2Soundbank;
+
 /**
  * Interface for MIDI Soundbank resource
  *
  * @author K.Shoji
  */
 public abstract class SoundbankResource {
-    private final Soundbank soundbank;
+    private final SF2Soundbank soundbank;
     private final String name;
     private final Class<?> dataClass;
 
@@ -20,7 +22,7 @@ public abstract class SoundbankResource {
      * @param name the name of {@link SoundbankResource}
      * @param dataClass the class of data
      */
-    protected SoundbankResource(@NonNull final Soundbank soundbank, @NonNull final String name, @NonNull final Class<?> dataClass) {
+    protected SoundbankResource(@NonNull final SF2Soundbank soundbank, @NonNull final String name, @NonNull final Class<?> dataClass) {
         this.soundbank = soundbank;
         this.name = name;
         this.dataClass = dataClass;
@@ -55,12 +57,12 @@ public abstract class SoundbankResource {
     }
 
     /**
-     * Get the {@link Soundbank}
+     * Get the soundbank
      *
      * @return the Soundbank
      */
     @NonNull
-    public Soundbank getSoundbank() {
+    public SF2Soundbank getSoundbank() {
         return soundbank;
     }
 }

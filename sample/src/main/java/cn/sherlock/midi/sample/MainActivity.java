@@ -14,7 +14,6 @@ import jp.kshoji.javax.sound.midi.Instrument;
 import jp.kshoji.javax.sound.midi.MidiChannel;
 import jp.kshoji.javax.sound.midi.MidiUnavailableException;
 import jp.kshoji.javax.sound.midi.Patch;
-import jp.kshoji.javax.sound.midi.Soundbank;
 
 public class MainActivity extends Activity {
 

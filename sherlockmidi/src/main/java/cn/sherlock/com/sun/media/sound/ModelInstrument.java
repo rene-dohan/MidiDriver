@@ -26,7 +26,6 @@ package cn.sherlock.com.sun.media.sound;
 
 import jp.kshoji.javax.sound.midi.Instrument;
 import jp.kshoji.javax.sound.midi.Patch;
-import jp.kshoji.javax.sound.midi.Soundbank;
 
 /**
  * The model instrument class.
@@ -47,7 +46,7 @@ import jp.kshoji.javax.sound.midi.Soundbank;
  */
 public abstract class ModelInstrument extends Instrument {
 
-    protected ModelInstrument(Soundbank soundbank, Patch patch, String name,
+    protected ModelInstrument(SF2Soundbank soundbank, Patch patch, String name,
             Class<?> dataClass) {
         super(soundbank, patch, name, dataClass);
     }

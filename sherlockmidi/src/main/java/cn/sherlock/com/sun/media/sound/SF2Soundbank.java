@@ -34,7 +34,6 @@ import java.util.List;
 
 import jp.kshoji.javax.sound.midi.Instrument;
 import jp.kshoji.javax.sound.midi.Patch;
-import jp.kshoji.javax.sound.midi.Soundbank;
 
 /**
  * A SoundFont 2.04 soundbank reader.
@@ -45,7 +44,7 @@ import jp.kshoji.javax.sound.midi.Soundbank;
  *
  * @author Karl Helgason
  */
-public class SF2Soundbank implements Soundbank {
+public class SF2Soundbank {
 
     // The Sample Data loaded from the SoundFont
     private ModelByteBuffer sampleData = null;

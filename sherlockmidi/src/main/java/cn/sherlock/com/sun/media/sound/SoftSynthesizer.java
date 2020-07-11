@@ -47,7 +47,6 @@ import jp.kshoji.javax.sound.midi.Instrument;
 import jp.kshoji.javax.sound.midi.MidiChannel;
 import jp.kshoji.javax.sound.midi.MidiUnavailableException;
 import jp.kshoji.javax.sound.midi.Patch;
-import jp.kshoji.javax.sound.midi.Soundbank;
 
 /**
  * The software synthesizer class.
@@ -496,22 +495,6 @@ public class SoftSynthesizer implements AudioSynthesizer {
         }
     }
 
-    private Soundbank getDefaultSoundbank() {
-    	return null;
-    }
-
-    private boolean loadAllInstruments(Soundbank soundbank) {
-        List<ModelInstrument> instruments = new ArrayList<ModelInstrument>();
-        for (Instrument ins: soundbank.getInstruments()) {
-            if (ins == null || !(ins instanceof ModelInstrument)) {
-                throw new IllegalArgumentException(
-                        "Unsupported instrument: " + ins);
-            }
-            instruments.add((ModelInstrument)ins);
-        }
-        return loadInstruments(instruments);
-    }
-
     private Properties getStoredProperties() {
         return AccessController
                 .doPrivileged(new PrivilegedAction<Properties>() {
@@ -803,14 +786,6 @@ public class SoftSynthesizer implements AudioSynthesizer {
 
             if (targetFormat != null)
                 setFormat(targetFormat);
-
-            if (load_default_soundbank)
-            {
-                Soundbank defbank = getDefaultSoundbank();
-                if (defbank != null) {
-                    loadAllInstruments(defbank);
-                }
-            }
 
             voices = new SoftVoice[maxpoly];
             for (int i = 0; i < maxpoly; i++)

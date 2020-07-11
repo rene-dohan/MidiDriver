@@ -2,6 +2,8 @@ package jp.kshoji.javax.sound.midi;
 
 import android.support.annotation.NonNull;
 
+import cn.sherlock.com.sun.media.sound.SF2Soundbank;
+
 /**
  * Abstract Class for MIDI Instrument
  *
@@ -18,7 +20,7 @@ public abstract class Instrument extends SoundbankResource {
      * @param name the name
      * @param dataClass the dataClass
      */
-    protected Instrument(@NonNull final Soundbank soundbank, @NonNull final Patch patch, @NonNull final String name, @NonNull final Class<?> dataClass) {
+    protected Instrument(@NonNull final SF2Soundbank soundbank, @NonNull final Patch patch, @NonNull final String name, @NonNull final Class<?> dataClass) {
         super(soundbank, name, dataClass);
         this.patch = patch;
     }
