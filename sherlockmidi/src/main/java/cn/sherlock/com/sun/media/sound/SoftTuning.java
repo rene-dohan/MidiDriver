@@ -24,7 +24,6 @@
  */
 package cn.sherlock.com.sun.media.sound;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 
 import jp.kshoji.javax.sound.midi.Patch;

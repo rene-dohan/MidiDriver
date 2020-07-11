@@ -25,8 +25,6 @@
 
 package cn.sherlock.javax.sound.sampled.spi;
 
-import java.io.InputStream;
-
 import cn.sherlock.javax.sound.sampled.AudioFormat;
 import cn.sherlock.javax.sound.sampled.AudioInputStream;
 
