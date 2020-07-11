@@ -39,16 +39,15 @@ import java.util.StringTokenizer;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-import jp.kshoji.javax.sound.midi.Instrument;
-import jp.kshoji.javax.sound.midi.MidiChannel;
-import jp.kshoji.javax.sound.midi.MidiUnavailableException;
-import jp.kshoji.javax.sound.midi.Patch;
-import jp.kshoji.javax.sound.midi.Receiver;
-import jp.kshoji.javax.sound.midi.Soundbank;
 import cn.sherlock.javax.sound.sampled.AudioFormat;
 import cn.sherlock.javax.sound.sampled.AudioInputStream;
 import cn.sherlock.javax.sound.sampled.AudioSystem;
 import cn.sherlock.javax.sound.sampled.SourceDataLine;
+import jp.kshoji.javax.sound.midi.Instrument;
+import jp.kshoji.javax.sound.midi.MidiChannel;
+import jp.kshoji.javax.sound.midi.MidiUnavailableException;
+import jp.kshoji.javax.sound.midi.Patch;
+import jp.kshoji.javax.sound.midi.Soundbank;
 
 /**
  * The software synthesizer class.
@@ -212,8 +211,6 @@ public class SoftSynthesizer implements AudioSynthesizer,
             = new HashMap<String, SoftInstrument>();
     private Map<String, ModelInstrument> loadedlist
             = new HashMap<String, ModelInstrument>();
-
-    private ArrayList<Receiver> recvslist = new ArrayList<Receiver>();
 
     private void getBuffers(ModelInstrument instrument,
             List<ModelByteBuffer> buffers) {
@@ -913,9 +910,6 @@ public class SoftSynthesizer implements AudioSynthesizer,
             inslist.clear();
             loadedlist.clear();
             tunings.clear();
-
-            while (recvslist.size() != 0)
-                recvslist.get(recvslist.size() - 1).close();
 
         }
     }
