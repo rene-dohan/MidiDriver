@@ -11,38 +11,6 @@ import android.support.annotation.Nullable;
 public interface Soundbank {
 
     /**
-     * Get the name of Soundbank
-     *
-     * @return the name of Soundbank
-     */
-    @NonNull
-    String getName();
-
-    /**
-     * Get the description string
-     *
-     * @return the description
-     */
-    @NonNull
-    String getDescription();
-
-    /**
-     * Get the vendor string
-     *
-     * @return the vendor
-     */
-    @NonNull
-    String getVendor();
-
-    /**
-     * Get the version string
-     *
-     * @return the version
-     */
-    @NonNull
-    String getVersion();
-
-    /**
      * Get the {@link Instrument}
      *
      * @param patch the {@link Patch}
@@ -59,10 +27,4 @@ public interface Soundbank {
     @NonNull
     Instrument[] getInstruments();
 
-    /**
-     * Get all of {@link SoundbankResource}s
-     * @return the array of {@link SoundbankResource}s
-     */
-    @NonNull
-    SoundbankResource[] getResources();
 }

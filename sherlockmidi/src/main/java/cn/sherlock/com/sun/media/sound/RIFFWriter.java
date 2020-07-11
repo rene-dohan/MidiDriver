@@ -208,22 +208,6 @@ public class RIFFWriter extends OutputStream {
 
     }
 
-    public void seek(long pos) throws IOException {
-        raf.seek(pos);
-    }
-
-    public long getFilePointer() throws IOException {
-        return raf.getPointer();
-    }
-
-    public void setWriteOverride(boolean writeoverride) {
-        this.writeoverride = writeoverride;
-    }
-
-    public boolean getWriteOverride() {
-        return writeoverride;
-    }
-
     public void close() throws IOException {
         if (!open)
             return;
@@ -335,18 +319,6 @@ public class RIFFWriter extends OutputStream {
         write((b >>> 8) & 0xFF);
         write((b >>> 16) & 0xFF);
         write((b >>> 24) & 0xFF);
-    }
-
-    // Write 64 bit signed integer to stream
-    public void writeLong(long b) throws IOException {
-        write((int) (b >>> 0) & 0xFF);
-        write((int) (b >>> 8) & 0xFF);
-        write((int) (b >>> 16) & 0xFF);
-        write((int) (b >>> 24) & 0xFF);
-        write((int) (b >>> 32) & 0xFF);
-        write((int) (b >>> 40) & 0xFF);
-        write((int) (b >>> 48) & 0xFF);
-        write((int) (b >>> 56) & 0xFF);
     }
 
     // Write 8 bit unsigned integer to stream

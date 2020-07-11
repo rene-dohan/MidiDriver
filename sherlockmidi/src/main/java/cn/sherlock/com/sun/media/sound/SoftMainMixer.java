@@ -65,8 +65,6 @@ public class SoftMainMixer {
     public final static int CHANNEL_DELAY_EFFECT2 = 9;
     public final static int CHANNEL_LEFT_DRY = 10;
     public final static int CHANNEL_RIGHT_DRY = 11;
-    public final static int CHANNEL_SCRATCH1 = 12;
-    public final static int CHANNEL_SCRATCH2 = 13;
     protected boolean active_sensing_on = false;
     private long msec_last_activity = -1;
     private boolean pusher_silent = false;
@@ -613,7 +611,7 @@ public class SoftMainMixer {
                     }
                 }
 
-                if (!cmixer.mixer.process(cbuffer, 0, bufferlen)) {
+                if (!cmixer.mixer.process()) {
                     synchronized (control_mutex) {
                         registeredMixers.remove(cmixer);
                         cur_registeredMixers = null;
@@ -976,30 +974,6 @@ public class SoftMainMixer {
     public void setCoarseTuning(int value) {
         synchronized (control_mutex) {
             co_master_coarse_tuning[0] = value / 16384.0;
-        }
-    }
-
-    public int getVolume() {
-        synchronized (control_mutex) {
-            return (int) (co_master_volume[0] * 16384.0);
-        }
-    }
-
-    public int getBalance() {
-        synchronized (control_mutex) {
-            return (int) (co_master_balance[0] * 16384.0);
-        }
-    }
-
-    public int getFineTuning() {
-        synchronized (control_mutex) {
-            return (int) (co_master_fine_tuning[0] * 16384.0);
-        }
-    }
-
-    public int getCoarseTuning() {
-        synchronized (control_mutex) {
-            return (int) (co_master_coarse_tuning[0] * 16384.0);
         }
     }
 

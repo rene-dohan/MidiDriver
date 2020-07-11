@@ -40,7 +40,7 @@ public interface ModelOscillatorStream {
     void noteOn(MidiChannel channel, VoiceStatus voice, int noteNumber,
                 int velocity);
 
-    void noteOff(int velocity);
+    void noteOff();
 
     int read(float[][] buffer, int offset, int len) throws IOException;
 

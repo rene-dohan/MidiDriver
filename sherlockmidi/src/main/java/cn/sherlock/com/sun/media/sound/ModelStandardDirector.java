@@ -37,20 +37,6 @@ public class ModelStandardDirector implements ModelDirector {
     boolean noteOnUsed = false;
     boolean noteOffUsed = false;
 
-    public ModelStandardDirector(ModelPerformer[] performers,
-            ModelDirectedPlayer player) {
-        this.performers = performers;
-        this.player = player;
-        for (int i = 0; i < performers.length; i++) {
-            ModelPerformer p = performers[i];
-            if (p.isReleaseTriggered()) {
-                noteOffUsed = true;
-            } else {
-                noteOnUsed = true;
-            }
-        }
-    }
-
     public void close() {
     }
 

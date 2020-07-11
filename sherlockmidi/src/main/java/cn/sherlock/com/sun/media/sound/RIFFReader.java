@@ -241,53 +241,6 @@ public class RIFFReader extends InputStream {
         return (short)(ch1 | (ch2 << 8));
     }
 
-    // Read 32 bit signed integer from stream
-    public int readInt() throws IOException {
-        int ch1 = read();
-        int ch2 = read();
-        int ch3 = read();
-        int ch4 = read();
-        if (ch1 < 0)
-            throw new EOFException();
-        if (ch2 < 0)
-            throw new EOFException();
-        if (ch3 < 0)
-            throw new EOFException();
-        if (ch4 < 0)
-            throw new EOFException();
-        return ch1 + (ch2 << 8) | (ch3 << 16) | (ch4 << 24);
-    }
-
-    // Read 64 bit signed integer from stream
-    public long readLong() throws IOException {
-        long ch1 = read();
-        long ch2 = read();
-        long ch3 = read();
-        long ch4 = read();
-        long ch5 = read();
-        long ch6 = read();
-        long ch7 = read();
-        long ch8 = read();
-        if (ch1 < 0)
-            throw new EOFException();
-        if (ch2 < 0)
-            throw new EOFException();
-        if (ch3 < 0)
-            throw new EOFException();
-        if (ch4 < 0)
-            throw new EOFException();
-        if (ch5 < 0)
-            throw new EOFException();
-        if (ch6 < 0)
-            throw new EOFException();
-        if (ch7 < 0)
-            throw new EOFException();
-        if (ch8 < 0)
-            throw new EOFException();
-        return ch1 | (ch2 << 8) | (ch3 << 16) | (ch4 << 24)
-                | (ch5 << 32) | (ch6 << 40) | (ch7 << 48) | (ch8 << 56);
-    }
-
     // Read 8 bit unsigned integer from stream
     public int readUnsignedByte() throws IOException {
         int ch = read();

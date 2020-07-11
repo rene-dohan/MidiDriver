@@ -68,8 +68,6 @@ public class ModelDestination {
                                         // 0.1 % (I want this to be value not %)
     public static final ModelIdentifier DESTINATION_EG1_RELEASE
             = new ModelIdentifier("eg", "release", 0); // timecent
-    public static final ModelIdentifier DESTINATION_EG1_SHUTDOWN
-            = new ModelIdentifier("eg", "shutdown", 0); // timecent
     public static final ModelIdentifier DESTINATION_EG2_DELAY
             = new ModelIdentifier("eg", "delay", 1); // timecent
     public static final ModelIdentifier DESTINATION_EG2_ATTACK
@@ -83,8 +81,6 @@ public class ModelDestination {
                                         // 0.1 % ( I want this to be value not %)
     public static final ModelIdentifier DESTINATION_EG2_RELEASE
             = new ModelIdentifier("eg", "release", 1); // timecent
-    public static final ModelIdentifier DESTINATION_EG2_SHUTDOWN
-            = new ModelIdentifier("eg", "shutdown", 1); // timecent
     public static final ModelIdentifier DESTINATION_FILTER_FREQ
             = new ModelIdentifier("filter", "freq", 0); // cent
     public static final ModelIdentifier DESTINATION_FILTER_Q
@@ -92,19 +88,12 @@ public class ModelDestination {
     private ModelIdentifier destination = DESTINATION_NONE;
     private ModelTransform transform = new ModelStandardTransform();
 
-    public ModelDestination() {
-    }
-
     public ModelDestination(ModelIdentifier id) {
         destination = id;
     }
 
     public ModelIdentifier getIdentifier() {
         return destination;
-    }
-
-    public void setIdentifier(ModelIdentifier destination) {
-        this.destination = destination;
     }
 
     public ModelTransform getTransform() {

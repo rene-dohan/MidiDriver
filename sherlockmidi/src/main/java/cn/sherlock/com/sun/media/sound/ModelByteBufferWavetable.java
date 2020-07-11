@@ -135,19 +135,10 @@ public class ModelByteBufferWavetable implements ModelWavetable {
     private float attenuation = 0;
     private int loopType = LOOP_TYPE_OFF;
 
-    public ModelByteBufferWavetable(ModelByteBuffer buffer) {
-        this.buffer = buffer;
-    }
-
     public ModelByteBufferWavetable(ModelByteBuffer buffer,
             float pitchcorrection) {
         this.buffer = buffer;
         this.pitchcorrection = pitchcorrection;
-    }
-
-    public ModelByteBufferWavetable(ModelByteBuffer buffer, AudioFormat format) {
-        this.format = format;
-        this.buffer = buffer;
     }
 
     public ModelByteBufferWavetable(ModelByteBuffer buffer, AudioFormat format,
@@ -244,10 +235,6 @@ public class ModelByteBufferWavetable implements ModelWavetable {
     public float getAttenuation() {
         return attenuation;
     }
-    // attenuation is in cB
-    public void setAttenuation(float attenuation) {
-        this.attenuation = attenuation;
-    }
 
     public float getLoopLength() {
         return loopLength;
@@ -277,7 +264,4 @@ public class ModelByteBufferWavetable implements ModelWavetable {
         return pitchcorrection;
     }
 
-    public void setPitchcorrection(float pitchcorrection) {
-        this.pitchcorrection = pitchcorrection;
-    }
 }

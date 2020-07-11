@@ -37,8 +37,6 @@ public class ModelSource {
             new ModelIdentifier("noteon", "keynumber");     // midi keynumber
     public static final ModelIdentifier SOURCE_NOTEON_VELOCITY =
             new ModelIdentifier("noteon", "velocity");      // midi velocity
-    public static final ModelIdentifier SOURCE_EG1 =
-            new ModelIdentifier("eg", null, 0);
     public static final ModelIdentifier SOURCE_EG2 =
             new ModelIdentifier("eg", null, 1);
     public static final ModelIdentifier SOURCE_LFO1 =
@@ -53,25 +51,12 @@ public class ModelSource {
 //            new ModelIdentifier("midi","mono_pressure",0);    // (0..127)
     public static final ModelIdentifier SOURCE_MIDI_POLY_PRESSURE =
             new ModelIdentifier("midi", "poly_pressure", 0);    // (0..127)
-    public static final ModelIdentifier SOURCE_MIDI_CC_0 =
-            new ModelIdentifier("midi_cc", "0", 0);             // (0..127)
-    public static final ModelIdentifier SOURCE_MIDI_RPN_0 =
-            new ModelIdentifier("midi_rpn", "0", 0);            // (0..16383)
     private ModelIdentifier source = SOURCE_NONE;
     private ModelTransform transform;
-
-    public ModelSource() {
-        this.transform = new ModelStandardTransform();
-    }
 
     public ModelSource(ModelIdentifier id) {
         source = id;
         this.transform = new ModelStandardTransform();
-    }
-
-    public ModelSource(ModelIdentifier id, boolean direction) {
-        source = id;
-        this.transform = new ModelStandardTransform(direction);
     }
 
     public ModelSource(ModelIdentifier id, boolean direction, boolean polarity) {
@@ -93,10 +78,6 @@ public class ModelSource {
 
     public ModelIdentifier getIdentifier() {
         return source;
-    }
-
-    public void setIdentifier(ModelIdentifier source) {
-        this.source = source;
     }
 
     public ModelTransform getTransform() {

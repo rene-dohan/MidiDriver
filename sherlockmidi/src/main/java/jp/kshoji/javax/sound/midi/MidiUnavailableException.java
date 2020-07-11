@@ -11,13 +11,6 @@ public class MidiUnavailableException extends Exception {
 	private static final long serialVersionUID = 6093809578628944323L;
 
     /**
-     * Constructor
-     */
-	public MidiUnavailableException() {
-		super();
-	}
-
-    /**
      * Constructor with a message
      *
      * @param message the message

@@ -45,7 +45,6 @@ public class ModelPerformer {
     private int exclusiveClass = 0;
     private boolean releaseTrigger = false;
     private boolean selfNonExclusive = false;
-    private Object userObject = null;
     private boolean addDefaultConnections = true;
     private String name = null;
 
@@ -59,10 +58,6 @@ public class ModelPerformer {
 
     public List<ModelConnectionBlock> getConnectionBlocks() {
         return connectionBlocks;
-    }
-
-    public void setConnectionBlocks(List<ModelConnectionBlock> connectionBlocks) {
-        this.connectionBlocks = connectionBlocks;
     }
 
     public List<ModelOscillator> getOscillators() {
@@ -123,14 +118,6 @@ public class ModelPerformer {
 
     public void setReleaseTriggered(boolean value) {
         this.releaseTrigger = value;
-    }
-
-    public Object getUserObject() {
-        return userObject;
-    }
-
-    public void setUserObject(Object object) {
-        userObject = object;
     }
 
     public boolean isDefaultConnectionsEnabled() {

@@ -37,7 +37,4 @@ public class SF2InstrumentRegion extends SF2Region {
         return layer;
     }
 
-    public void setLayer(SF2Layer layer) {
-        this.layer = layer;
-    }
 }

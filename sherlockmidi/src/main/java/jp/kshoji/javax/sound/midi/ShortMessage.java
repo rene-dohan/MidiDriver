@@ -49,17 +49,6 @@ public class ShortMessage extends MidiMessage {
 	}
 
     /**
-     * Constructor with the kind of message
-     *
-     * @param status the status data
-     * @throws InvalidMidiDataException
-     */
-    public ShortMessage(final int status) throws InvalidMidiDataException {
-        super(null);
-        setMessage(status);
-    }
-
-    /**
      * Constructor with the entire information of message
      *
      * @param status the status data
@@ -70,20 +59,6 @@ public class ShortMessage extends MidiMessage {
     public ShortMessage(final int status, final int data1, final int data2) throws InvalidMidiDataException {
         super(null);
         setMessage(status, data1, data2);
-    }
-
-    /**
-     * Constructor with the entire information of message
-     *
-     * @param command the command
-     * @param channel the channel
-     * @param data1 the first data
-     * @param data2 the second data
-     * @throws InvalidMidiDataException
-     */
-    public ShortMessage(final int command, final int channel, final int data1, final int data2) throws InvalidMidiDataException {
-        super(null);
-        setMessage(command, channel, data1, data2);
     }
 
 	/**

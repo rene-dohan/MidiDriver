@@ -78,7 +78,7 @@ public abstract class SoftAbstractResampler implements SoftResampler {
                 int noteNumber, int velocity) {
         }
 
-        public void noteOff(int velocity) {
+        public void noteOff() {
             noteOff_flag = true;
         }
 

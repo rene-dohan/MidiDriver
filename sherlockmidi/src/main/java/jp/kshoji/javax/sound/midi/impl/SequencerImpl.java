@@ -488,12 +488,6 @@ public class SequencerImpl implements Sequencer {
         }
     }
 
-    /**
-     * Constructor
-     */
-    public SequencerImpl() {
-    }
-
     @NonNull
     @Override
     public Info getDeviceInfo() {
@@ -612,7 +606,6 @@ public class SequencerImpl implements Sequencer {
     }
 
     @NonNull
-    @Override
     public int[] addControllerEventListener(@NonNull final ControllerEventListener listener, @NonNull final int[] controllers) {
         synchronized (controllerEventListenerMap) {
             for (final int controllerId : controllers) {
@@ -628,7 +621,6 @@ public class SequencerImpl implements Sequencer {
     }
 
     @NonNull
-    @Override
     public int[] removeControllerEventListener(@NonNull final ControllerEventListener listener, @NonNull final int[] controllers) {
         synchronized (controllerEventListenerMap) {
             final List<Integer> resultList = new ArrayList<Integer>();
@@ -657,7 +649,6 @@ public class SequencerImpl implements Sequencer {
         }
     }
 
-    @Override
     public boolean addMetaEventListener(@NonNull final MetaEventListener listener) {
         // return true if registered successfully
         synchronized (metaEventListeners) {
@@ -665,19 +656,16 @@ public class SequencerImpl implements Sequencer {
         }
     }
 
-    @Override
     public void removeMetaEventListener(@NonNull final MetaEventListener listener) {
         synchronized (metaEventListeners) {
             metaEventListeners.remove(listener);
         }
     }
 
-    @Override
-    public int getLoopCount() {
+    private int getLoopCount() {
         return loopCount;
     }
 
-    @Override
     public void setLoopCount(final int count) {
         if (count != LOOP_CONTINUOUSLY && count < 0) {
             throw new IllegalArgumentException("Invalid loop count value:" + count);
@@ -685,12 +673,10 @@ public class SequencerImpl implements Sequencer {
         loopCount = count;
     }
 
-    @Override
-    public long getLoopStartPoint() {
+    private long getLoopStartPoint() {
         return loopStartPoint;
     }
 
-    @Override
     public void setLoopStartPoint(final long tick) {
         if (tick > getTickLength() || (loopEndPoint != -1 && tick > loopEndPoint) || tick < 0) {
             throw new IllegalArgumentException("Invalid loop start point value:" + tick);
@@ -698,12 +684,10 @@ public class SequencerImpl implements Sequencer {
         loopStartPoint = tick;
     }
 
-    @Override
-    public long getLoopEndPoint() {
+    private long getLoopEndPoint() {
         return loopEndPoint;
     }
 
-    @Override
     public void setLoopEndPoint(final long tick) {
         if (tick > getTickLength() || (tick != -1 && loopStartPoint > tick) || tick < -1) {
             throw new IllegalArgumentException("Invalid loop end point value:" + tick);
@@ -712,12 +696,10 @@ public class SequencerImpl implements Sequencer {
     }
 
     @NonNull
-    @Override
     public SyncMode getMasterSyncMode() {
         return masterSyncMode;
     }
 
-    @Override
     public void setMasterSyncMode(@NonNull final SyncMode sync) {
         for (final SyncMode availableMode : getMasterSyncModes()) {
             if (availableMode == sync) {
@@ -727,8 +709,7 @@ public class SequencerImpl implements Sequencer {
     }
 
     @NonNull
-    @Override
-    public SyncMode[] getMasterSyncModes() {
+    private SyncMode[] getMasterSyncModes() {
         return MASTER_SYNC_MODES;
     }
 
@@ -736,7 +717,6 @@ public class SequencerImpl implements Sequencer {
         return (long) (getTickPosition() / getTicksPerMicrosecond());
     }
 
-    @Override
     public void setMicrosecondPosition(final long microseconds) {
         setTickPosition((long) (getTicksPerMicrosecond() * microseconds));
     }
@@ -763,7 +743,6 @@ public class SequencerImpl implements Sequencer {
         return ticksPerMicrosecond;
     }
 
-    @Override
     public long getMicrosecondLength() {
         return sequence.getMicrosecondLength();
     }
@@ -773,13 +752,11 @@ public class SequencerImpl implements Sequencer {
         return sequence;
     }
 
-    @Override
     public void setSequence(@NonNull final InputStream stream) throws IOException, InvalidMidiDataException {
         setSequence(new StandardMidiFileReader().getSequence(stream));
     }
 
-    @Override
-    public void setSequence(@Nullable final Sequence sequence) throws InvalidMidiDataException {
+    private void setSequence(@Nullable final Sequence sequence) throws InvalidMidiDataException {
         this.sequence = sequence;
 
         if (sequencerThread != null && sequence != null) {
@@ -788,12 +765,10 @@ public class SequencerImpl implements Sequencer {
     }
 
     @NonNull
-    @Override
     public SyncMode getSlaveSyncMode() {
         return slaveSyncMode;
     }
 
-    @Override
     public void setSlaveSyncMode(@NonNull final SyncMode sync) {
         for (final SyncMode availableMode : getSlaveSyncModes()) {
             if (availableMode == sync) {
@@ -803,17 +778,14 @@ public class SequencerImpl implements Sequencer {
     }
 
     @NonNull
-    @Override
-    public SyncMode[] getSlaveSyncModes() {
+    private SyncMode[] getSlaveSyncModes() {
         return SLAVE_SYNC_MODES;
     }
 
-    @Override
-    public float getTempoFactor() {
+    private float getTempoFactor() {
         return tempoFactor;
     }
 
-    @Override
     public void setTempoFactor(final float factor) {
         if (factor <= 0.0f) {
             throw new IllegalArgumentException("The tempo factor must be larger than 0f.");
@@ -822,44 +794,37 @@ public class SequencerImpl implements Sequencer {
         tempoFactor = factor;
     }
 
-    @Override
     public float getTempoInBPM() {
         return tempoInBPM;
     }
 
-    @Override
     public void setTempoInBPM(final float bpm) {
         tempoInBPM = bpm;
     }
 
-    @Override
     public float getTempoInMPQ() {
         return 60000000.0f / tempoInBPM;
     }
 
-    @Override
-    public void setTempoInMPQ(final float mpq) {
+    private void setTempoInMPQ(final float mpq) {
         tempoInBPM = 60000000.0f / mpq;
     }
 
-    @Override
-    public long getTickLength() {
+    private long getTickLength() {
         if (sequence == null) {
             return 0;
         }
         return sequence.getTickLength();
     }
 
-    @Override
-    public long getTickPosition() {
+    private long getTickPosition() {
         if (sequencerThread == null) {
             return 0;
         }
         return sequencerThread.getTickPosition();
     }
 
-    @Override
-    public void setTickPosition(final long tick) {
+    private void setTickPosition(final long tick) {
         if (sequencerThread != null) {
             sequencerThread.setTickPosition(tick);
         }
@@ -870,7 +835,6 @@ public class SequencerImpl implements Sequencer {
         return trackMute.get(track);
     }
 
-    @Override
     public void setTrackMute(final int track, final boolean mute) {
         trackMute.put(track, mute);
     }
@@ -880,12 +844,10 @@ public class SequencerImpl implements Sequencer {
         return trackSolo.get(track);
     }
 
-    @Override
     public void setTrackSolo(final int track, final boolean solo) {
         trackSolo.put(track, solo);
     }
 
-    @Override
     public void recordDisable(@Nullable final Track track) {
         if (track == null) {
             // disable all track
@@ -899,7 +861,6 @@ public class SequencerImpl implements Sequencer {
         }
     }
 
-    @Override
     public void recordEnable(@NonNull final Track track, final int channel) {
         Set<Integer> trackRecordEnable = recordEnable.get(track);
         if (trackRecordEnable == null) {
@@ -918,7 +879,6 @@ public class SequencerImpl implements Sequencer {
         }
     }
 
-    @Override
     public void startRecording() {
         // start playing AND recording
         if (sequencerThread != null) {
@@ -932,7 +892,6 @@ public class SequencerImpl implements Sequencer {
         return isRecording;
     }
 
-    @Override
     public void stopRecording() {
         // stop recording
         if (sequencerThread != null) {
@@ -940,7 +899,6 @@ public class SequencerImpl implements Sequencer {
         }
     }
 
-    @Override
     public void start() {
         // start playing
         if (sequencerThread != null) {
@@ -948,12 +906,10 @@ public class SequencerImpl implements Sequencer {
         }
     }
 
-    @Override
     public boolean isRunning() {
         return isRunning;
     }
 
-    @Override
     public void stop() {
         // stop playing AND recording
         if (sequencerThread != null) {

@@ -12,10 +12,6 @@ public class SourceDataLineImpl implements SourceDataLine {
 	private int bufferSize;
 	private AudioFormat format = new AudioFormat(44100, 16, 2, true, false);
 
-	public SourceDataLineImpl() {
-
-	}
-
 	public SourceDataLineImpl(AudioFormat format) {
 		this.format = format;
 	}
@@ -165,7 +161,6 @@ public class SourceDataLineImpl implements SourceDataLine {
 				bufferSize, AudioTrack.MODE_STREAM);
 	}
 
-	@Override
 	public void open(AudioFormat format) throws LineUnavailableException {
 		// Get the smallest buffer to minimize latency.
 		this.format = format;

@@ -66,7 +66,6 @@ public class SoftVoice extends VoiceStatus {
     protected Map<String, SoftControl> objects =
             new HashMap<String, SoftControl>();
     protected SoftSynthesizer synthesizer;
-    protected SoftInstrument instrument;
     protected SoftPerformer performer;
     protected SoftChannel softchannel = null;
     protected boolean on = false;
@@ -435,7 +434,7 @@ public class SoftVoice extends VoiceStatus {
 
     }
 
-    protected void setPolyPressure(int pressure) {
+    protected void setPolyPressure() {
         if(performer == null)
             return;
         int[] c = performer.midi_connections[2];
@@ -445,7 +444,7 @@ public class SoftVoice extends VoiceStatus {
             processConnection(c[i]);
     }
 
-    protected void setChannelPressure(int pressure) {
+    protected void setChannelPressure() {
         if(performer == null)
             return;
         int[] c = performer.midi_connections[1];
@@ -455,7 +454,7 @@ public class SoftVoice extends VoiceStatus {
             processConnection(c[i]);
     }
 
-    protected void controlChange(int controller, int value) {
+    protected void controlChange(int controller) {
         if(performer == null)
             return;
         int[] c = performer.midi_ctrl_connections[controller];
@@ -465,7 +464,7 @@ public class SoftVoice extends VoiceStatus {
             processConnection(c[i]);
     }
 
-    protected void nrpnChange(int controller, int value) {
+    protected void nrpnChange(int controller) {
         if(performer == null)
             return;
         int[] c = performer.midi_nrpn_connections.get(controller);
@@ -475,7 +474,7 @@ public class SoftVoice extends VoiceStatus {
             processConnection(c[i]);
     }
 
-    protected void rpnChange(int controller, int value) {
+    protected void rpnChange(int controller) {
         if(performer == null)
             return;
         int[] c = performer.midi_rpn_connections.get(controller);
@@ -485,7 +484,7 @@ public class SoftVoice extends VoiceStatus {
             processConnection(c[i]);
     }
 
-    protected void setPitchBend(int bend) {
+    protected void setPitchBend() {
         if(performer == null)
             return;
         int[] c = performer.midi_connections[0];
@@ -576,7 +575,6 @@ public class SoftVoice extends VoiceStatus {
             active = false;
             stopping = false;
             audiostarted = false;
-            instrument = null;
             performer = null;
             connections = null;
             extendedConnectionBlocks = null;
@@ -746,7 +744,7 @@ public class SoftVoice extends VoiceStatus {
                 if (!osc_stream_off_transmitted) {
                     osc_stream_off_transmitted = true;
                     if (osc_stream != null)
-                        osc_stream.noteOff(noteOff_velocity);
+                        osc_stream.noteOff();
                 }
 
         }

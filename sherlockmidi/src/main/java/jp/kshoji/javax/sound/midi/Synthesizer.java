@@ -57,14 +57,6 @@ public interface Synthesizer extends MidiDevice {
     boolean isSoundbankSupported(@NonNull Soundbank soundbank);
 
     /**
-     * Get the all available {@link Instrument}s
-     *
-     * @return the array of Instrument
-     */
-    @NonNull
-    Instrument[] getAvailableInstruments();
-
-    /**
      * Get the all loaded {@link Instrument}s
      *
      * @return the array of Instrument

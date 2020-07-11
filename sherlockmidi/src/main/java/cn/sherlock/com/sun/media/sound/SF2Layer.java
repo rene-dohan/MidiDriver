@@ -44,20 +44,12 @@ public class SF2Layer extends SoundbankResource {
         super(soundBank, null, null);
     }
 
-    public SF2Layer() {
-        super(null, null, null);
-    }
-
     public Object getData() {
         return null;
     }
 
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public List<SF2LayerRegion> getRegions() {

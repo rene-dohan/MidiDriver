@@ -132,11 +132,6 @@ public class SoftReverb implements SoftAudioProcessor {
             delaybuffersize = size;
         }
 
-        public void setFeedBack(float feedback) {
-            this.feedback = feedback;
-            filtercoeff2 = (1 - filtercoeff1)* feedback;
-        }
-
         public void processMix(float[] in, float[] out) {
             int len = in.length;            
             int delaybuffersize = this.delaybuffersize;

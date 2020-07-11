@@ -28,7 +28,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -85,9 +84,6 @@ public class SF2Soundbank implements Soundbank {
     private List<SF2Instrument> instruments = new ArrayList<SF2Instrument>();
     private List<SF2Layer> layers = new ArrayList<SF2Layer>();
     private List<SF2Sample> samples = new ArrayList<SF2Sample>();
-
-    public SF2Soundbank() {
-    }
 
     public SF2Soundbank(URL url) throws IOException {
 
@@ -506,25 +502,6 @@ public class SF2Soundbank implements Soundbank {
 
     }
 
-    public void save(String name) throws IOException {
-        writeSoundbank(new RIFFWriter(name, "sfbk"));
-    }
-
-    public void save(File file) throws IOException {
-        writeSoundbank(new RIFFWriter(file, "sfbk"));
-    }
-
-    public void save(OutputStream out) throws IOException {
-        writeSoundbank(new RIFFWriter(out, "sfbk"));
-    }
-
-    private void writeSoundbank(RIFFWriter writer) throws IOException {
-        writeInfo(writer.writeList("INFO"));
-        writeSdtaChunk(writer.writeList("sdta"));
-        writePdtaChunk(writer.writeList("pdta"));
-        writer.close();
-    }
-
     private void writeInfoStringChunk(RIFFWriter writer, String name,
             String value) throws IOException {
         if (value == null)
@@ -831,18 +808,6 @@ public class SF2Soundbank implements Soundbank {
         return comments;
     }
 
-    public void setName(String s) {
-        name = s;
-    }
-
-    public void setVendor(String s) {
-        engineers = s;
-    }
-
-    public void setDescription(String s) {
-        comments = s;
-    }
-
     public SoundbankResource[] getResources() {
         SoundbankResource[] resources
                 = new SoundbankResource[layers.size() + samples.size()];
@@ -859,14 +824,6 @@ public class SF2Soundbank implements Soundbank {
                 = instruments.toArray(new SF2Instrument[instruments.size()]);
         Arrays.sort(inslist_array, new ModelInstrumentComparator());
         return inslist_array;
-    }
-
-    public SF2Layer[] getLayers() {
-        return layers.toArray(new SF2Layer[layers.size()]);
-    }
-
-    public SF2Sample[] getSamples() {
-        return samples.toArray(new SF2Sample[samples.size()]);
     }
 
     public Instrument getInstrument(Patch patch) {
@@ -890,85 +847,4 @@ public class SF2Soundbank implements Soundbank {
         return null;
     }
 
-    public String getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(String creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    public String getProduct() {
-        return product;
-    }
-
-    public void setProduct(String product) {
-        this.product = product;
-    }
-
-    public String getRomName() {
-        return romName;
-    }
-
-    public void setRomName(String romName) {
-        this.romName = romName;
-    }
-
-    public int getRomVersionMajor() {
-        return romVersionMajor;
-    }
-
-    public void setRomVersionMajor(int romVersionMajor) {
-        this.romVersionMajor = romVersionMajor;
-    }
-
-    public int getRomVersionMinor() {
-        return romVersionMinor;
-    }
-
-    public void setRomVersionMinor(int romVersionMinor) {
-        this.romVersionMinor = romVersionMinor;
-    }
-
-    public String getTargetEngine() {
-        return targetEngine;
-    }
-
-    public void setTargetEngine(String targetEngine) {
-        this.targetEngine = targetEngine;
-    }
-
-    public String getTools() {
-        return tools;
-    }
-
-    public void setTools(String tools) {
-        this.tools = tools;
-    }
-
-    public void addResource(SoundbankResource resource) {
-        if (resource instanceof SF2Instrument)
-            instruments.add((SF2Instrument)resource);
-        if (resource instanceof SF2Layer)
-            layers.add((SF2Layer)resource);
-        if (resource instanceof SF2Sample)
-            samples.add((SF2Sample)resource);
-    }
-
-    public void removeResource(SoundbankResource resource) {
-        if (resource instanceof SF2Instrument)
-            instruments.remove(resource);
-        if (resource instanceof SF2Layer)
-            layers.remove(resource);
-        if (resource instanceof SF2Sample)
-            samples.remove(resource);
-    }
-
-    public void addInstrument(SF2Instrument resource) {
-        instruments.add(resource);
-    }
-
-    public void removeInstrument(SF2Instrument resource) {
-        instruments.remove(resource);
-    }
 }

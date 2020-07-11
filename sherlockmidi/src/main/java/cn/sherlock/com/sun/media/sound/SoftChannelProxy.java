@@ -36,10 +36,6 @@ public class SoftChannelProxy implements MidiChannel {
 
     private MidiChannel channel = null;
 
-    public MidiChannel getChannel() {
-        return channel;
-    }
-
     public void setChannel(MidiChannel channel) {
         this.channel = channel;
     }

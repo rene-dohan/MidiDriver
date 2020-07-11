@@ -59,13 +59,6 @@ public class SoftTuning {
             tuning[i] = i * 100;
     }
 
-    public SoftTuning(Patch patch, byte[] data) {
-        this.patch = patch;
-        for (int i = 0; i < tuning.length; i++)
-            tuning[i] = i * 100;
-        load(data);
-    }
-
     private boolean checksumOK(byte[] data) {
         int x = data[1] & 0xFF;
         for (int i = 2; i < data.length - 2; i++)
@@ -226,15 +219,4 @@ public class SoftTuning {
         return tuning[noteNumber];
     }
 
-    public Patch getPatch() {
-        return patch;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }

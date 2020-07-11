@@ -99,50 +99,11 @@ public interface SourceDataLine extends DataLine {
      * @throws SecurityException if the line cannot be
      * opened due to security restrictions
      *
-     * @see #open(AudioFormat)
      * @see Line#close
      * @see Line#isOpen
      * @see LineEvent
      */
     void open(AudioFormat format, int bufferSize) throws LineUnavailableException;
-
-
-    /**
-     * Opens the line with the specified format, causing the line to acquire any
-     * required system resources and become operational.
-     *
-     * <p>
-     * The implementation chooses a buffer size, which is measured in bytes but
-     * which encompasses an integral number of sample frames.  The buffer size
-     * that the system has chosen may be queried by subsequently calling
-     * <code>{@link DataLine#getBufferSize}</code>.
-     * <p>
-     * If this operation succeeds, the line is marked as open, and an
-     * <code>{@link LineEvent.Type#OPEN OPEN}</code> event is dispatched to the
-     * line's listeners.
-     * <p>
-     * Invoking this method on a line which is already open is illegal
-     * and may result in an <code>IllegalStateException</code>.
-     * <p>
-     * Note that some lines, once closed, cannot be reopened.  Attempts
-     * to reopen such a line will always result in a
-     * <code>LineUnavailableException</code>.
-     *
-     * @param format the desired audio format
-     * @throws LineUnavailableException if the line cannot be
-     * opened due to resource restrictions
-     * @throws IllegalArgumentException if <code>format</code>
-     * is not fully specified or invalid
-     * @throws IllegalStateException if the line is already open
-     * @throws SecurityException if the line cannot be
-     * opened due to security restrictions
-     *
-     * @see #open(AudioFormat, int)
-     * @see Line#close
-     * @see Line#isOpen
-     * @see LineEvent
-     */
-    void open(AudioFormat format) throws LineUnavailableException;
 
 
     /**

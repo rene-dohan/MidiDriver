@@ -37,7 +37,4 @@ public class RIFFInvalidDataException extends InvalidDataException {
         super("Invalid Data!");
     }
 
-    public RIFFInvalidDataException(String s) {
-        super(s);
-    }
 }

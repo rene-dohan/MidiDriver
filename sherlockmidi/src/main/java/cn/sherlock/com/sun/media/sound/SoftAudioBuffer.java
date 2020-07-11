@@ -72,10 +72,6 @@ public class SoftAudioBuffer {
         swap.converter_buffer = bak_converter_buffer;
     }
 
-    public AudioFormat getFormat() {
-        return format;
-    }
-
     public int getSize() {
         return size;
     }

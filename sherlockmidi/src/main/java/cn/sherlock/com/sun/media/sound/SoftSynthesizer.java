@@ -173,8 +173,6 @@ public class SoftSynthesizer implements AudioSynthesizer,
 
     private static SourceDataLine testline = null;
 
-    private static Soundbank defaultSoundBank = null;
-
     protected WeakAudioStream weakstream = null;
 
     protected Object control_mutex = this;

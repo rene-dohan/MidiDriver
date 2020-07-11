@@ -42,7 +42,7 @@ import jp.kshoji.javax.sound.midi.MidiChannel;
 public interface ModelChannelMixer extends MidiChannel {
 
     // Used to process input audio from voices mix.
-    boolean process(float[][] buffer, int offset, int len);
+    boolean process();
 
     // Is used to trigger that this mixer is not be used
     // and it should fade out.

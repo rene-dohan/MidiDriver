@@ -37,7 +37,4 @@ public class SF2LayerRegion extends SF2Region {
         return sample;
     }
 
-    public void setSample(SF2Sample sample) {
-        this.sample = sample;
-    }
 }

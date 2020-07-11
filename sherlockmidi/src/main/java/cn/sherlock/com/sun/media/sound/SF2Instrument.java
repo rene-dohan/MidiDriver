@@ -48,20 +48,12 @@ public class SF2Instrument extends ModelInstrument {
     protected List<SF2InstrumentRegion> regions
             = new ArrayList<SF2InstrumentRegion>();
 
-    public SF2Instrument() {
-        super(null, null, null, null);
-    }
-
     public SF2Instrument(SF2Soundbank soundbank) {
         super(soundbank, null, null, null);
     }
 
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public Patch getPatch() {
@@ -71,42 +63,8 @@ public class SF2Instrument extends ModelInstrument {
             return new ModelPatch(bank << 7, preset, false);
     }
 
-    public void setPatch(Patch patch) {
-        if (patch instanceof ModelPatch && ((ModelPatch) patch).isPercussion()) {
-            bank = 128;
-            preset = patch.getProgram();
-        } else {
-            bank = patch.getBank() >> 7;
-            preset = patch.getProgram();
-        }
-    }
-
     public Object getData() {
         return null;
-    }
-
-    public long getGenre() {
-        return genre;
-    }
-
-    public void setGenre(long genre) {
-        this.genre = genre;
-    }
-
-    public long getLibrary() {
-        return library;
-    }
-
-    public void setLibrary(long library) {
-        this.library = library;
-    }
-
-    public long getMorphology() {
-        return morphology;
-    }
-
-    public void setMorphology(long morphology) {
-        this.morphology = morphology;
     }
 
     public List<SF2InstrumentRegion> getRegions() {

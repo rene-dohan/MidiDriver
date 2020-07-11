@@ -298,15 +298,11 @@ public class SoftPerformer {
                 new ModelIdentifier("lfo", "delay", 1)));
 
     }
-    public int keyFrom = 0;
-    public int keyTo = 127;
-    public int velFrom = 0;
-    public int velTo = 127;
+
     public int exclusiveClass = 0;
     public boolean selfNonExclusive = false;
     public boolean forcedVelocity = false;
     public boolean forcedKeynumber = false;
-    public ModelPerformer performer;
     public ModelConnectionBlock[] connections;
     public ModelOscillator[] oscillators;
     public Map<Integer, int[]> midi_rpn_connections = new HashMap<Integer, int[]>();
@@ -465,12 +461,6 @@ public class SoftPerformer {
     }
 
     public SoftPerformer(ModelPerformer performer) {
-        this.performer = performer;
-
-        keyFrom = performer.getKeyFrom();
-        keyTo = performer.getKeyTo();
-        velFrom = performer.getVelFrom();
-        velTo = performer.getVelTo();
         exclusiveClass = performer.getExclusiveClass();
         selfNonExclusive = performer.isSelfNonExclusive();
 
