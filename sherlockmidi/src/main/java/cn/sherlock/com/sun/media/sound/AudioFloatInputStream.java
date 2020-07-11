@@ -25,15 +25,12 @@
 package cn.sherlock.com.sun.media.sound;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 
 import cn.sherlock.javax.sound.sampled.AudioFormat;
 import cn.sherlock.javax.sound.sampled.AudioInputStream;
 import cn.sherlock.javax.sound.sampled.AudioSystem;
-import cn.sherlock.javax.sound.sampled.UnsupportedAudioFileException;
 
 /**
  * This class is used to create AudioFloatInputStream from AudioInputStream and

@@ -24,9 +24,7 @@
  */
 package cn.sherlock.com.sun.media.sound;
 
-import jp.kshoji.javax.sound.midi.MidiChannel;
 import jp.kshoji.javax.sound.midi.Patch;
-import cn.sherlock.javax.sound.sampled.AudioFormat;
 
 /**
  * This class is used to map instrument to another patch.

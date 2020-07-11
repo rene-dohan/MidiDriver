@@ -16,16 +16,4 @@ public interface Transmitter {
 	 */
 	void setReceiver(@Nullable Receiver receiver);
 
-	/**
-	 * Get the {@link Receiver} for this {@link Transmitter}
-     *
-	 * @return the Receiver
-	 */
-    @Nullable
-    Receiver getReceiver();
-
-	/**
-	 * Close this {@link Transmitter}
-	 */
-	void close();
 }

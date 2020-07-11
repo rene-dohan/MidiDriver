@@ -26,31 +26,6 @@ public class SysexMessage extends MidiMessage {
 		super(data);
 	}
 
-    /**
-     * Constructor with raw data and length.
-     *
-     * @param data the SysEx data
-     * @param length the data length
-     * @throws InvalidMidiDataException
-     */
-	public SysexMessage(@NonNull final byte[] data, final int length) throws InvalidMidiDataException {
-		super(null);
-		setMessage(data, length);
-	}
-
-    /**
-     * Constructor with raw data and length.
-     *
-     * @param status must be ShortMessage.START_OF_EXCLUSIVE or ShortMessage.END_OF_EXCLUSIVE
-     * @param data the SysEx data
-     * @param length unused parameter. Use always data.length
-     * @throws InvalidMidiDataException
-     */
-    public SysexMessage(final int status, @NonNull final byte[] data, final int length) throws InvalidMidiDataException {
-        super(null);
-        setMessage(status, data, length);
-    }
-
 	@Override
 	public void setMessage(@Nullable final byte[] data, final int length) throws InvalidMidiDataException {
         if (data == null) {
@@ -69,10 +44,9 @@ public class SysexMessage extends MidiMessage {
 	 * 
 	 * @param status must be ShortMessage.START_OF_EXCLUSIVE or ShortMessage.END_OF_EXCLUSIVE
 	 * @param data the SysEx data
-	 * @param length unused parameter. Use always data.length
 	 * @throws InvalidMidiDataException
 	 */
-	public void setMessage(final int status, @NonNull final byte[] data, final int length) throws InvalidMidiDataException {
+	public void setMessage(final int status, @NonNull final byte[] data) throws InvalidMidiDataException {
 		if ((status != ShortMessage.START_OF_EXCLUSIVE) && (status != ShortMessage.END_OF_EXCLUSIVE)) {
 			throw new InvalidMidiDataException("Invalid status byte for SysexMessage: 0x" + Integer.toHexString(status));
 		}

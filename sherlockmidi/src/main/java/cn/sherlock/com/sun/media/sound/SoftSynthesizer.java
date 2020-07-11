@@ -484,7 +484,7 @@ public class SoftSynthesizer implements AudioSynthesizer,
         }
     }
 
-    public int getMaxPolyphony() {
+    private int getMaxPolyphony() {
         synchronized (control_mutex) {
             return maxpoly;
         }
@@ -546,7 +546,7 @@ public class SoftSynthesizer implements AudioSynthesizer,
         }
     }
 
-    public boolean isSoundbankSupported(Soundbank soundbank) {
+    private boolean isSoundbankSupported(Soundbank soundbank) {
         for (Instrument ins: soundbank.getInstruments())
             if (!(ins instanceof ModelInstrument))
                 return false;
@@ -610,7 +610,7 @@ public class SoftSynthesizer implements AudioSynthesizer,
         }
     }
 
-    public Soundbank getDefaultSoundbank() {
+    private Soundbank getDefaultSoundbank() {
     	return null;
     }
 
@@ -636,7 +636,7 @@ public class SoftSynthesizer implements AudioSynthesizer,
         }
     }
 
-    public boolean loadAllInstruments(Soundbank soundbank) {
+    private boolean loadAllInstruments(Soundbank soundbank) {
         List<ModelInstrument> instruments = new ArrayList<ModelInstrument>();
         for (Instrument ins: soundbank.getInstruments()) {
             if (ins == null || !(ins instanceof ModelInstrument)) {

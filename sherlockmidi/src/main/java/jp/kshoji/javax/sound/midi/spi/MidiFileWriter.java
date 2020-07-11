@@ -2,10 +2,6 @@ package jp.kshoji.javax.sound.midi.spi;
 
 import android.support.annotation.NonNull;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-
 import jp.kshoji.javax.sound.midi.Sequence;
 
 /**

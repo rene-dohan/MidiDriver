@@ -24,13 +24,7 @@
  */
 package cn.sherlock.com.sun.media.sound;
 
-import java.util.Map;
-
-import jp.kshoji.javax.sound.midi.MidiUnavailableException;
 import jp.kshoji.javax.sound.midi.Synthesizer;
-import cn.sherlock.javax.sound.sampled.AudioFormat;
-import cn.sherlock.javax.sound.sampled.AudioInputStream;
-import cn.sherlock.javax.sound.sampled.SourceDataLine;
 
 /**
  * <code>AudioSynthesizer</code> is a <code>Synthesizer</code>

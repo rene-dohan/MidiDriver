@@ -239,7 +239,7 @@ public class StandardMidiFileReader {
 						midiDataInputStream.readFully(sysexData);
 						
 						final SysexMessage sysexMessage = new SysexMessage();
-						sysexMessage.setMessage(data, sysexData, sysexLength);
+						sysexMessage.setMessage(data, sysexData);
 						message = sysexMessage;
 						
 						runningStatus = -1;

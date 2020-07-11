@@ -1,11 +1,7 @@
 package jp.kshoji.javax.sound.midi;
 
-import android.support.annotation.NonNull;
-
 import java.util.AbstractMap;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Represents MIDI File Format
