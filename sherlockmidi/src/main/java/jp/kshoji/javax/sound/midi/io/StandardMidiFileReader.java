@@ -23,14 +23,13 @@ import jp.kshoji.javax.sound.midi.ShortMessage;
 import jp.kshoji.javax.sound.midi.SysexMessage;
 import jp.kshoji.javax.sound.midi.Track;
 import jp.kshoji.javax.sound.midi.Track.TrackUtils;
-import jp.kshoji.javax.sound.midi.spi.MidiFileReader;
 
 /**
  * The implementation SMF reader
  *
  * @author K.Shoji
  */
-public class StandardMidiFileReader extends MidiFileReader {
+public class StandardMidiFileReader {
 
     /**
      * Represents Extended MIDI File format
@@ -103,7 +102,6 @@ public class StandardMidiFileReader extends MidiFileReader {
 	}
 
     @NonNull
-    @Override
 	public MidiFileFormat getMidiFileFormat(@NonNull final InputStream inputStream) throws InvalidMidiDataException, IOException {
 		final DataInputStream dataInputStream;
 		if (inputStream instanceof DataInputStream) {
@@ -172,7 +170,6 @@ public class StandardMidiFileReader extends MidiFileReader {
 	}
 
 	@NonNull
-    @Override
 	public MidiFileFormat getMidiFileFormat(@NonNull final URL url) throws InvalidMidiDataException, IOException {
 		final InputStream inputStream = url.openStream();
 		try {
@@ -183,7 +180,6 @@ public class StandardMidiFileReader extends MidiFileReader {
 	}
 
 	@NonNull
-    @Override
 	public MidiFileFormat getMidiFileFormat(@NonNull final File file) throws InvalidMidiDataException, IOException {
 		final InputStream inputStream = new FileInputStream(file);
 		try {
@@ -194,7 +190,6 @@ public class StandardMidiFileReader extends MidiFileReader {
 	}
 
 	@NonNull
-    @Override
 	public Sequence getSequence(@NonNull final InputStream inputStream) throws InvalidMidiDataException, IOException {
 		final MidiDataInputStream midiDataInputStream = new MidiDataInputStream(convertToByteArrayInputStream(inputStream));
 		
@@ -257,7 +252,7 @@ public class StandardMidiFileReader extends MidiFileReader {
 						midiDataInputStream.readFully(metaData);
 						
 						final MetaMessage metaMessage = new MetaMessage();
-						metaMessage.setMessage(type, metaData, metaLength);
+						metaMessage.setMessage(type, metaData);
 						message = metaMessage;
 						
 						runningStatus = -1;
@@ -398,7 +393,6 @@ public class StandardMidiFileReader extends MidiFileReader {
 	}
 
 	@NonNull
-    @Override
 	public Sequence getSequence(@NonNull final URL url) throws InvalidMidiDataException, IOException {
 		final InputStream inputStream = url.openStream();
 		try {
@@ -409,7 +403,6 @@ public class StandardMidiFileReader extends MidiFileReader {
 	}
 
 	@NonNull
-    @Override
 	public Sequence getSequence(@NonNull final File file) throws InvalidMidiDataException, IOException {
 		final InputStream inputStream = new FileInputStream(file);
 		try {

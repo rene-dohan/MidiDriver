@@ -500,8 +500,7 @@ public class SequencerImpl implements Sequencer {
         return new Info("Sequencer", "jp.kshoji", "Android MIDI Sequencer", "0.1");
     }
 
-    @Override
-    public void open() throws MidiUnavailableException {
+    private void open() throws MidiUnavailableException {
         // open devices
         synchronized (receivers) {
             receivers.clear();
@@ -529,7 +528,6 @@ public class SequencerImpl implements Sequencer {
         }
     }
 
-    @Override
     public void close() {
         // FIXME frequently calling 'close and open' causes app freeze(can't stop playing)
 
@@ -557,19 +555,16 @@ public class SequencerImpl implements Sequencer {
         }
     }
 
-    @Override
     public boolean isOpen() {
         return isOpen;
     }
 
-    @Override
     public int getMaxReceivers() {
         synchronized (receivers) {
             return receivers.size();
         }
     }
 
-    @Override
     public int getMaxTransmitters() {
         synchronized (transmitters) {
             return transmitters.size();
@@ -737,7 +732,6 @@ public class SequencerImpl implements Sequencer {
         return MASTER_SYNC_MODES;
     }
 
-    @Override
     public long getMicrosecondPosition() {
         return (long) (getTickPosition() / getTicksPerMicrosecond());
     }

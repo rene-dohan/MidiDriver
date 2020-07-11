@@ -9,11 +9,4 @@ import android.support.annotation.NonNull;
  */
 public interface MidiDeviceReceiver extends Receiver {
 
-    /**
-     * Get the {@link MidiDevice} associated with this instance.
-     *
-     * @return the {@link MidiDevice} associated with this instance.
-     */
-    @NonNull
-    MidiDevice getMidiDevice();
 }

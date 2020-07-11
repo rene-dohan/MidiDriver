@@ -42,12 +42,4 @@ public class MidiEvent {
         return tick;
     }
 
-    /**
-     * Set the timeStamp in tick
-     * 
-     * @param tick timeStamp
-     */
-    public void setTick(long tick) {
-        this.tick = tick;
-    }
 }

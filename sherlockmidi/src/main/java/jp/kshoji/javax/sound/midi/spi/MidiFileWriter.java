@@ -65,25 +65,4 @@ public abstract class MidiFileWriter {
 		return false;
 	}
 
-    /**
-     * Write the {@link Sequence} to the {@link File} with the file type
-     *
-     * @param sequence the sequence
-     * @param fileType the file type
-     * @param file the file
-     * @return the written data length
-     * @throws IOException
-     */
-	public abstract int write(@NonNull Sequence sequence, int fileType, @NonNull File file) throws IOException;
-
-    /**
-     * Write the {@link Sequence} to the {@link OutputStream} with the file type
-     *
-     * @param sequence the sequence
-     * @param fileType the file type
-     * @param outputStream the OutputStream
-     * @return the written data length
-     * @throws IOException
-     */
-	public abstract int write(@NonNull Sequence sequence, int fileType, @NonNull OutputStream outputStream) throws IOException;
 }

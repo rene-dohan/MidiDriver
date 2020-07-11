@@ -336,41 +336,6 @@ public class AudioSystem {
 
 	// $$fb 2002-04-12: fix for 4662082: behavior of
 	// AudioSystem.getTargetEncodings() methods doesn't match the spec
-	/**
-	 * Obtains the encodings that the system can obtain from an audio input
-	 * stream with the specified encoding using the set of installed format
-	 * converters.
-	 * 
-	 * @param sourceEncoding
-	 *            the encoding for which conversion support is queried
-	 * @return array of encodings. If <code>sourceEncoding</code>is not
-	 *         supported, an array of length 0 is returned. Otherwise, the array
-	 *         will have a length of at least 1, representing
-	 *         <code>sourceEncoding</code> (no conversion).
-	 */
-	public static AudioFormat.Encoding[] getTargetEncodings(
-			AudioFormat.Encoding sourceEncoding) {
-
-		List codecs = getFormatConversionProviders();
-		Vector encodings = new Vector();
-
-		AudioFormat.Encoding[] encs = null;
-
-		// gather from all the codecs
-		for (int i = 0; i < codecs.size(); i++) {
-			FormatConversionProvider codec = (FormatConversionProvider) codecs
-					.get(i);
-			if (codec.isSourceEncodingSupported(sourceEncoding)) {
-				encs = codec.getTargetEncodings();
-				for (int j = 0; j < encs.length; j++) {
-					encodings.addElement(encs[j]);
-				}
-			}
-		}
-		AudioFormat.Encoding[] encs2 = (AudioFormat.Encoding[]) encodings
-				.toArray(new AudioFormat.Encoding[0]);
-		return encs2;
-	}
 
 	/**
 	 * Obtains an audio input stream from the provided <code>File</code>. The

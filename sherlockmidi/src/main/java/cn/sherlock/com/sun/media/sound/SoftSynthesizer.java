@@ -721,7 +721,7 @@ public class SoftSynthesizer implements AudioSynthesizer,
                 });
     }
 
-    public AudioSynthesizerPropertyInfo[] getPropertyInfo(Map<String, Object> info) {
+    private AudioSynthesizerPropertyInfo[] getPropertyInfo(Map<String, Object> info) {
         List<AudioSynthesizerPropertyInfo> list =
                 new ArrayList<AudioSynthesizerPropertyInfo>();
 
@@ -734,62 +734,46 @@ public class SoftSynthesizer implements AudioSynthesizer,
         boolean o = info == null && open;
 
         item = new AudioSynthesizerPropertyInfo("interpolation", o?resamplerType:"linear");
-        item.choices = new String[]{"linear", "linear1", "linear2", "cubic",
-                                    "lanczos", "sinc", "point"};
-        item.description = "Interpolation method";
         list.add(item);
 
         item = new AudioSynthesizerPropertyInfo("control rate", o?controlrate:147f);
-        item.description = "Control rate";
         list.add(item);
 
         item = new AudioSynthesizerPropertyInfo("format",
                 o?format:new AudioFormat(44100, 16, 2, true, false));
-        item.description = "Default audio format";
         list.add(item);
 
         item = new AudioSynthesizerPropertyInfo("latency", o?latency:120000L);
-        item.description = "Default latency";
         list.add(item);
 
         item = new AudioSynthesizerPropertyInfo("device id", o?deviceid:0);
-        item.description = "Device ID for SysEx Messages";
         list.add(item);
 
         item = new AudioSynthesizerPropertyInfo("max polyphony", o?maxpoly:64);
-        item.description = "Maximum polyphony";
         list.add(item);
 
         item = new AudioSynthesizerPropertyInfo("reverb", !o || reverb_on);
-        item.description = "Turn reverb effect on or off";
         list.add(item);
 
         item = new AudioSynthesizerPropertyInfo("chorus", !o || chorus_on);
-        item.description = "Turn chorus effect on or off";
         list.add(item);
 
         item = new AudioSynthesizerPropertyInfo("auto gain control", !o || agc_on);
-        item.description = "Turn auto gain control on or off";
         list.add(item);
 
         item = new AudioSynthesizerPropertyInfo("large mode", o && largemode);
-        item.description = "Turn large mode on or off.";
         list.add(item);
 
         item = new AudioSynthesizerPropertyInfo("midi channels", o?channels.length:16);
-        item.description = "Number of midi channels.";
         list.add(item);
 
         item = new AudioSynthesizerPropertyInfo("jitter correction", !o || jitter_correction);
-        item.description = "Turn jitter correction on or off.";
         list.add(item);
 
         item = new AudioSynthesizerPropertyInfo("light reverb", !o || reverb_light);
-        item.description = "Turn light reverb mode on or off";
         list.add(item);
         
         item = new AudioSynthesizerPropertyInfo("load default soundbank", !o || load_default_soundbank);
-        item.description = "Enabled/disable loading default soundbank";
         list.add(item);
         
         AudioSynthesizerPropertyInfo[] items;
@@ -888,7 +872,7 @@ public class SoftSynthesizer implements AudioSynthesizer,
         open(null, null);
     }
 
-    public void open(SourceDataLine line, Map<String, Object> info) throws MidiUnavailableException {
+    private void open(SourceDataLine line, Map<String, Object> info) throws MidiUnavailableException {
         if (isOpen()) {
             synchronized (control_mutex) {
                 implicitOpen = false;
@@ -990,8 +974,8 @@ public class SoftSynthesizer implements AudioSynthesizer,
         }
     }
 
-    public AudioInputStream openStream(AudioFormat targetFormat,
-            Map<String, Object> info) throws MidiUnavailableException {
+    private AudioInputStream openStream(AudioFormat targetFormat,
+                                        Map<String, Object> info) throws MidiUnavailableException {
 
         if (isOpen())
             throw new MidiUnavailableException("Synthesizer is already open");
@@ -1129,7 +1113,7 @@ public class SoftSynthesizer implements AudioSynthesizer,
         }
     }
 
-    public boolean isOpen() {
+    private boolean isOpen() {
         synchronized (control_mutex) {
             return open;
         }

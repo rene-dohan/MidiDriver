@@ -20,45 +20,6 @@ public interface MidiDevice {
     Info getDeviceInfo();
 
 	/**
-	 * Open the {@link MidiDevice}. This method must be called at getting the new instance.
-	 * 
-	 * @throws MidiUnavailableException
-	 */
-	void open() throws MidiUnavailableException;
-
-	/**
-	 * Close the {@link MidiDevice}. This method must be called at finishing to use the instance.
-	 */
-	void close();
-
-	/**
-	 * Check if the {@link MidiDevice} opened.
-	 * 
-	 * @return true if already opened
-	 */
-	boolean isOpen();
-
-	/**
-	 * Get the {@link MidiDevice}'s timeStamp.
-	 * @return -1 if the timeStamp not supported.
-	 */
-	long getMicrosecondPosition();
-
-	/**
-	 * Get the number of the {@link Receiver}s. 
-	 * 
-	 * @return the number of the {@link Receiver}s.
-	 */
-	int getMaxReceivers();
-
-	/**
-	 * Get the number of the {@link Transmitter}s. 
-	 * 
-	 * @return the number of the {@link Transmitter}s.
-	 */
-	int getMaxTransmitters();
-
-	/**
 	 * Get the default {@link Receiver}.
 	 * 
 	 * @return the default {@link Receiver}.
@@ -118,47 +79,7 @@ public interface MidiDevice {
 			this.version = version;
 		}
 
-		/**
-		 * Get the name of {@link MidiDevice}
-		 * 
-		 * @return the name of {@link MidiDevice}
-		 */
-        @NonNull
-        public final String getName() {
-			return name;
-		}
-
-		/**
-		 * Get the vendor of {@link MidiDevice}
-		 * 
-		 * @return the vendor of {@link MidiDevice}
-		 */
-        @NonNull
-        public final String getVendor() {
-			return vendor;
-		}
-
-		/**
-		 * Get the description of {@link MidiDevice}
-		 * 
-		 * @return the description of {@link MidiDevice}
-		 */
-        @NonNull
-        public final String getDescription() {
-			return description;
-		}
-
-		/**
-		 * Get the version of {@link MidiDevice}
-		 * 
-		 * @return the version of {@link MidiDevice}
-		 */
-        @NonNull
-        public final String getVersion() {
-			return version;
-		}
-
-        @NonNull
+		@NonNull
 		@Override
         public final String toString() {
 			return name;

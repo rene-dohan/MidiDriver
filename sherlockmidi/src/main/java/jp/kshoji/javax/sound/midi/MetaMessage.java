@@ -53,28 +53,14 @@ public class MetaMessage extends MidiMessage {
         }
 	}
 
-    /**
-     * Constructor with the entire information of message
-     *
-     * @param type the data type
-     * @param data the data source
-     * @param length unused parameter. Use always data.length
-     * @throws InvalidMidiDataException
-     */
-    public MetaMessage(final int type, @Nullable final byte[] data, final int length) throws InvalidMidiDataException {
-        super(null);
-        setMessage(type, data, length);
-    }
-
 	/**
 	 * Set the entire information of message.
 	 * 
 	 * @param type the data type 0-127
 	 * @param data the data source
-	 * @param length unused parameter. Use always data.length
 	 * @throws InvalidMidiDataException
 	 */
-	public void setMessage(final int type, @Nullable final byte[] data, final int length) throws InvalidMidiDataException {
+	public void setMessage(final int type, @Nullable final byte[] data) throws InvalidMidiDataException {
 		if (type >= 128 || type < 0) {
 			throw new InvalidMidiDataException("Invalid meta event. type: " + type);
 		}
@@ -116,23 +102,7 @@ public class MetaMessage extends MidiMessage {
 		return 0;
 	}
 
-	/**
-	 * Get the data of {@link MetaMessage}
-	 * 
-	 * @return the data without header(`META`, type, data length)
-	 */
-    @NonNull
-    public byte[] getData() {
-		if (data == null) {
-			return emptyData;
-		}
-
-		final byte[] returnedArray = new byte[dataLength];
-		System.arraycopy(data, data.length - dataLength, returnedArray, 0, dataLength);
-		return returnedArray;
-	}
-
-    @SuppressWarnings("CloneDoesntCallSuperClone")
+	@SuppressWarnings("CloneDoesntCallSuperClone")
 	@NonNull
 	@Override
 	public Object clone() {

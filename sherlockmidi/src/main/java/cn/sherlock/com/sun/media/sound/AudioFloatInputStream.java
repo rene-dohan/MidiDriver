@@ -211,24 +211,6 @@ public abstract class AudioFloatInputStream {
         }
     }
 
-    public static AudioFloatInputStream getInputStream(URL url)
-            throws UnsupportedAudioFileException, IOException {
-        return new DirectAudioFloatInputStream(AudioSystem
-                .getAudioInputStream(url));
-    }
-
-    public static AudioFloatInputStream getInputStream(File file)
-            throws UnsupportedAudioFileException, IOException {
-        return new DirectAudioFloatInputStream(AudioSystem
-                .getAudioInputStream(file));
-    }
-
-    public static AudioFloatInputStream getInputStream(InputStream stream)
-            throws UnsupportedAudioFileException, IOException {
-        return new DirectAudioFloatInputStream(AudioSystem
-                .getAudioInputStream(stream));
-    }
-
     public static AudioFloatInputStream getInputStream(
             AudioInputStream stream) {
         return new DirectAudioFloatInputStream(stream);
@@ -257,14 +239,6 @@ public abstract class AudioFloatInputStream {
 
     public int read(float[] b) throws IOException {
         return read(b, 0, b.length);
-    }
-
-    public float read() throws IOException {
-        float[] b = new float[1];
-        int ret = read(b, 0, 1);
-        if (ret == -1 || ret == 0)
-            return 0;
-        return b[0];
     }
 
     public abstract long skip(long len) throws IOException;

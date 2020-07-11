@@ -1,6 +1,5 @@
 package jp.kshoji.javax.sound.midi.impl;
 
-import android.support.annotation.NonNull;
 import android.util.SparseIntArray;
 
 import jp.kshoji.javax.sound.midi.InvalidMidiDataException;
@@ -29,19 +28,6 @@ public final class MidiChannelImpl implements MidiChannel {
     private SparseIntArray polyPressure = new SparseIntArray();
     private boolean solo = false;
     private boolean localControl = true;
-
-    /**
-     * Constructor
-     *
-     * @param channel the channel 0-15
-     * @param receiver the receiver
-     */
-    public MidiChannelImpl(final int channel, @NonNull final Receiver receiver, @NonNull final VoiceStatus voiceStatus) {
-        this.channel = voiceStatus.channel;
-        this.receiver = receiver;
-        this.voiceStatus = voiceStatus;
-        this.voiceStatus.channel = channel;
-    }
 
     @Override
     public void allNotesOff() {

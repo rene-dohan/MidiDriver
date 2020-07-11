@@ -1022,19 +1022,6 @@ public abstract class AudioFloatConverter {
         return toFloatArray(in_buff, 0, out_buff, out_offset, out_len);
     }
 
-    public float[] toFloatArray(byte[] in_buff, int in_offset,
-            float[] out_buff, int out_len) {
-        return toFloatArray(in_buff, in_offset, out_buff, 0, out_len);
-    }
-
-    public float[] toFloatArray(byte[] in_buff, float[] out_buff, int out_len) {
-        return toFloatArray(in_buff, 0, out_buff, 0, out_len);
-    }
-
-    public float[] toFloatArray(byte[] in_buff, float[] out_buff) {
-        return toFloatArray(in_buff, 0, out_buff, 0, out_buff.length);
-    }
-
     public abstract byte[] toByteArray(float[] in_buff, int in_offset,
             int in_len, byte[] out_buff, int out_offset);
 
@@ -1043,16 +1030,8 @@ public abstract class AudioFloatConverter {
         return toByteArray(in_buff, 0, in_len, out_buff, out_offset);
     }
 
-    public byte[] toByteArray(float[] in_buff, int in_offset, int in_len,
-            byte[] out_buff) {
-        return toByteArray(in_buff, in_offset, in_len, out_buff, 0);
-    }
-
     public byte[] toByteArray(float[] in_buff, int in_len, byte[] out_buff) {
         return toByteArray(in_buff, 0, in_len, out_buff, 0);
     }
 
-    public byte[] toByteArray(float[] in_buff, byte[] out_buff) {
-        return toByteArray(in_buff, 0, in_buff.length, out_buff, 0);
-    }
 }

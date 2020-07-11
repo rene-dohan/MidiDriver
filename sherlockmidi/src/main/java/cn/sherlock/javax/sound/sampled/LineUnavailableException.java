@@ -45,24 +45,5 @@ package cn.sherlock.javax.sound.sampled;
 
 public class LineUnavailableException extends Exception {
 
-    /**
-     * Constructs a <code>LineUnavailableException</code> that has
-     * <code>null</code> as its error detail message.
-     */
-    public LineUnavailableException() {
 
-        super();
-    }
-
-
-    /**
-     * Constructs a <code>LineUnavailableException</code> that has
-     * the specified detail message.
-     *
-     * @param message a string containing the error detail message
-     */
-    public LineUnavailableException(String message) {
-
-        super(message);
-    }
 }

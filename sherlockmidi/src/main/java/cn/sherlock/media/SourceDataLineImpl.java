@@ -20,13 +20,11 @@ public class SourceDataLineImpl implements SourceDataLine {
 		this.format = format;
 	}
 
-	@Override
 	public void drain() {
 		this.flush();
 	}
 
-	@Override
-	public void flush() {
+	private void flush() {
 		if (audioTrack != null) {
 			audioTrack.flush();
 		}
@@ -39,14 +37,12 @@ public class SourceDataLineImpl implements SourceDataLine {
 		}
 	}
 
-	@Override
 	public void stop() {
 		if (audioTrack != null) {
 			audioTrack.stop();
 		}
 	}
 
-	@Override
 	public void close() {
 		if (audioTrack != null) {
 			audioTrack.stop();
@@ -60,8 +56,7 @@ public class SourceDataLineImpl implements SourceDataLine {
 		return audioTrack != null;
 	}
 
-	@Override
-	public boolean isRunning() {
+	private boolean isRunning() {
 		if (audioTrack != null) {
 			return audioTrack.getPlayState() == AudioTrack.PLAYSTATE_PLAYING;
 		}
@@ -86,12 +81,10 @@ public class SourceDataLineImpl implements SourceDataLine {
 		return 0;
 	}
 
-	@Override
 	public int available() {
 		return 0;
 	}
 
-	@Override
 	public int getFramePosition() {
 		if (audioTrack != null) {
 			return audioTrack.getPlaybackHeadPosition();
@@ -99,7 +92,6 @@ public class SourceDataLineImpl implements SourceDataLine {
 		return 0;
 	}
 
-	@Override
 	public long getLongFramePosition() {
 		if (audioTrack != null) {
 			return audioTrack.getPlaybackHeadPosition();
@@ -108,7 +100,6 @@ public class SourceDataLineImpl implements SourceDataLine {
 	}
 
 	@Deprecated
-	@Override
 	public long getMicrosecondPosition() {
 		if (audioTrack != null) {
 			return audioTrack.getPlaybackHeadPosition() * 1000;
@@ -117,7 +108,6 @@ public class SourceDataLineImpl implements SourceDataLine {
 	}
 
 	@Deprecated
-	@Override
 	public float getLevel() {
 		if (audioTrack != null) {
 			// FIXME
@@ -127,12 +117,10 @@ public class SourceDataLineImpl implements SourceDataLine {
 	}
 
 	@Deprecated
-	@Override
 	public Info getLineInfo() {
 		return null;
 	}
 
-	@Override
 	public void open() throws LineUnavailableException {
 		// Get the smallest buffer to minimize latency.
 		int sampleRateInHz = (int) format.getSampleRate();

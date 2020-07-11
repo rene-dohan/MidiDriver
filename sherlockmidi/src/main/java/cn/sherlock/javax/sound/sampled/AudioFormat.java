@@ -240,8 +240,6 @@ public class AudioFormat {
      * @return the encoding type
      * @see Encoding#PCM_SIGNED
      * @see Encoding#PCM_UNSIGNED
-     * @see Encoding#ULAW
-     * @see Encoding#ALAW
      */
     public Encoding getEncoding() {
 
@@ -365,29 +363,6 @@ public class AudioFormat {
 
 
     /**
-     * Obtain an unmodifiable map of properties.
-     * The concept of properties is further explained in
-     * the {@link AudioFileFormat class description}.
-     *
-     * @return a <code>Map&lt;String,Object&gt;</code> object containing
-     *         all properties. If no properties are recognized, an empty map is
-     *         returned.
-     *
-     * @see #getProperty(String)
-     * @since 1.5
-     */
-    public Map<String,Object> properties() {
-        Map<String,Object> ret;
-        if (properties == null) {
-            ret = new HashMap<String,Object>(0);
-        } else {
-            ret = (Map<String,Object>) (properties.clone());
-        }
-        return Collections.unmodifiableMap(ret);
-    }
-
-
-    /**
      * Obtain the property value specified by the key.
      * The concept of properties is further explained in
      * the {@link AudioFileFormat class description}.
@@ -400,7 +375,6 @@ public class AudioFormat {
      * @return the value of the property with the specified key,
      *         or <code>null</code> if the property does not exist.
      *
-     * @see #properties()
      * @since 1.5
      */
     public Object getProperty(String key) {
@@ -568,23 +542,6 @@ public class AudioFormat {
          * Specifies unsigned, linear PCM data.
          */
         public static final Encoding PCM_UNSIGNED = new Encoding("PCM_UNSIGNED");
-
-        /**
-         * Specifies floating-point PCM data.
-         *
-         * @since 1.7
-         */
-        public static final Encoding PCM_FLOAT = new Encoding("PCM_FLOAT");
-
-        /**
-         * Specifies u-law encoded data.
-         */
-        public static final Encoding ULAW = new Encoding("ULAW");
-
-        /**
-         * Specifies a-law encoded data.
-         */
-        public static final Encoding ALAW = new Encoding("ALAW");
 
 
         // INSTANCE VARIABLES

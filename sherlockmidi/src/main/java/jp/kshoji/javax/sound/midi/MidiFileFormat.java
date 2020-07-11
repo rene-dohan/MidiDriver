@@ -1,7 +1,6 @@
 package jp.kshoji.javax.sound.midi;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import java.util.AbstractMap;
 import java.util.Collections;
@@ -48,34 +47,6 @@ public class MidiFileFormat {
 		this.properties = new HashMap<String, Object>();
 	}
 
-    /**
-     * Constructor with properties
-     *
-     * @param type 0(SMF 0), or 1(SMF 1)
-     * @param divisionType {@link Sequence#PPQ}, {@link Sequence#SMPTE_24}, {@link Sequence#SMPTE_25}, {@link Sequence#SMPTE_30DROP}, or {@link Sequence#SMPTE_30}.
-     * @param resolution
-     * <ul>
-     * 	<li>divisionType == {@link Sequence#PPQ} : 0 - 0x7fff. typically 24, 480</li>
-     * 	<li>divisionType == {@link Sequence#SMPTE_24}, {@link Sequence#SMPTE_25}, {@link Sequence#SMPTE_30DROP}, {@link Sequence#SMPTE_30} : 0 - 0xff</li>
-     * </ul>
-     * @param bytes the length of file
-     * @param microseconds the length of time(in micro seconds)
-     * @param properties the properties
-     */
-	public MidiFileFormat(final int type, final float divisionType, final int resolution, final int bytes, final long microseconds, @NonNull final Map<String, Object> properties) {
-        this(type, divisionType, resolution, bytes, microseconds);
-		this.properties.putAll(properties);
-	}
-
-	/**
-	 * Get the length of {@link MidiFileFormat}
-	 * 
-	 * @return the length
-	 */
-	public int getByteLength() {
-		return byteLength;
-	}
-
 	/**
 	 * Get the division type of {@link MidiFileFormat}
 	 * 
@@ -83,26 +54,6 @@ public class MidiFileFormat {
 	 */
 	public float getDivisionType() {
 		return divisionType;
-	}
-
-	/**
-	 * Get the length in microseconds of {@link MidiFileFormat}
-	 * 
-	 * @return the length in microseconds
-	 */
-	public long getMicrosecondLength() {
-		return microsecondLength;
-	}
-
-	/**
-	 * Get the property of {@link MidiFileFormat}
-	 * 
-	 * @param key the property name
-	 * @return the property
-	 */
-    @Nullable
-    public Object getProperty(final String key) {
-		return properties.get(key);
 	}
 
 	/**
@@ -114,22 +65,4 @@ public class MidiFileFormat {
 		return resolution;
 	}
 
-	/**
-	 * Get the type of {@link MidiFileFormat}
-	 * 
-	 * @return the type
-	 */
-	public int getType() {
-		return type;
-	}
-
-	/**
-	 * Get properties {@link Map} of {@link MidiFileFormat}
-	 * 
-	 * @return properties {@link Map}
-	 */
-    @NonNull
-    public Map<String, Object> properties() {
-		return Collections.unmodifiableMap(properties);
-	}
 }

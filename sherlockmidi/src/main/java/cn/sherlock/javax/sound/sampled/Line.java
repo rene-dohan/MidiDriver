@@ -52,59 +52,6 @@ package cn.sherlock.javax.sound.sampled;
  */
 public interface Line extends cn.sherlock.javax.sound.sampled.AutoCloseable {
 
-    /**
-     * Obtains the <code>Line.Info</code> object describing this
-     * line.
-     * @return description of the line
-     */
-    Info getLineInfo();
-
-    /**
-     * Opens the line, indicating that it should acquire any required
-     * system resources and become operational.
-     * If this operation
-     * succeeds, the line is marked as open, and an <code>OPEN</code> event is dispatched
-     * to the line's listeners.
-     * <p>
-     * Note that some lines, once closed, cannot be reopened.  Attempts
-     * to reopen such a line will always result in an <code>LineUnavailableException</code>.
-     * <p>
-     * Some types of lines have configurable properties that may affect
-     * resource allocation.   For example, a <code>DataLine</code> must
-     * be opened with a particular format and buffer size.  Such lines
-     * should provide a mechanism for configuring these properties, such
-     * as an additional <code>open</code> method or methods which allow
-     * an application to specify the desired settings.
-     * <p>
-     * This method takes no arguments, and opens the line with the current
-     * settings.  For <code>{@link SourceDataLine}</code> and
-     * <code>{@link TargetDataLine}</code> objects, this means that the line is
-     * opened with default settings.  For a <code>{@link Clip}</code>, however,
-     * the buffer size is determined when data is loaded.  Since this method does not
-     * allow the application to specify any data to load, an IllegalArgumentException
-     * is thrown. Therefore, you should instead use one of the <code>open</code> methods
-     * provided in the <code>Clip</code> interface to load data into the <code>Clip</code>.
-     * <p>
-     * For <code>DataLine</code>'s, if the <code>DataLine.Info</code>
-     * object which was used to retrieve the line, specifies at least
-     * one fully qualified audio format, the last one will be used
-     * as the default format.
-     *
-     * @throws IllegalArgumentException if this method is called on a Clip instance.
-     * @throws LineUnavailableException if the line cannot be
-     * opened due to resource restrictions.
-     * @throws SecurityException if the line cannot be
-     * opened due to security restrictions.
-     *
-     * @see #close
-     * @see #isOpen
-     * @see LineEvent
-     * @see DataLine
-     * @see Clip#open(AudioFormat, byte[], int, int)
-     * @see Clip#open(AudioInputStream)
-     */
-    void open() throws LineUnavailableException;
-
 
     /**
      * Closes the line, indicating that any system resources
@@ -114,7 +61,6 @@ public interface Line extends cn.sherlock.javax.sound.sampled.AutoCloseable {
      * @throws SecurityException if the line cannot be
      * closed due to security restrictions.
      *
-     * @see #open
      * @see #isOpen
      * @see LineEvent
      */
@@ -128,7 +74,6 @@ public interface Line extends cn.sherlock.javax.sound.sampled.AutoCloseable {
      * playing or capturing sound.
      * @return <code>true</code> if the line is open, otherwise <code>false</code>
      *
-     * @see #open()
      * @see #close()
      */
     boolean isOpen();
@@ -151,7 +96,6 @@ public interface Line extends cn.sherlock.javax.sound.sampled.AutoCloseable {
      *
      * @author Kara Kytle
      *
-     * @see Line#getLineInfo
      * @see Mixer#getSourceLineInfo
      * @see Mixer#getTargetLineInfo
      * @see Mixer#getLine <code>Mixer.getLine(Line.Info)</code>

@@ -100,7 +100,6 @@ public interface SourceDataLine extends DataLine {
      * opened due to security restrictions
      *
      * @see #open(AudioFormat)
-     * @see Line#open
      * @see Line#close
      * @see Line#isOpen
      * @see LineEvent
@@ -139,7 +138,6 @@ public interface SourceDataLine extends DataLine {
      * opened due to security restrictions
      *
      * @see #open(AudioFormat, int)
-     * @see Line#open
      * @see Line#close
      * @see Line#isOpen
      * @see LineEvent
@@ -188,7 +186,6 @@ public interface SourceDataLine extends DataLine {
      * <code>b</code>.
      *
      * @see TargetDataLine#read
-     * @see DataLine#available
      */
     int write(byte[] b, int off, int len);
 

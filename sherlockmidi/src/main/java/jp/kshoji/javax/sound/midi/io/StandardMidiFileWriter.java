@@ -115,7 +115,6 @@ public class StandardMidiFileWriter extends MidiFileWriter {
 		}
 	}
 
-	@Override
 	public int write(@NonNull final Sequence sequence, final int fileType, @NonNull final File file) throws IOException {
 		final FileOutputStream fileOutputStream = new FileOutputStream(file);
 		final int written = write(sequence, fileType, fileOutputStream);
@@ -123,7 +122,6 @@ public class StandardMidiFileWriter extends MidiFileWriter {
 		return written;
 	}
 
-	@Override
 	public int write(@NonNull final Sequence sequence, final int fileType, @NonNull final OutputStream outputStream) throws IOException {
 		final MidiDataOutputStream midiDataOutputStream = new MidiDataOutputStream(outputStream);
 

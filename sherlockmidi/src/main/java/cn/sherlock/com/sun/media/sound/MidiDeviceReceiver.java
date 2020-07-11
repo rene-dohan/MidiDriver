@@ -34,8 +34,4 @@ import jp.kshoji.javax.sound.midi.Receiver;
  */
 public interface MidiDeviceReceiver extends Receiver {
 
-    /** Obtains the MidiDevice object associated with this Receiver.
-     */
-    MidiDevice getMidiDevice();
-
 }
