@@ -170,18 +170,6 @@ public class RIFFWriter extends OutputStream {
     private boolean open = true;
     private boolean writeoverride = false;
 
-    public RIFFWriter(String name, String format) throws IOException {
-        this(new RandomAccessFileWriter(name), format, 0);
-    }
-
-    public RIFFWriter(File file, String format) throws IOException {
-        this(new RandomAccessFileWriter(file), format, 0);
-    }
-
-    public RIFFWriter(OutputStream stream, String format) throws IOException {
-        this(new RandomAccessByteWriter(stream), format, 0);
-    }
-
     private RIFFWriter(RandomAccessWriter raf, String format, int chunktype)
             throws IOException {
         if (chunktype == 0)
@@ -256,19 +244,6 @@ public class RIFFWriter extends OutputStream {
             }
         }
         raf.write(b, off, len);
-    }
-
-    public RIFFWriter writeList(String format) throws IOException {
-        if (chunktype == 2) {
-            throw new IllegalArgumentException(
-                    "Only LIST and RIFF can write lists!");
-        }
-        if (childchunk != null) {
-            childchunk.close();
-            childchunk = null;
-        }
-        childchunk = new RIFFWriter(this.raf, format, 1);
-        return childchunk;
     }
 
     public RIFFWriter writeChunk(String format) throws IOException {

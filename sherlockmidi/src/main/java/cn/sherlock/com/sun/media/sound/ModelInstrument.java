@@ -25,10 +25,8 @@
 package cn.sherlock.com.sun.media.sound;
 
 import jp.kshoji.javax.sound.midi.Instrument;
-import jp.kshoji.javax.sound.midi.MidiChannel;
 import jp.kshoji.javax.sound.midi.Patch;
 import jp.kshoji.javax.sound.midi.Soundbank;
-import cn.sherlock.javax.sound.sampled.AudioFormat;
 
 /**
  * The model instrument class.
@@ -55,7 +53,7 @@ public abstract class ModelInstrument extends Instrument {
     }
 
     public ModelDirector getDirector(ModelPerformer[] performers,
-            MidiChannel channel, ModelDirectedPlayer player) {
+                                     ModelDirectedPlayer player) {
         return new ModelStandardIndexedDirector(performers, player);
     }
 
@@ -63,8 +61,7 @@ public abstract class ModelInstrument extends Instrument {
         return new ModelPerformer[0];
     }
 
-    public ModelChannelMixer getChannelMixer(MidiChannel channel,
-            AudioFormat format) {
+    public ModelChannelMixer getChannelMixer() {
         return null;
     }
 

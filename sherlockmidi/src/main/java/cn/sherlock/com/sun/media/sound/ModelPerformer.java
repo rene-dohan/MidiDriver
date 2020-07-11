@@ -76,10 +76,6 @@ public class ModelPerformer {
         return selfNonExclusive;
     }
 
-    public void setSelfNonExclusive(boolean selfNonExclusive) {
-        this.selfNonExclusive = selfNonExclusive;
-    }
-
     public int getKeyFrom() {
         return keyFrom;
     }
@@ -116,15 +112,8 @@ public class ModelPerformer {
         return releaseTrigger;
     }
 
-    public void setReleaseTriggered(boolean value) {
-        this.releaseTrigger = value;
-    }
-
     public boolean isDefaultConnectionsEnabled() {
         return addDefaultConnections;
     }
 
-    public void setDefaultConnectionsEnabled(boolean addDefaultConnections) {
-        this.addDefaultConnections = addDefaultConnections;
-    }
 }

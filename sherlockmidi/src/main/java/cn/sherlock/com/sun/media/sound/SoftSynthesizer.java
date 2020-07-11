@@ -31,7 +31,6 @@ import java.lang.ref.WeakReference;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +47,6 @@ import jp.kshoji.javax.sound.midi.Patch;
 import jp.kshoji.javax.sound.midi.Receiver;
 import jp.kshoji.javax.sound.midi.Soundbank;
 import jp.kshoji.javax.sound.midi.Transmitter;
-import jp.kshoji.javax.sound.midi.VoiceStatus;
 import cn.sherlock.javax.sound.sampled.AudioFormat;
 import cn.sherlock.javax.sound.sampled.AudioInputStream;
 import cn.sherlock.javax.sound.sampled.AudioSystem;
@@ -466,27 +464,15 @@ public class SoftSynthesizer implements AudioSynthesizer,
         String t_id = patchToString(patch);
         SoftTuning tuning = tunings.get(t_id);
         if (tuning == null) {
-            tuning = new SoftTuning(patch);
+            tuning = new SoftTuning();
             tunings.put(t_id, tuning);
         }
         return tuning;
     }
 
-    public long getLatency() {
-        synchronized (control_mutex) {
-            return latency;
-        }
-    }
-
     public AudioFormat getFormat() {
         synchronized (control_mutex) {
             return format;
-        }
-    }
-
-    private int getMaxPolyphony() {
-        synchronized (control_mutex) {
-            return maxpoly;
         }
     }
 
@@ -510,47 +496,6 @@ public class SoftSynthesizer implements AudioSynthesizer,
                 ret[i] = external_channels[i];
             return ret;
         }
-    }
-
-    public VoiceStatus[] getVoiceStatus() {
-        if (!isOpen()) {
-            VoiceStatus[] tempVoiceStatusArray
-                    = new VoiceStatus[getMaxPolyphony()];
-            for (int i = 0; i < tempVoiceStatusArray.length; i++) {
-                VoiceStatus b = new VoiceStatus();
-                b.active = false;
-                b.bank = 0;
-                b.channel = 0;
-                b.note = 0;
-                b.program = 0;
-                b.volume = 0;
-                tempVoiceStatusArray[i] = b;
-            }
-            return tempVoiceStatusArray;
-        }
-
-        synchronized (control_mutex) {
-            VoiceStatus[] tempVoiceStatusArray = new VoiceStatus[voices.length];
-            for (int i = 0; i < voices.length; i++) {
-                VoiceStatus a = voices[i];
-                VoiceStatus b = new VoiceStatus();
-                b.active = a.active;
-                b.bank = a.bank;
-                b.channel = a.channel;
-                b.note = a.note;
-                b.program = a.program;
-                b.volume = a.volume;
-                tempVoiceStatusArray[i] = b;
-            }
-            return tempVoiceStatusArray;
-        }
-    }
-
-    private boolean isSoundbankSupported(Soundbank soundbank) {
-        for (Instrument ins: soundbank.getInstruments())
-            if (!(ins instanceof ModelInstrument))
-                return false;
-        return true;
     }
 
     public boolean loadInstrument(Instrument instrument) {
@@ -583,57 +528,8 @@ public class SoftSynthesizer implements AudioSynthesizer,
         }
     }
 
-    public boolean remapInstrument(Instrument from, Instrument to) {
-
-        if (from == null)
-            throw new NullPointerException();
-        if (to == null)
-            throw new NullPointerException();
-        if (!(from instanceof ModelInstrument)) {
-            throw new IllegalArgumentException("Unsupported instrument: " +
-                    from.toString());
-        }
-        if (!(to instanceof ModelInstrument)) {
-            throw new IllegalArgumentException("Unsupported instrument: " +
-                    to.toString());
-        }
-        if (!isOpen())
-            return false;
-
-        synchronized (control_mutex) {
-            if (!loadedlist.containsValue(to))
-                throw new IllegalArgumentException("Instrument to is not loaded.");
-            unloadInstrument(from);
-            ModelMappedInstrument mfrom = new ModelMappedInstrument(
-                    (ModelInstrument)to, from.getPatch());
-            return loadInstrument(mfrom);
-        }
-    }
-
     private Soundbank getDefaultSoundbank() {
     	return null;
-    }
-
-    public Instrument[] getAvailableInstruments() {
-        Soundbank defsbk = getDefaultSoundbank();
-        if (defsbk == null)
-            return new Instrument[0];
-        Instrument[] inslist_array = defsbk.getInstruments();
-        Arrays.sort(inslist_array, new ModelInstrumentComparator());
-        return inslist_array;
-    }
-
-    public Instrument[] getLoadedInstruments() {
-        if (!isOpen())
-            return new Instrument[0];
-
-        synchronized (control_mutex) {
-            ModelInstrument[] inslist_array =
-                    new ModelInstrument[loadedlist.values().size()];
-            loadedlist.values().toArray(inslist_array);
-            Arrays.sort(inslist_array, new ModelInstrumentComparator());
-            return inslist_array;
-        }
     }
 
     private boolean loadAllInstruments(Soundbank soundbank) {
@@ -646,48 +542,6 @@ public class SoftSynthesizer implements AudioSynthesizer,
             instruments.add((ModelInstrument)ins);
         }
         return loadInstruments(instruments);
-    }
-
-    public void unloadAllInstruments(Soundbank soundbank) {
-        if (soundbank == null || !isSoundbankSupported(soundbank))
-            throw new IllegalArgumentException("Unsupported soundbank: " + soundbank);
-
-        if (!isOpen())
-            return;
-
-        for (Instrument ins: soundbank.getInstruments()) {
-            if (ins instanceof ModelInstrument) {
-                unloadInstrument(ins);
-            }
-        }
-    }
-
-    public boolean loadInstruments(Soundbank soundbank, Patch[] patchList) {
-        List<ModelInstrument> instruments = new ArrayList<ModelInstrument>();
-        for (Patch patch: patchList) {
-            Instrument ins = soundbank.getInstrument(patch);
-            if (ins == null || !(ins instanceof ModelInstrument)) {
-                throw new IllegalArgumentException(
-                        "Unsupported instrument: " + ins);
-            }
-            instruments.add((ModelInstrument)ins);
-        }
-        return loadInstruments(instruments);
-    }
-
-    public void unloadInstruments(Soundbank soundbank, Patch[] patchList) {
-        if (soundbank == null || !isSoundbankSupported(soundbank))
-            throw new IllegalArgumentException("Unsupported soundbank: " + soundbank);
-
-        if (!isOpen())
-            return;
-
-        for (Patch pat: patchList) {
-            Instrument ins = soundbank.getInstrument(pat);
-            if (ins instanceof ModelInstrument) {
-                unloadInstrument(ins);
-            }
-        }
     }
 
     public MidiDevice.Info getDeviceInfo() {
@@ -1117,34 +971,6 @@ public class SoftSynthesizer implements AudioSynthesizer,
         }
     }
 
-    public long getMicrosecondPosition() {
-
-        if (!isOpen())
-            return 0;
-
-        synchronized (control_mutex) {
-            return mainmixer.getMicrosecondPosition();
-        }
-    }
-
-    public int getMaxReceivers() {
-        return -1;
-    }
-
-    public int getMaxTransmitters() {
-        return 0;
-    }
-
-    private Receiver getReceiver() throws MidiUnavailableException {
-
-        synchronized (control_mutex) {
-            SoftReceiver receiver = new SoftReceiver(this);
-            receiver.open = open;
-            recvslist.add(receiver);
-            return receiver;
-        }
-    }
-
     public List<Receiver> getReceivers() {
 
         synchronized (control_mutex) {
@@ -1164,22 +990,4 @@ public class SoftSynthesizer implements AudioSynthesizer,
         return new ArrayList<Transmitter>();
     }
 
-    public Receiver getReceiverReferenceCounting()
-            throws MidiUnavailableException {
-
-        if (!isOpen()) {
-            open();
-            synchronized (control_mutex) {
-                implicitOpen = true;
-            }
-        }
-
-        return getReceiver();
-    }
-
-    public Transmitter getTransmitterReferenceCounting()
-            throws MidiUnavailableException {
-
-        throw new MidiUnavailableException("No transmitter available");
-    }
 }

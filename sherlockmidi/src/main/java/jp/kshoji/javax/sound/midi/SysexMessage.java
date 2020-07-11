@@ -26,7 +26,6 @@ public class SysexMessage extends MidiMessage {
 		super(data);
 	}
 
-	@Override
 	public void setMessage(@Nullable final byte[] data, final int length) throws InvalidMidiDataException {
         if (data == null) {
             throw new InvalidMidiDataException("SysexMessage data is null");

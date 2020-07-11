@@ -169,12 +169,6 @@ public class ModelByteBuffer {
         this.len = buffer.length;
     }
 
-    public ModelByteBuffer(byte[] buffer, int offset, int len) {
-        this.buffer = buffer;
-        this.offset = offset;
-        this.len = len;
-    }
-
     public ModelByteBuffer(File file, long offset, long len) {
         this.file = file;
         this.fileoffset = offset;

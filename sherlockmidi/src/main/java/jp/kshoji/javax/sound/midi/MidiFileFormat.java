@@ -1,8 +1,5 @@
 package jp.kshoji.javax.sound.midi;
 
-import java.util.AbstractMap;
-import java.util.HashMap;
-
 /**
  * Represents MIDI File Format
  * 
@@ -14,34 +11,8 @@ public class MidiFileFormat {
 
 	public static final int UNKNOWN_LENGTH = -1;
 
-	protected int byteLength;
-	protected float divisionType;
-	protected long microsecondLength;
+    protected float divisionType;
 	protected int resolution;
-	protected int type;
-	private final AbstractMap<String, Object> properties;
-
-    /**
-     * Constructor without properties
-     *
-     * @param type 0(SMF 0), or 1(SMF 1)
-     * @param divisionType {@link Sequence#PPQ}, {@link Sequence#SMPTE_24}, {@link Sequence#SMPTE_25}, {@link Sequence#SMPTE_30DROP}, or {@link Sequence#SMPTE_30}.
-     * @param resolution
-     * <ul>
-     * 	<li>divisionType == {@link Sequence#PPQ} : 0 - 0x7fff. typically 24, 480</li>
-     * 	<li>divisionType == {@link Sequence#SMPTE_24}, {@link Sequence#SMPTE_25}, {@link Sequence#SMPTE_30DROP}, {@link Sequence#SMPTE_30} : 0 - 0xff</li>
-     * </ul>
-     * @param bytes the length of file
-     * @param microseconds the length of time(in micro seconds)
-     */
-	public MidiFileFormat(final int type, final float divisionType, final int resolution, final int bytes, final long microseconds) {
-		this.type = type;
-		this.divisionType = divisionType;
-		this.resolution = resolution;
-		this.byteLength = bytes;
-		this.microsecondLength = microseconds;
-		this.properties = new HashMap<String, Object>();
-	}
 
 	/**
 	 * Get the division type of {@link MidiFileFormat}

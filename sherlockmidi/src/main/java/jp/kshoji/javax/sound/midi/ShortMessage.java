@@ -62,20 +62,6 @@ public class ShortMessage extends MidiMessage {
     }
 
 	/**
-	 * Set the kind of message.
-	 *
-     * @param status the status data
-	 * @throws InvalidMidiDataException
-	 */
-	public void setMessage(final int status) throws InvalidMidiDataException {
-		final int dataLength = getDataLength(status);
-		if (dataLength != 0) {
-			throw new InvalidMidiDataException("Status byte: " + status + " requires " + dataLength + " data bytes length");
-		}
-		setMessage(status, 0, 0);
-	}
-
-	/**
 	 * Set the entire information of message.
 	 * 
 	 * @param status the status data
@@ -110,26 +96,7 @@ public class ShortMessage extends MidiMessage {
 		}
 	}
 
-	/**
-	 * Set the entire information of message.
-	 * 
-	 * @param command the command
-	 * @param channel the channel
-	 * @param data1 the first data
-	 * @param data2 the second data
-	 * @throws InvalidMidiDataException
-	 */
-	public void setMessage(final int command, final int channel, final int data1, final int data2) throws InvalidMidiDataException {
-		if (command >= 0xf0 || command < 0x80) {
-			throw new InvalidMidiDataException("command out of range: 0x" + Integer.toHexString(command));
-		}
-		if (channel > 0x0f) {
-			throw new InvalidMidiDataException("channel out of range: " + channel);
-		}
-		setMessage((command & 0xf0) | (channel & 0x0f), data1, data2);
-	}
-
-	/**
+    /**
 	 * Get the channel of this message.
 	 * 
 	 * @return the channel

@@ -155,9 +155,6 @@ public class ModelStandardIndexedDirector implements ModelDirector {
         }
     }
 
-    public void close() {
-    }
-
     public void noteOff(int noteNumber, int velocity) {
         if (!noteOffUsed)
             return;

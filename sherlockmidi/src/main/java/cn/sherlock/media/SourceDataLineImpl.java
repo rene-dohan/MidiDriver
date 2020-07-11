@@ -16,26 +16,10 @@ public class SourceDataLineImpl implements SourceDataLine {
 		this.format = format;
 	}
 
-	public void drain() {
-		this.flush();
-	}
-
-	private void flush() {
-		if (audioTrack != null) {
-			audioTrack.flush();
-		}
-	}
-
 	@Override
 	public void start() {
 		if (audioTrack != null) {
 			audioTrack.play();
-		}
-	}
-
-	public void stop() {
-		if (audioTrack != null) {
-			audioTrack.stop();
 		}
 	}
 
@@ -77,24 +61,6 @@ public class SourceDataLineImpl implements SourceDataLine {
 		return 0;
 	}
 
-	public int available() {
-		return 0;
-	}
-
-	public int getFramePosition() {
-		if (audioTrack != null) {
-			return audioTrack.getPlaybackHeadPosition();
-		}
-		return 0;
-	}
-
-	public long getLongFramePosition() {
-		if (audioTrack != null) {
-			return audioTrack.getPlaybackHeadPosition();
-		}
-		return 0;
-	}
-
 	@Deprecated
 	public long getMicrosecondPosition() {
 		if (audioTrack != null) {
@@ -117,28 +83,6 @@ public class SourceDataLineImpl implements SourceDataLine {
 		return null;
 	}
 
-	public void open() throws LineUnavailableException {
-		// Get the smallest buffer to minimize latency.
-		int sampleRateInHz = (int) format.getSampleRate();
-		// int sampleSizeInBit = format.getSampleSizeInBits();
-		int channelConfig;
-		if (format.getChannels() == 1) {
-			channelConfig = android.media.AudioFormat.CHANNEL_OUT_MONO;
-		} else if (format.getChannels() == 2) {
-			channelConfig = android.media.AudioFormat.CHANNEL_OUT_STEREO;
-		} else {
-			throw new IllegalArgumentException(
-					"format.getChannels() must in (1,2)");
-		}
-
-		int bufferSizeInBytes = AudioTrack.getMinBufferSize(sampleRateInHz,
-				channelConfig, android.media.AudioFormat.ENCODING_PCM_16BIT);
-		bufferSize = bufferSizeInBytes;
-		audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, sampleRateInHz,
-				channelConfig, android.media.AudioFormat.ENCODING_PCM_16BIT,
-				bufferSizeInBytes, AudioTrack.MODE_STREAM);
-	}
-
 	@Override
 	public void open(AudioFormat format, int bufferSize)
 			throws LineUnavailableException {
@@ -159,28 +103,6 @@ public class SourceDataLineImpl implements SourceDataLine {
 		audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, sampleRateInHz,
 				channelConfig, android.media.AudioFormat.ENCODING_PCM_16BIT,
 				bufferSize, AudioTrack.MODE_STREAM);
-	}
-
-	public void open(AudioFormat format) throws LineUnavailableException {
-		// Get the smallest buffer to minimize latency.
-		this.format = format;
-		int sampleRateInHz = (int) format.getSampleRate();
-		// int sampleSizeInBit = format.getSampleSizeInBits();
-		int channelConfig;
-		if (format.getChannels() == 1) {
-			channelConfig = android.media.AudioFormat.CHANNEL_OUT_MONO;
-		} else if (format.getChannels() == 2) {
-			channelConfig = android.media.AudioFormat.CHANNEL_OUT_STEREO;
-		} else {
-			throw new IllegalArgumentException(
-					"format.getChannels() must in (1,2)");
-		}
-		int bufferSizeInBytes = AudioTrack.getMinBufferSize(sampleRateInHz,
-				channelConfig, android.media.AudioFormat.ENCODING_PCM_16BIT);
-		this.bufferSize = bufferSizeInBytes;
-		audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, sampleRateInHz,
-				channelConfig, android.media.AudioFormat.ENCODING_PCM_16BIT,
-				bufferSizeInBytes, AudioTrack.MODE_STREAM);
 	}
 
 	@Override

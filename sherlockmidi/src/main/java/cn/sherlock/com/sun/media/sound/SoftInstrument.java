@@ -65,7 +65,7 @@ public class SoftInstrument extends Instrument {
 
     public ModelDirector getDirector(MidiChannel channel,
             ModelDirectedPlayer player) {
-        return ins.getDirector(modelperformers, channel, player);
+        return ins.getDirector(modelperformers, player);
     }
 
     public ModelInstrument getSourceInstrument() {

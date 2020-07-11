@@ -25,8 +25,6 @@
 package cn.sherlock.com.sun.media.sound;
 
 import java.io.IOException;
-import jp.kshoji.javax.sound.midi.MidiChannel;
-import jp.kshoji.javax.sound.midi.VoiceStatus;
 
 /**
  * This interface is used for audio streams from ModelOscillator.
@@ -37,8 +35,7 @@ public interface ModelOscillatorStream {
 
     void setPitch(float pitch); // Pitch is in cents!
 
-    void noteOn(MidiChannel channel, VoiceStatus voice, int noteNumber,
-                int velocity);
+    void noteOn();
 
     void noteOff();
 

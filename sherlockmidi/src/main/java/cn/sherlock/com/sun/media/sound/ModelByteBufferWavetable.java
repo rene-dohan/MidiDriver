@@ -135,12 +135,6 @@ public class ModelByteBufferWavetable implements ModelWavetable {
     private float attenuation = 0;
     private int loopType = LOOP_TYPE_OFF;
 
-    public ModelByteBufferWavetable(ModelByteBuffer buffer,
-            float pitchcorrection) {
-        this.buffer = buffer;
-        this.pitchcorrection = pitchcorrection;
-    }
-
     public ModelByteBufferWavetable(ModelByteBuffer buffer, AudioFormat format,
             float pitchcorrection) {
         this.format = format;
@@ -226,7 +220,7 @@ public class ModelByteBufferWavetable implements ModelWavetable {
         return getFormat().getChannels();
     }
 
-    public ModelOscillatorStream open(float samplerate) {
+    public ModelOscillatorStream open() {
         // ModelWavetableOscillator doesn't support ModelOscillatorStream
         return null;
     }

@@ -42,7 +42,6 @@ public class SoftVoice extends VoiceStatus {
     public boolean releaseTriggered = false;
     private int noteOn_noteNumber = 0;
     private int noteOn_velocity = 0;
-    private int noteOff_velocity = 0;
     private int delay = 0;
     protected ModelChannelMixer channelmixer = null;
     protected double tunedKey = 0;
@@ -532,8 +531,6 @@ public class SoftVoice extends VoiceStatus {
             return;
         on = false;
 
-        noteOff_velocity = velocity;
-
         if (softchannel.sustain) {
             sustain = true;
             return;
@@ -616,7 +613,7 @@ public class SoftVoice extends VoiceStatus {
                     //e.printStackTrace();
                 }
             } else {
-                osc_stream = osc.open(synthesizer.getFormat().getSampleRate());
+                osc_stream = osc.open();
             }
             osc_attenuation = osc.getAttenuation();
             osc_stream_nrofchannels = osc.getChannels();
@@ -624,8 +621,8 @@ public class SoftVoice extends VoiceStatus {
                 osc_buff = new float[osc_stream_nrofchannels][];
 
             if (osc_stream != null)
-                osc_stream.noteOn(softchannel, this, noteOn_noteNumber,
-                        noteOn_velocity);
+                osc_stream.noteOn(
+                );
 
 
         }

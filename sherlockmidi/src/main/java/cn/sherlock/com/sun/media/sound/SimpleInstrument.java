@@ -26,7 +26,6 @@ package cn.sherlock.com.sun.media.sound;
 
 import java.util.ArrayList;
 import java.util.List;
-import jp.kshoji.javax.sound.midi.Patch;
 
 /**
  * A simple instrument that is made of other ModelInstrument, ModelPerformer
@@ -37,65 +36,19 @@ import jp.kshoji.javax.sound.midi.Patch;
 public class SimpleInstrument extends ModelInstrument {
 
     private static class SimpleInstrumentPart {
-        ModelPerformer[] performers;
-        int keyFrom;
-        int keyTo;
-        int velFrom;
-        int velTo;
-        int exclusiveClass;
     }
-    protected int preset = 0;
-    protected int bank = 0;
-    protected boolean percussion = false;
-    protected String name = "";
+
     protected List<SimpleInstrumentPart> parts
             = new ArrayList<SimpleInstrumentPart>();
-
-    public SimpleInstrument() {
-        super(null, null, null, null);
-    }
 
     public void add(ModelPerformer[] performers, int keyFrom, int keyTo,
             int velFrom, int velTo, int exclusiveClass) {
         SimpleInstrumentPart part = new SimpleInstrumentPart();
-        part.performers = performers;
-        part.keyFrom = keyFrom;
-        part.keyTo = keyTo;
-        part.velFrom = velFrom;
-        part.velTo = velTo;
-        part.exclusiveClass = exclusiveClass;
         parts.add(part);
-    }
-
-    public void add(ModelPerformer[] performers) {
-        add(performers, 0, 127, 0, 127, -1);
-    }
-
-    public void add(ModelPerformer performer) {
-        add(new ModelPerformer[]{performer});
     }
 
     public Object getData() {
         return null;
     }
 
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setPatch(Patch patch) {
-        if (patch instanceof ModelPatch && ((ModelPatch)patch).isPercussion()) {
-            percussion = true;
-            bank = patch.getBank();
-            preset = patch.getProgram();
-        } else {
-            percussion = false;
-            bank = patch.getBank();
-            preset = patch.getProgram();
-        }
-    }
 }

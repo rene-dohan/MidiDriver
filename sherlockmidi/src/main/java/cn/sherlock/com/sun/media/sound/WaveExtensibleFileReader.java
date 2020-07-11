@@ -299,30 +299,6 @@ public class WaveExtensibleFileReader extends AudioFileReader {
         throw new UnsupportedAudioFileException();
     }
 
-    public AudioFileFormat getAudioFileFormat(URL url)
-            throws UnsupportedAudioFileException, IOException {
-        InputStream stream = url.openStream();
-        AudioFileFormat format;
-        try {
-            format = getAudioFileFormat(new BufferedInputStream(stream));
-        } finally {
-            stream.close();
-        }
-        return format;
-    }
-
-    public AudioFileFormat getAudioFileFormat(File file)
-            throws UnsupportedAudioFileException, IOException {
-        InputStream stream = new FileInputStream(file);
-        AudioFileFormat format;
-        try {
-            format = getAudioFileFormat(new BufferedInputStream(stream));
-        } finally {
-            stream.close();
-        }
-        return format;
-    }
-
     public AudioInputStream getAudioInputStream(URL url)
             throws UnsupportedAudioFileException, IOException {
         return getAudioInputStream(new BufferedInputStream(url.openStream()));

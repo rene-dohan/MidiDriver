@@ -28,27 +28,6 @@ public abstract class MidiMessage implements Cloneable {
         }
 	}
 
-	/**
-     * Constructor with the raw data, and its length
-	 *
-	 * @param data the raw data
-	 * @param length unused parameter. Use always data.length
-	 * @throws InvalidMidiDataException
-	 */
-    public void setMessage(@Nullable final byte[] data, final int length) throws InvalidMidiDataException {
-        if (data == null) {
-            this.data = null;
-            this.length = 0;
-        } else {
-            if (this.data == null || this.data.length != data.length) {
-                this.data = new byte[data.length];
-            }
-
-            this.length = data.length;
-            System.arraycopy(data, 0, this.data, 0, data.length);
-        }
-	}
-
     /**
      * Get the message source data
      *

@@ -26,7 +26,6 @@ package cn.sherlock.com.sun.media.sound;
 
 import java.util.TreeMap;
 
-import jp.kshoji.javax.sound.midi.MidiDevice;
 import jp.kshoji.javax.sound.midi.MidiMessage;
 import jp.kshoji.javax.sound.midi.ShortMessage;
 
@@ -50,10 +49,6 @@ public class SoftReceiver implements MidiDeviceReceiver {
         if (mainmixer != null)
             this.midimessages = mainmixer.midimessages;
     }
-
-    public MidiDevice getMidiDevice() {
-        return synth;
-    }    
 
     public void send(MidiMessage message, long timeStamp) {
 

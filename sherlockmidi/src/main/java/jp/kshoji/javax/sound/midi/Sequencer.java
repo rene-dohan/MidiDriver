@@ -76,11 +76,6 @@ public interface Sequencer extends MidiDevice {
     boolean isRecording();
 
     /**
-     * Get the current microsecond position.
-     */
-    long getMicrosecondPosition();
-
-    /**
      * Get if the track is mute on the playback.
      *
      * @param track the track number
