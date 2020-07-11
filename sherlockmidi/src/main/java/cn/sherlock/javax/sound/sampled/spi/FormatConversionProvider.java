@@ -49,38 +49,7 @@ public abstract class FormatConversionProvider {
 
 	// NEW METHODS
 
-	/**
-	 * Obtains the set of source format encodings from which format conversion
-	 * services are provided by this provider.
-	 * 
-	 * @return array of source format encodings. If for some reason provider
-	 *         does not provide any conversion services, an array of length 0 is
-	 *         returned.
-	 */
-	public abstract AudioFormat.Encoding[] getSourceEncodings();
-
-	/**
-	 * Indicates whether the format converter supports conversion from the
-	 * specified source format encoding.
-	 * 
-	 * @param sourceEncoding
-	 *            the source format encoding for which support is queried
-	 * @return <code>true</code> if the encoding is supported, otherwise
-	 *         <code>false</code>
-	 */
-	public boolean isSourceEncodingSupported(AudioFormat.Encoding sourceEncoding) {
-
-		AudioFormat.Encoding[] sourceEncodings = getSourceEncodings();
-
-		for (int i = 0; i < sourceEncodings.length; i++) {
-			if (sourceEncoding.equals(sourceEncodings[i])) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
+    /**
 	 * Obtains the set of target formats with the encoding specified supported
 	 * by the format converter If no target formats with the specified encoding
 	 * are supported for this source format, an array of length 0 is returned.

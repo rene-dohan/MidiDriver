@@ -90,18 +90,6 @@ public class MetaMessage extends MidiMessage {
 		}
 	}
 
-	/**
-	 * Get the type of {@link MetaMessage}
-	 * 
-	 * @return the type
-	 */
-	public int getType() {
-		if (data != null && data.length >= 2) {
-			return data[1] & 0xff;
-		}
-		return 0;
-	}
-
 	@SuppressWarnings("CloneDoesntCallSuperClone")
 	@NonNull
 	@Override

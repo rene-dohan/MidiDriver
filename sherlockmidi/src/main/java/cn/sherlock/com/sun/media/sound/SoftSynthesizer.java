@@ -1135,7 +1135,7 @@ public class SoftSynthesizer implements AudioSynthesizer,
         return 0;
     }
 
-    public Receiver getReceiver() throws MidiUnavailableException {
+    private Receiver getReceiver() throws MidiUnavailableException {
 
         synchronized (control_mutex) {
             SoftReceiver receiver = new SoftReceiver(this);

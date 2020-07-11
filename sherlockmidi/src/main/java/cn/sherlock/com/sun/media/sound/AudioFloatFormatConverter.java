@@ -468,26 +468,6 @@ public class AudioFloatFormatConverter extends FormatConversionProvider {
 
     }
 
-    private Encoding[] formats = { Encoding.PCM_SIGNED, Encoding.PCM_UNSIGNED,
-            AudioFloatConverter.PCM_FLOAT };
-
-    public AudioInputStream getAudioInputStream(Encoding targetEncoding,
-            AudioInputStream sourceStream) {
-        if (sourceStream.getFormat().getEncoding().equals(targetEncoding))
-            return sourceStream;
-        AudioFormat format = sourceStream.getFormat();
-        int channels = format.getChannels();
-        Encoding encoding = targetEncoding;
-        float samplerate = format.getSampleRate();
-        int bits = format.getSampleSizeInBits();
-        boolean bigendian = format.isBigEndian();
-        if (targetEncoding.equals(AudioFloatConverter.PCM_FLOAT))
-            bits = 32;
-        AudioFormat targetFormat = new AudioFormat(encoding, samplerate, bits,
-                channels, channels * bits / 8, samplerate, bigendian);
-        return getAudioInputStream(targetFormat, sourceStream);
-    }
-
     public AudioInputStream getAudioInputStream(AudioFormat targetFormat,
             AudioInputStream sourceStream) {
         if (!isConversionSupported(targetFormat, sourceStream.getFormat()))
@@ -519,18 +499,6 @@ public class AudioFloatFormatConverter extends FormatConversionProvider {
     }
 
     public Encoding[] getSourceEncodings() {
-        return new Encoding[] { Encoding.PCM_SIGNED, Encoding.PCM_UNSIGNED,
-                AudioFloatConverter.PCM_FLOAT };
-    }
-
-    public Encoding[] getTargetEncodings() {
-        return new Encoding[] { Encoding.PCM_SIGNED, Encoding.PCM_UNSIGNED,
-                AudioFloatConverter.PCM_FLOAT };
-    }
-
-    public Encoding[] getTargetEncodings(AudioFormat sourceFormat) {
-        if (AudioFloatConverter.getConverter(sourceFormat) == null)
-            return new Encoding[0];
         return new Encoding[] { Encoding.PCM_SIGNED, Encoding.PCM_UNSIGNED,
                 AudioFloatConverter.PCM_FLOAT };
     }
@@ -598,17 +566,6 @@ public class AudioFloatFormatConverter extends FormatConversionProvider {
         if (sourceFormat.getChannels() <= 0)
             return false;
         return targetFormat.getChannels() > 0;
-    }
-
-    public boolean isConversionSupported(Encoding targetEncoding,
-            AudioFormat sourceFormat) {
-        if (AudioFloatConverter.getConverter(sourceFormat) == null)
-            return false;
-        for (int i = 0; i < formats.length; i++) {
-            if (targetEncoding.equals(formats[i]))
-                return true;
-        }
-        return false;
     }
 
 }

@@ -25,8 +25,6 @@
 
 package cn.sherlock.javax.sound.sampled;
 
-import java.util.HashMap;
-
 
 /**
  * An instance of the <code>AudioFileFormat</code> class describes
@@ -124,10 +122,6 @@ public class AudioFileFormat {
     private int frameLength;
 
 
-    /** The set of properties */
-    private HashMap<String, Object> properties;
-
-
     /**
      * Constructs an audio file format object.
      * This protected constructor is intended for use by providers of file-reading
@@ -145,7 +139,6 @@ public class AudioFileFormat {
         this.byteLength = byteLength;
         this.format = format;
         this.frameLength = frameLength;
-        this.properties = null;
     }
 
 

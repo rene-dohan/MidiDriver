@@ -19,31 +19,13 @@ public interface MidiDevice {
     @NonNull
     Info getDeviceInfo();
 
-	/**
-	 * Get the default {@link Receiver}.
-	 * 
-	 * @return the default {@link Receiver}.
-	 * @throws MidiUnavailableException
-	 */
-	@NonNull
-    Receiver getReceiver() throws MidiUnavailableException;
-
-	/**
+    /**
 	 * Get the all of {@link Receiver}s.
 	 * 
 	 * @return the all of {@link Receiver}s.
 	 */
     @NonNull
     List<Receiver> getReceivers();
-
-	/**
-	 * Get the default {@link Transmitter}.
-	 * 
-	 * @return the default {@link Transmitter}.
-	 * @throws MidiUnavailableException
-	 */
-    @NonNull
-    Transmitter getTransmitter() throws MidiUnavailableException;
 
 	/**
 	 * Get the all of {@link Transmitter}s.

@@ -566,7 +566,6 @@ public class SequencerImpl implements Sequencer {
     }
 
     @NonNull
-    @Override
     public Receiver getReceiver() throws MidiUnavailableException {
         synchronized (receivers) {
             if (receivers.isEmpty()) {
@@ -586,7 +585,6 @@ public class SequencerImpl implements Sequencer {
     }
 
     @NonNull
-    @Override
     public Transmitter getTransmitter() throws MidiUnavailableException {
         synchronized (transmitters) {
             if (transmitters.isEmpty()) {

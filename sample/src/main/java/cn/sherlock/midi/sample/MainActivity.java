@@ -83,7 +83,7 @@ public class MainActivity extends Activity {
 			public boolean onTouch(View v, MotionEvent event) {
 				if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
 					synth.unloadInstrument(currentInstrument);
-					changeInstrument(1 + (int)(Math.random() * 128));
+					changeInstrument(1 + (int)(Math.random() * 127));
 				}
 				return true;
 			}

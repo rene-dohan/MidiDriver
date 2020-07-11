@@ -337,89 +337,8 @@ public class AudioSystem {
 	// $$fb 2002-04-12: fix for 4662082: behavior of
 	// AudioSystem.getTargetEncodings() methods doesn't match the spec
 
-	/**
-	 * Obtains an audio input stream from the provided <code>File</code>. The
-	 * <code>File</code> must point to valid audio file data.
-	 * 
-	 * @param file
-	 *            the <code>File</code> for which the
-	 *            <code>AudioInputStream</code> should be constructed
-	 * @return an <code>AudioInputStream</code> object based on the audio file
-	 *         data pointed to by the <code>File</code>
-	 * @throws UnsupportedAudioFileException
-	 *             if the <code>File</code> does not point to valid audio file
-	 *             data recognized by the system
-	 * @throws IOException
-	 *             if an I/O exception occurs
-	 */
-	public static AudioInputStream getAudioInputStream(File file)
-			throws UnsupportedAudioFileException, IOException {
-
-		List<AudioFileReader> providers = getAudioFileReaders();
-		AudioInputStream audioStream = null;
-
-		for (int i = 0; i < providers.size(); i++) {
-			AudioFileReader reader = providers.get(i);
-			try {
-				audioStream = reader.getAudioInputStream(file); // throws
-																// IOException
-				break;
-			} catch (UnsupportedAudioFileException e) {
-				continue;
-			}
-		}
-
-		if (audioStream == null) {
-			throw new UnsupportedAudioFileException(
-					"could not get audio input stream from input file");
-		} else {
-			return audioStream;
-		}
-	}
 
 	/**
-	 * Obtains an audio input stream from the URL provided. The URL must point
-	 * to valid audio file data.
-	 * 
-	 * @param url
-	 *            the URL for which the <code>AudioInputStream</code> should be
-	 *            constructed
-	 * @return an <code>AudioInputStream</code> object based on the audio file
-	 *         data pointed to by the URL
-	 * @throws UnsupportedAudioFileException
-	 *             if the URL does not point to valid audio file data recognized
-	 *             by the system
-	 * @throws IOException
-	 *             if an I/O exception occurs
-	 */
-	public static AudioInputStream getAudioInputStream(URL url)
-			throws UnsupportedAudioFileException, IOException {
-
-		List<AudioFileReader> providers = getAudioFileReaders();
-		AudioInputStream audioStream = null;
-
-		for (int i = 0; i < providers.size(); i++) {
-			AudioFileReader reader = providers.get(i);
-			try {
-				audioStream = reader.getAudioInputStream(url); // throws
-																// IOException
-				break;
-			} catch (UnsupportedAudioFileException e) {
-				continue;
-			}
-		}
-
-		if (audioStream == null) {
-			throw new UnsupportedAudioFileException(
-					"could not get audio input stream from input URL");
-		} else {
-			return audioStream;
-		}
-	}
-	
-
-
-    /**
      * Obtains the formats that have a particular encoding and that the system can
      * obtain from a stream of the specified format using the set of
      * installed format converters.
