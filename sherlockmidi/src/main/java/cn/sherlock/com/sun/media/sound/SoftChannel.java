@@ -363,8 +363,6 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
         voice.exclusiveClass = p.exclusiveClass;
         voice.softchannel = this;
         voice.channel = channel;
-        voice.bank = bank;
-        voice.program = program;
         voice.performer = p;
         voice.objects.clear();
         voice.objects.put("midi", co_midi[noteNumber]);
@@ -437,7 +435,7 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
                             && voices[i].note == noteNumber) {
                         voices[i].sustain = false;
                         voices[i].on = true;
-                        voices[i].noteOff(0);
+                        voices[i].noteOff();
                     }
                 }
                 sustain = true;
@@ -495,7 +493,7 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
                         .getChannelMixer();
                 if (current_mixer != null)
                     mainmixer.registerMixer(current_mixer);
-                current_director = current_instrument.getDirector(this, this);
+                current_director = current_instrument.getDirector(this);
                 applyInstrumentCustomization();
             }
             prevVoiceID = synthesizer.voiceIDCounter++;
@@ -569,7 +567,7 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
                 if (voices[i].on && voices[i].channel == channel
                         && voices[i].note == noteNumber
                         && voices[i].releaseTriggered == false) {
-                    voices[i].noteOff(velocity);
+                    voices[i].noteOff();
                 }
                 // We must also check stolen voices
                 if (voices[i].stealer_channel == this && voices[i].stealer_noteNumber == noteNumber) {
@@ -598,7 +596,7 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
                         .getChannelMixer();
                 if (current_mixer != null)
                     mainmixer.registerMixer(current_mixer);
-                current_director = current_instrument.getDirector(this, this);
+                current_director = current_instrument.getDirector(this);
                 applyInstrumentCustomization();
 
             }
@@ -1117,7 +1115,7 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
                                 voices[i].sustain = false;
                                 if (!voices[i].on) {
                                     voices[i].on = true;
-                                    voices[i].noteOff(0);
+                                    voices[i].noteOff();
                                 }
                             }
                         }
@@ -1155,7 +1153,7 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
                             voices[i].sostenuto = false;
                             if (!voices[i].on) {
                                 voices[i].on = true;
-                                voices[i].noteOff(0);
+                                voices[i].noteOff();
                             }
                         }
                     }
@@ -1455,7 +1453,7 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
             for (int i = 0; i < voices.length; i++)
                 if (voices[i].on && voices[i].channel == channel
                         && voices[i].releaseTriggered == false) {
-                    voices[i].noteOff(0);
+                    voices[i].noteOff();
                 }
         }
     }

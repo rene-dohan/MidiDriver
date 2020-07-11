@@ -498,11 +498,6 @@ public class AudioFloatFormatConverter extends FormatConversionProvider {
                 .getFrameLength());
     }
 
-    public Encoding[] getSourceEncodings() {
-        return new Encoding[] { Encoding.PCM_SIGNED, Encoding.PCM_UNSIGNED,
-                AudioFloatConverter.PCM_FLOAT };
-    }
-
     public AudioFormat[] getTargetFormats(Encoding targetEncoding,
             AudioFormat sourceFormat) {
         if (AudioFloatConverter.getConverter(sourceFormat) == null)

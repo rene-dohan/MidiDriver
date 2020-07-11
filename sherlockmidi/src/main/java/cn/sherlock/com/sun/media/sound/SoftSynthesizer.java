@@ -980,11 +980,6 @@ public class SoftSynthesizer implements AudioSynthesizer,
         }
     }
 
-    public Transmitter getTransmitter() throws MidiUnavailableException {
-
-        throw new MidiUnavailableException("No transmitter available");
-    }
-
     public List<Transmitter> getTransmitters() {
 
         return new ArrayList<Transmitter>();

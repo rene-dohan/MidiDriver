@@ -23,39 +23,7 @@ public final class MidiSystem {
 	 * @author K.Shoji
 	 */
 	public static class MidiSystemUtils {
-		/**
-		 * Get currently connected {@link Receiver}s
-		 *
-		 * @return currently connected {@link Receiver}s
-		 * @throws MidiUnavailableException
-		 */
-        @NonNull
-        public static List<Receiver> getReceivers() throws MidiUnavailableException {
-			final List<Receiver> result = new ArrayList<Receiver>();
-			final Info[] midiDeviceInfos = MidiSystem.getMidiDeviceInfo();
-			for (final Info midiDeviceInfo : midiDeviceInfos) {
-				result.addAll(MidiSystem.getMidiDevice(midiDeviceInfo).getReceivers());
-			}
 
-			return result;
-		}
-
-		/**
-		 * Get currently connected {@link Transmitter}s
-		 *
-		 * @return currently connected {@link Transmitter}s
-		 * @throws MidiUnavailableException
-		 */
-        @NonNull
-        public static List<Transmitter> getTransmitters() throws MidiUnavailableException {
-			final List<Transmitter> result = new ArrayList<Transmitter>();
-			final Info[] midiDeviceInfos = MidiSystem.getMidiDeviceInfo();
-			for (final Info midiDeviceInfo : midiDeviceInfos) {
-				result.addAll(MidiSystem.getMidiDevice(midiDeviceInfo).getTransmitters());
-			}
-
-			return result;
-		}
 	}
 
     /**

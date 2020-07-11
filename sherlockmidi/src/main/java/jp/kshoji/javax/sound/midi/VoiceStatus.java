@@ -18,22 +18,8 @@ public class VoiceStatus {
     public int channel;
 
     /**
-     * The bank number 0-16383
-     */
-    public int bank;
-
-    /**
-     * The program number 0-127
-     */
-    public int program;
-
-    /**
      * The note number 0-127
      */
     public int note;
 
-    /**
-     * The volume 0-127
-     */
-    public int volume;
 }

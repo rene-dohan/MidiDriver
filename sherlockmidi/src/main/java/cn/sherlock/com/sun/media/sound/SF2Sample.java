@@ -44,8 +44,6 @@ public class SF2Sample extends SoundbankResource {
     protected long sampleRate = 44100;
     protected int originalPitch = 60;
     protected byte pitchCorrection = 0;
-    protected int sampleLink = 0;
-    protected int sampleType = 0;
     protected ModelByteBuffer data;
     protected ModelByteBuffer data24;
 

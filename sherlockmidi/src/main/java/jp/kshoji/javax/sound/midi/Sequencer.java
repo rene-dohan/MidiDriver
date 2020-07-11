@@ -1,6 +1,5 @@
 package jp.kshoji.javax.sound.midi;
 
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 /**
@@ -10,27 +9,15 @@ import android.support.annotation.Nullable;
  */
 public interface Sequencer extends MidiDevice {
 
-	/**
-	 * Loop eternally.
-	 *
-	 */
-    int LOOP_CONTINUOUSLY = -1;
-
     /**
      * {@link Sequencer}'s Synchronization mode
      * 
      * @author K.Shoji
      */
     class SyncMode {
-		public static final SyncMode INTERNAL_CLOCK = new SyncMode("Internal Clock");
-        public static final SyncMode NO_SYNC = new SyncMode("No Sync");
 
         private final String name;
 
-        protected SyncMode(@NonNull final String name) {
-            this.name = name;
-        }
-        
         @Override
         public final boolean equals(final Object obj) {
             if (this == obj) {

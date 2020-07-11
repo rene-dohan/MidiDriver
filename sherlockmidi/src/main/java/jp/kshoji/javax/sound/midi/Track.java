@@ -73,56 +73,6 @@ public class Track {
 	 * @author K.Shoji
 	 */
 	public static class TrackUtils {
-		/**
-		 * Merge the specified {@link Sequencer}'s {@link Track}s into one {@link Track}
-		 * 
-		 * @param sequencer the Sequencer
-		 * @param recordEnable track recordable flags
-		 * @return merged {@link Sequence}
-		 * @throws InvalidMidiDataException
-		 */
-        @NonNull
-        public static Track mergeSequenceToTrack(@NonNull final Sequencer sequencer, @NonNull final Map<Track, Set<Integer>> recordEnable) throws InvalidMidiDataException {
-			final Sequence sourceSequence = sequencer.getSequence();
-			final Track mergedTrack = new Track();
-
-			// apply track mute and solo
-			final Track[] tracks;
-            if (sourceSequence == null) {
-                tracks = emptyTracks;
-            } else {
-                tracks = sourceSequence.getTracks();
-            }
-
-			boolean hasSoloTrack = false;
-			for (int trackIndex = 0; trackIndex < tracks.length; trackIndex++) {
-				if (sequencer.getTrackSolo(trackIndex)) {
-					hasSoloTrack = true;
-					break;
-				}
-			}
-			
-			for (int trackIndex = 0; trackIndex < tracks.length; trackIndex++) {
-				if (sequencer.getTrackMute(trackIndex)) {
-					// muted track, ignore
-					continue;
-				}
-				if (hasSoloTrack && sequencer.getTrackSolo(trackIndex) == false) {
-					// not solo track, ignore
-					continue;
-				}
-				if (sequencer.isRecording() && (recordEnable.get(tracks[trackIndex]) != null && recordEnable.get(tracks[trackIndex]).size() > 0)) {
-					// currently recording track, ignore
-					continue;
-				}
-
-				mergedTrack.events.addAll(tracks[trackIndex].events);
-			}
-
-			sortEvents(mergedTrack);
-			
-			return mergedTrack;
-		}
 
 		/**
 		 * Sort the {@link Track}'s {@link MidiEvent}, order by tick and events
@@ -151,55 +101,6 @@ public class Track {
 					track.events.add(new MidiEvent(new MetaMessage(END_OF_TRACK), track.events.get(track.events.size() - 1).getTick() + 1));
 				}
 			}
-		}
-	}
-
-	/**
-	 * Add {@link MidiEvent} to this {@link Track}
-	 * 
-	 * @param event to add
-	 * @return true if the event has been added
-	 */
-	public boolean add(@NonNull final MidiEvent event) {
-		synchronized (events) {
-			return events.add(event);
-		}
-	}
-
-	/**
-	 * Get specified index of {@link MidiEvent}
-	 * 
-	 * @param index the index of event
-	 * @return the MidiEvent
-	 * @throws ArrayIndexOutOfBoundsException
-	 */
-    @NonNull
-    public MidiEvent get(final int index) throws ArrayIndexOutOfBoundsException {
-		synchronized (events) {
-			return events.get(index);
-		}
-	}
-
-	/**
-	 * Remove {@link MidiEvent} from this {@link Track}
-	 * 
-	 * @param event to remove
-	 * @return true if the event has been removed
-	 */
-	public boolean remove(@NonNull final MidiEvent event) {
-		synchronized (events) {
-			return events.remove(event);
-		}
-	}
-
-	/**
-	 * Get the number of events in the {@link Track}
-	 * 
-	 * @return the number of events
-	 */
-	public int size() {
-		synchronized (events) {
-			return events.size();
 		}
 	}
 

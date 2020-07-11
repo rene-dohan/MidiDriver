@@ -42,14 +42,6 @@ public class SoftReceiver implements MidiDeviceReceiver {
     protected TreeMap<Long, Object> midimessages;
     protected SoftMainMixer mainmixer;
 
-    public SoftReceiver(SoftSynthesizer synth) {
-        this.control_mutex = synth.control_mutex;
-        this.synth = synth;
-        this.mainmixer = synth.getMainMixer();
-        if (mainmixer != null)
-            this.midimessages = mainmixer.midimessages;
-    }
-
     public void send(MidiMessage message, long timeStamp) {
 
         synchronized (control_mutex) {

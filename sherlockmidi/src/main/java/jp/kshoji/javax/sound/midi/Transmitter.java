@@ -9,11 +9,4 @@ import android.support.annotation.Nullable;
  */
 public interface Transmitter {
 
-	/**
-	 * Set the {@link Receiver} for this {@link Transmitter}
-     *
-	 * @param receiver the Receiver
-	 */
-	void setReceiver(@Nullable Receiver receiver);
-
 }

@@ -24,8 +24,6 @@
  */
 package cn.sherlock.com.sun.media.sound;
 
-import jp.kshoji.javax.sound.midi.Patch;
-
 /**
  * This class is used to map instrument to another patch.
  *
@@ -34,11 +32,6 @@ import jp.kshoji.javax.sound.midi.Patch;
 public class ModelMappedInstrument extends ModelInstrument {
 
     private ModelInstrument ins;
-
-    public ModelMappedInstrument(ModelInstrument ins, Patch patch) {
-        super(ins.getSoundbank(), patch, ins.getName(), ins.getDataClass());
-        this.ins = ins;
-    }
 
     public Object getData() {
         return ins.getData();

@@ -67,29 +67,4 @@ public abstract class AudioFileReader {
      */
     public abstract AudioInputStream getAudioInputStream(InputStream stream) throws UnsupportedAudioFileException, IOException;
 
-    /**
-     * Obtains an audio input stream from the URL provided.  The URL must
-     * point to valid audio file data.
-     * @param url the URL for which the <code>AudioInputStream</code> should be
-     * constructed
-     * @return an <code>AudioInputStream</code> object based on the audio file data pointed
-     * to by the URL
-     * @throws UnsupportedAudioFileException if the URL does not point to valid audio
-     * file data recognized by the system
-     * @throws IOException if an I/O exception occurs
-     */
-    public abstract AudioInputStream getAudioInputStream(URL url) throws UnsupportedAudioFileException, IOException;
-
-    /**
-     * Obtains an audio input stream from the <code>File</code> provided.  The <code>File</code> must
-     * point to valid audio file data.
-     * @param file the <code>File</code> for which the <code>AudioInputStream</code> should be
-     * constructed
-     * @return an <code>AudioInputStream</code> object based on the audio file data pointed
-     * to by the File
-     * @throws UnsupportedAudioFileException if the <code>File</code> does not point to valid audio
-     * file data recognized by the system
-     * @throws IOException if an I/O exception occurs
-     */
-    public abstract AudioInputStream getAudioInputStream(File file) throws UnsupportedAudioFileException, IOException;
 }

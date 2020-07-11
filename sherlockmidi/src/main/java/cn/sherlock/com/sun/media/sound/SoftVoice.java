@@ -40,8 +40,6 @@ public class SoftVoice extends VoiceStatus {
 
     public int exclusiveClass = 0;
     public boolean releaseTriggered = false;
-    private int noteOn_noteNumber = 0;
-    private int noteOn_velocity = 0;
     private int delay = 0;
     protected ModelChannelMixer channelmixer = null;
     protected double tunedKey = 0;
@@ -308,8 +306,6 @@ public class SoftVoice extends VoiceStatus {
         started = true;
         // volume = velocity;
 
-        noteOn_noteNumber = noteNumber;
-        noteOn_velocity = velocity;
         this.delay = delay;
 
         lastMuteValue = 0;
@@ -526,7 +522,7 @@ public class SoftVoice extends VoiceStatus {
         soundoff = true;
     }
 
-    protected void noteOff(int velocity) {
+    protected void noteOff() {
         if (!on)
             return;
         on = false;
@@ -697,8 +693,6 @@ public class SoftVoice extends VoiceStatus {
                  *   co_mixer_gain[0] -= 960;
                  */
             }
-
-            volume = (int)(Math.sqrt(gain) * 128);
 
             // gain *= 0.2;
 

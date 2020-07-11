@@ -41,9 +41,6 @@ public class SF2Instrument extends ModelInstrument {
     protected String name = "";
     protected int preset = 0;
     protected int bank = 0;
-    protected long library = 0;
-    protected long genre = 0;
-    protected long morphology = 0;
     protected SF2GlobalRegion globalregion = null;
     protected List<SF2InstrumentRegion> regions
             = new ArrayList<SF2InstrumentRegion>();
@@ -69,10 +66,6 @@ public class SF2Instrument extends ModelInstrument {
 
     public List<SF2InstrumentRegion> getRegions() {
         return regions;
-    }
-
-    public SF2GlobalRegion getGlobalRegion() {
-        return globalregion;
     }
 
     public void setGlobalZone(SF2GlobalRegion zone) {

@@ -11,9 +11,8 @@ import android.support.annotation.Nullable;
 public abstract class MidiMessage implements Cloneable {
 	@Nullable
 	protected byte[] data;
-    protected int length;
 
-    /**
+	/**
      * Constructor with the raw data
      *
      * @param data the raw data
@@ -22,10 +21,8 @@ public abstract class MidiMessage implements Cloneable {
 		this.data = data;
 
         if (data == null) {
-            length = 0;
-        } else {
-            length = data.length;
-        }
+		} else {
+		}
 	}
 
     /**
@@ -57,20 +54,7 @@ public abstract class MidiMessage implements Cloneable {
         return data[0] & 0xff;
 	}
 
-    /**
-     * Get the length of the {@link MidiMessage}
-     *
-     * @return the length
-     */
-	public int getLength() {
-		if (data == null) {
-			return 0;
-		}
-
-		return data.length;
-	}
-
-    /**
+	/**
      * Convert the byte array to the hex dumped string
      *
      * @param src the byte array

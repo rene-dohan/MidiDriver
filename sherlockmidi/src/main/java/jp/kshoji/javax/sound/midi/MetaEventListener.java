@@ -11,10 +11,4 @@ import java.util.EventListener;
  */
 public interface MetaEventListener extends EventListener {
 
-	/**
-	 * Called at {@link MetaMessage} event has fired
-	 * 
-	 * @param meta the source event
-	 */
-	void meta(@NonNull MetaMessage meta);
 }

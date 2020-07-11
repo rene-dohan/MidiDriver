@@ -45,11 +45,6 @@ public class SoftTuning {
         load(data);
     }
 
-    public SoftTuning() {
-        for (int i = 0; i < tuning.length; i++)
-            tuning[i] = i * 100;
-    }
-
     private boolean checksumOK(byte[] data) {
         int x = data[1] & 0xFF;
         for (int i = 2; i < data.length - 2; i++)

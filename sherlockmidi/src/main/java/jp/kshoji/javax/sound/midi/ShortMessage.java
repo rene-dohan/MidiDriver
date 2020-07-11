@@ -19,8 +19,7 @@ public class ShortMessage extends MidiMessage {
 	public static final int MIDI_TIME_CODE = 0xf1;
 	public static final int SONG_POSITION_POINTER = 0xf2;
 	public static final int SONG_SELECT = 0xf3;
-	public static final int BUS_SELECT = 0xf5;
-	public static final int TUNE_REQUEST = 0xf6;
+    public static final int TUNE_REQUEST = 0xf6;
 	public static final int END_OF_EXCLUSIVE = 0xf7;
 	public static final int TIMING_CLOCK = 0xf8;
 	public static final int START = 0xfa;
@@ -30,14 +29,6 @@ public class ShortMessage extends MidiMessage {
 	public static final int SYSTEM_RESET = 0xff;
 	
 	public static final int MASK_EVENT = 0xf0;
-	public static final int MASK_CHANNEL = 0x0f;
-
-	/**
-	 * Default constructor, set up 'note on' message.
-	 */
-	public ShortMessage() {
-		this(new byte[] { (byte) NOTE_ON, 0x40, 0x7f });
-	}
 
 	/**
 	 * Constructor with raw data.
@@ -47,19 +38,6 @@ public class ShortMessage extends MidiMessage {
 	protected ShortMessage(@NonNull final byte[] data) {
 		super(data);
 	}
-
-    /**
-     * Constructor with the entire information of message
-     *
-     * @param status the status data
-     * @param data1 the first data
-     * @param data2 the second data
-     * @throws InvalidMidiDataException
-     */
-    public ShortMessage(final int status, final int data1, final int data2) throws InvalidMidiDataException {
-        super(null);
-        setMessage(status, data1, data2);
-    }
 
 	/**
 	 * Set the entire information of message.
@@ -85,7 +63,6 @@ public class ShortMessage extends MidiMessage {
 		if (data == null || data.length != dataLength + 1) {
 			data = new byte[dataLength + 1];
 		}
-        length = data.length;
 
 		data[0] = (byte) (status & 0xff);
 		if (data.length > 1) {

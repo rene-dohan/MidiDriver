@@ -1103,18 +1103,6 @@ public class SoftMainMixer {
 
     }
 
-    public long getMicrosecondPosition() {
-        if(pusher_silent)
-        {
-            if(synth.weakstream != null)
-            {
-                return (long)((sample_pos  + synth.weakstream.silent_samples)
-                        * (1000000.0 / samplerate));  
-            }            
-        }
-        return (long)(sample_pos * (1000000.0 / samplerate));
-    }
-
     public void close() {
     }
 }

@@ -1,7 +1,6 @@
 package jp.kshoji.javax.sound.midi;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import java.util.Arrays;
 
@@ -12,21 +11,11 @@ import java.util.Arrays;
  */
 public class MetaMessage extends MidiMessage {
 	public static final int META = 0xff;
-	
-	public static final int TYPE_END_OF_TRACK = 0x2f;
-	public static final int TYPE_TEMPO = 0x51;
 
 	private static final byte[] defaultMessage = { (byte) META, 0, 0 };
 	private static final byte[] emptyData = {};
 
 	private int dataLength = 0;
-
-	/**
-	 * Constructor with default message
-	 */
-	public MetaMessage() {
-		this(defaultMessage);
-	}
 
 	/**
 	 * Constructor with raw data
@@ -53,43 +42,6 @@ public class MetaMessage extends MidiMessage {
         }
 	}
 
-	/**
-	 * Set the entire information of message.
-	 * 
-	 * @param type the data type 0-127
-	 * @param data the data source
-	 * @throws InvalidMidiDataException
-	 */
-	public void setMessage(final int type, @Nullable final byte[] data) throws InvalidMidiDataException {
-		if (type >= 128 || type < 0) {
-			throw new InvalidMidiDataException("Invalid meta event. type: " + type);
-		}
-
-		final byte[] newData;
-		if (data == null) {
-			newData = emptyData;
-		} else {
-			newData = data;
-		}
-
-        final int headerLength = 2 + getMidiValuesLength(newData.length);
-        this.dataLength = newData.length;
-        this.data = new byte[headerLength + newData.length];
-        this.length = this.data.length;
-
-        // Write header
-		this.data[0] = (byte) META;
-		this.data[1] = (byte) type;
-
-        // Write data length
-		writeMidiValues(this.data, 2, newData.length);
-
-        // Write data
-		if (newData.length > 0) {
-			System.arraycopy(newData, 0, this.data, headerLength, newData.length);
-		}
-	}
-
 	@SuppressWarnings("CloneDoesntCallSuperClone")
 	@NonNull
 	@Override
@@ -102,39 +54,4 @@ public class MetaMessage extends MidiMessage {
 		return new MetaMessage(result);
 	}
 
-    /**
-     * Get the data length for the specified value
-     *
-     * @param value the value to write
-     * @return the data length
-     */
-	private static int getMidiValuesLength(final long value) {
-		int length = 0;
-		long currentValue = value;
-		do {
-            currentValue >>= 7;
-			length++;
-		} while (currentValue > 0);
-		return length;
-	}
-
-    /**
-     * Write the MIDI value to the data
-     *
-     * @param data output byte array
-     * @param offset the offset
-     * @param value the value to write
-     */
-	private static void writeMidiValues(@NonNull final byte[] data, final int offset, final long value) {
-		int shift = 63;
-		while ((shift > 0) && ((value & (0x7f << shift)) == 0)) {
-			shift -= 7;
-		}
-		int currentOffset = offset;
-		while (shift > 0) {
-			data[currentOffset++] = (byte) (((value & (0x7f << shift)) >> shift) | 0x80);
-			shift -= 7;
-		}
-		data[currentOffset] = (byte) (value & 0x7f);
-	}
 }

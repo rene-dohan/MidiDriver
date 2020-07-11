@@ -47,30 +47,6 @@ import jp.kshoji.javax.sound.midi.Soundbank;
  */
 public class SF2Soundbank implements Soundbank {
 
-    // version of the Sound Font RIFF file
-    protected int major = 2;
-    protected int minor = 1;
-    // target Sound Engine
-    protected String targetEngine = "EMU8000";
-    // Sound Font Bank Name
-    protected String name = "untitled";
-    // Sound ROM Name
-    protected String romName = null;
-    // Sound ROM Version
-    protected int romVersionMajor = -1;
-    protected int romVersionMinor = -1;
-    // Date of Creation of the Bank
-    protected String creationDate = null;
-    // Sound Designers and Engineers for the Bank
-    protected String engineers = null;
-    // Product for which the Bank was intended
-    protected String product = null;
-    // Copyright message
-    protected String copyright = null;
-    // Comments
-    protected String comments = null;
-    // The SoundFont tools used to create and alter the bank
-    protected String tools = null;
     // The Sample Data loaded from the SoundFont
     private ModelByteBuffer sampleData = null;
     private ModelByteBuffer sampleData24 = null;
@@ -112,29 +88,29 @@ public class SF2Soundbank implements Soundbank {
             RIFFReader chunk = riff.nextChunk();
             String format = chunk.getFormat();
             if (format.equals("ifil")) {
-                major = chunk.readUnsignedShort();
-                minor = chunk.readUnsignedShort();
+                chunk.readUnsignedShort();
+                chunk.readUnsignedShort();
             } else if (format.equals("isng")) {
-                this.targetEngine = chunk.readString(chunk.available());
+                chunk.readString(chunk.available());
             } else if (format.equals("INAM")) {
-                this.name = chunk.readString(chunk.available());
+                chunk.readString(chunk.available());
             } else if (format.equals("irom")) {
-                this.romName = chunk.readString(chunk.available());
+                chunk.readString(chunk.available());
             } else if (format.equals("iver")) {
-                romVersionMajor = chunk.readUnsignedShort();
-                romVersionMinor = chunk.readUnsignedShort();
+                chunk.readUnsignedShort();
+                chunk.readUnsignedShort();
             } else if (format.equals("ICRD")) {
-                this.creationDate = chunk.readString(chunk.available());
+                chunk.readString(chunk.available());
             } else if (format.equals("IENG")) {
-                this.engineers = chunk.readString(chunk.available());
+                chunk.readString(chunk.available());
             } else if (format.equals("IPRD")) {
-                this.product = chunk.readString(chunk.available());
+                chunk.readString(chunk.available());
             } else if (format.equals("ICOP")) {
-                this.copyright = chunk.readString(chunk.available());
+                chunk.readString(chunk.available());
             } else if (format.equals("ICMT")) {
-                this.comments = chunk.readString(chunk.available());
+                chunk.readString(chunk.available());
             } else if (format.equals("ISFT")) {
-                this.tools = chunk.readString(chunk.available());
+                chunk.readString(chunk.available());
             }
 
         }
@@ -223,9 +199,9 @@ public class SF2Soundbank implements Soundbank {
                     preset.preset = chunk.readUnsignedShort();
                     preset.bank = chunk.readUnsignedShort();
                     presets_bagNdx.add(chunk.readUnsignedShort());
-                    preset.library = chunk.readUnsignedInt();
-                    preset.genre = chunk.readUnsignedInt();
-                    preset.morphology = chunk.readUnsignedInt();
+                    chunk.readUnsignedInt();
+                    chunk.readUnsignedInt();
+                    chunk.readUnsignedInt();
                     presets.add(preset);
                     if (i != count - 1)
                         this.instruments.add(preset);
@@ -414,8 +390,8 @@ public class SF2Soundbank implements Soundbank {
                     sample.sampleRate = chunk.readUnsignedInt();
                     sample.originalPitch = chunk.readUnsignedByte();
                     sample.pitchCorrection = chunk.readByte();
-                    sample.sampleLink = chunk.readUnsignedShort();
-                    sample.sampleType = chunk.readUnsignedShort();
+                    chunk.readUnsignedShort();
+                    chunk.readUnsignedShort();
                     if (i != count - 1)
                         this.samples.add(sample);
                 }

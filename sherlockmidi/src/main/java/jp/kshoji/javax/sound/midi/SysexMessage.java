@@ -10,54 +10,13 @@ import android.support.annotation.Nullable;
  */
 public class SysexMessage extends MidiMessage {
 
-	/**
-	 * Default constructor.
-	 */
-	public SysexMessage() {
-		this(new byte[] { (byte) (ShortMessage.START_OF_EXCLUSIVE & 0xff), (byte) (ShortMessage.END_OF_EXCLUSIVE & 0xff) });
-	}
-
-	/**
+    /**
 	 * Constructor with raw data.
 	 * 
 	 * @param data the SysEx data
 	 */
 	protected SysexMessage(@NonNull byte[] data) {
 		super(data);
-	}
-
-	public void setMessage(@Nullable final byte[] data, final int length) throws InvalidMidiDataException {
-        if (data == null) {
-            throw new InvalidMidiDataException("SysexMessage data is null");
-        }
-
-		final int status = data[0] & 0xff;
-		if ((status != ShortMessage.START_OF_EXCLUSIVE) && (status != ShortMessage.END_OF_EXCLUSIVE)) {
-			throw new InvalidMidiDataException("Invalid status byte for SysexMessage: 0x" + Integer.toHexString(status));
-		}
-		super.setMessage(data, length);
-	}
-
-	/**
-	 * Set the entire information of message.
-	 * 
-	 * @param status must be ShortMessage.START_OF_EXCLUSIVE or ShortMessage.END_OF_EXCLUSIVE
-	 * @param data the SysEx data
-	 * @throws InvalidMidiDataException
-	 */
-	public void setMessage(final int status, @NonNull final byte[] data) throws InvalidMidiDataException {
-		if ((status != ShortMessage.START_OF_EXCLUSIVE) && (status != ShortMessage.END_OF_EXCLUSIVE)) {
-			throw new InvalidMidiDataException("Invalid status byte for SysexMessage: 0x" + Integer.toHexString(status));
-		}
-
-		// extend 1 byte
-		this.data = new byte[data.length + 1];
-        this.length = this.data.length;
-
-		this.data[0] = (byte) (status & 0xff);
-		if (data.length > 0) {
-			System.arraycopy(data, 0, this.data, 1, data.length);
-		}
 	}
 
 	/**

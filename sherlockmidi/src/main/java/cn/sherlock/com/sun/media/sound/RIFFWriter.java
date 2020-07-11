@@ -24,8 +24,6 @@
  */
 package cn.sherlock.com.sun.media.sound;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
@@ -60,14 +58,6 @@ public class RIFFWriter extends OutputStream {
     private static class RandomAccessFileWriter implements RandomAccessWriter {
 
         RandomAccessFile raf;
-
-        public RandomAccessFileWriter(File file) throws FileNotFoundException {
-            this.raf = new RandomAccessFile(file, "rw");
-        }
-
-        public RandomAccessFileWriter(String name) throws FileNotFoundException {
-            this.raf = new RandomAccessFile(name, "rw");
-        }
 
         public void seek(long chunksizepointer) throws IOException {
             raf.seek(chunksizepointer);
@@ -109,10 +99,6 @@ public class RIFFWriter extends OutputStream {
         int pos = 0;
         byte[] s;
         OutputStream stream;
-
-        public RandomAccessByteWriter(OutputStream stream) {
-            this.stream = stream;
-        }
 
         public void seek(long chunksizepointer) throws IOException {
             pos = (int) chunksizepointer;
@@ -246,64 +232,12 @@ public class RIFFWriter extends OutputStream {
         raf.write(b, off, len);
     }
 
-    public RIFFWriter writeChunk(String format) throws IOException {
-        if (chunktype == 2) {
-            throw new IllegalArgumentException(
-                    "Only LIST and RIFF can write chunks!");
-        }
-        if (childchunk != null) {
-            childchunk.close();
-            childchunk = null;
-        }
-        childchunk = new RIFFWriter(this.raf, format, 2);
-        return childchunk;
-    }
-
-    // Write ASCII chars to stream
-    public void writeString(String string) throws IOException {
-        byte[] buff = string.getBytes();
-        write(buff);
-    }
-
-    // Write ASCII chars to stream
-    public void writeString(String string, int len) throws IOException {
-        byte[] buff = string.getBytes();
-        if (buff.length > len)
-            write(buff, 0, len);
-        else {
-            write(buff);
-            for (int i = buff.length; i < len; i++)
-                write(0);
-        }
-    }
-
-    // Write 8 bit signed integer to stream
-    public void writeByte(int b) throws IOException {
-        write(b);
-    }
-
-    // Write 16 bit signed integer to stream
-    public void writeShort(short b) throws IOException {
-        write((b >>> 0) & 0xFF);
-        write((b >>> 8) & 0xFF);
-    }
-
     // Write 32 bit signed integer to stream
     public void writeInt(int b) throws IOException {
         write((b >>> 0) & 0xFF);
         write((b >>> 8) & 0xFF);
         write((b >>> 16) & 0xFF);
         write((b >>> 24) & 0xFF);
-    }
-
-    // Write 8 bit unsigned integer to stream
-    public void writeUnsignedByte(int b) throws IOException {
-        writeByte((byte) b);
-    }
-
-    // Write 16 bit unsigned integer to stream
-    public void writeUnsignedShort(int b) throws IOException {
-        writeShort((short) b);
     }
 
     // Write 32 bit unsigned integer to stream

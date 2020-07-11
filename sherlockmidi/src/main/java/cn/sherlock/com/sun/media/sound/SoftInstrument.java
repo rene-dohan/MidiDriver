@@ -25,7 +25,6 @@
 package cn.sherlock.com.sun.media.sound;
 
 import jp.kshoji.javax.sound.midi.Instrument;
-import jp.kshoji.javax.sound.midi.MidiChannel;
 
 /**
  * Software synthesizer internal instrument.
@@ -63,8 +62,7 @@ public class SoftInstrument extends Instrument {
             performers[i] = new SoftPerformer(modelperformers[i]);
     }
 
-    public ModelDirector getDirector(MidiChannel channel,
-            ModelDirectedPlayer player) {
+    public ModelDirector getDirector(ModelDirectedPlayer player) {
         return ins.getDirector(modelperformers, player);
     }
 
