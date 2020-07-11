@@ -41,16 +41,13 @@ import java.util.prefs.Preferences;
 
 import jp.kshoji.javax.sound.midi.Instrument;
 import jp.kshoji.javax.sound.midi.MidiChannel;
-import jp.kshoji.javax.sound.midi.MidiDevice;
 import jp.kshoji.javax.sound.midi.MidiUnavailableException;
 import jp.kshoji.javax.sound.midi.Patch;
 import jp.kshoji.javax.sound.midi.Receiver;
 import jp.kshoji.javax.sound.midi.Soundbank;
-import jp.kshoji.javax.sound.midi.Transmitter;
 import cn.sherlock.javax.sound.sampled.AudioFormat;
 import cn.sherlock.javax.sound.sampled.AudioInputStream;
 import cn.sherlock.javax.sound.sampled.AudioSystem;
-import cn.sherlock.javax.sound.sampled.LineUnavailableException;
 import cn.sherlock.javax.sound.sampled.SourceDataLine;
 
 /**
@@ -157,18 +154,6 @@ public class SoftSynthesizer implements AudioSynthesizer,
         }
     }
 
-    private static class Info extends MidiDevice.Info {
-        public Info() {
-            super(INFO_NAME, INFO_VENDOR, INFO_DESCRIPTION, INFO_VERSION);
-        }
-    }
-
-    protected static final String INFO_NAME = "Gervill";
-    protected static final String INFO_VENDOR = "OpenJDK";
-    protected static final String INFO_DESCRIPTION = "Software MIDI Synthesizer";
-    protected static final String INFO_VERSION = "1.0";
-    protected final static MidiDevice.Info info = new Info();
-
     private static SourceDataLine testline = null;
 
     protected WeakAudioStream weakstream = null;
@@ -209,7 +194,6 @@ public class SoftSynthesizer implements AudioSynthesizer,
     private float controlrate = 147f;
 
     private boolean open = false;
-    private boolean implicitOpen = false;
 
     private String resamplerType = "linear";
     private SoftResampler resampler = new SoftLinearResampler();
@@ -359,18 +343,6 @@ public class SoftSynthesizer implements AudioSynthesizer,
         if (AudioFloatConverter.getConverter(format) == null)
             throw new IllegalArgumentException("Audio format not supported.");
         this.format = format;
-    }
-
-    protected void removeReceiver(Receiver recv) {
-        boolean perform_close = false;
-        synchronized (control_mutex) {
-            if (recvslist.remove(recv)) {
-                if (implicitOpen && recvslist.isEmpty())
-                    perform_close = true;
-            }
-        }
-        if (perform_close)
-            close();
     }
 
     protected SoftMainMixer getMainMixer() {
@@ -544,10 +516,6 @@ public class SoftSynthesizer implements AudioSynthesizer,
         return loadInstruments(instruments);
     }
 
-    public MidiDevice.Info getDeviceInfo() {
-        return info;
-    }
-    
     private Properties getStoredProperties() {
         return AccessController
                 .doPrivileged(new PrivilegedAction<Properties>() {
@@ -717,7 +685,6 @@ public class SoftSynthesizer implements AudioSynthesizer,
     public void open() throws MidiUnavailableException {
         if (isOpen()) {
             synchronized (control_mutex) {
-                implicitOpen = false;
             }
             return;
         }
@@ -727,7 +694,6 @@ public class SoftSynthesizer implements AudioSynthesizer,
     private void open(SourceDataLine line, Map<String, Object> info) throws MidiUnavailableException {
         if (isOpen()) {
             synchronized (control_mutex) {
-                implicitOpen = false;
             }
             return;
         }
@@ -805,8 +771,6 @@ public class SoftSynthesizer implements AudioSynthesizer,
                     weakstream.sourceDataLine = sourceDataLine;
                 }
 
-            } catch (LineUnavailableException e) {
-                causeException = e;
             } catch (IllegalArgumentException e) {
                 causeException = e;
             } catch (SecurityException e) {
@@ -840,7 +804,6 @@ public class SoftSynthesizer implements AudioSynthesizer,
             processPropertyInfo(info);
 
             open = true;
-            implicitOpen = false;
 
             if (targetFormat != null)
                 setFormat(targetFormat);
@@ -896,13 +859,6 @@ public class SoftSynthesizer implements AudioSynthesizer,
             for (SoftVoice voice: getVoices())
                 voice.resampler = resampler.openStreamer();
 
-            for (Receiver recv: getReceivers()) {
-                SoftReceiver srecv = ((SoftReceiver)recv);
-                srecv.open = open;
-                srecv.mainmixer = mainmixer;
-                srecv.midimessages = mainmixer.midimessages;
-            }
-
             return mainmixer.getInputStream();
         }
     }
@@ -941,7 +897,6 @@ public class SoftSynthesizer implements AudioSynthesizer,
             if (mainmixer != null)
                 mainmixer.close();
             open = false;
-            implicitOpen = false;
             mainmixer = null;
             voices = null;
             channels = null;
@@ -969,20 +924,6 @@ public class SoftSynthesizer implements AudioSynthesizer,
         synchronized (control_mutex) {
             return open;
         }
-    }
-
-    public List<Receiver> getReceivers() {
-
-        synchronized (control_mutex) {
-            ArrayList<Receiver> recvs = new ArrayList<Receiver>();
-            recvs.addAll(recvslist);
-            return recvs;
-        }
-    }
-
-    public List<Transmitter> getTransmitters() {
-
-        return new ArrayList<Transmitter>();
     }
 
 }

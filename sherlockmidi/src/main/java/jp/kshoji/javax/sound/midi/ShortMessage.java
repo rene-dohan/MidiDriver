@@ -15,20 +15,7 @@ public class ShortMessage extends MidiMessage {
 	public static final int PROGRAM_CHANGE = 0xc0;
 	public static final int CHANNEL_PRESSURE = 0xd0;
 	public static final int PITCH_BEND = 0xe0;
-	public static final int START_OF_EXCLUSIVE = 0xf0;
-	public static final int MIDI_TIME_CODE = 0xf1;
-	public static final int SONG_POSITION_POINTER = 0xf2;
-	public static final int SONG_SELECT = 0xf3;
-    public static final int TUNE_REQUEST = 0xf6;
-	public static final int END_OF_EXCLUSIVE = 0xf7;
-	public static final int TIMING_CLOCK = 0xf8;
-	public static final int START = 0xfa;
-	public static final int CONTINUE = 0xfb;
-	public static final int STOP = 0xfc;
 	public static final int ACTIVE_SENSING = 0xfe;
-	public static final int SYSTEM_RESET = 0xff;
-	
-	public static final int MASK_EVENT = 0xf0;
 
 	/**
 	 * Constructor with raw data.
@@ -37,40 +24,6 @@ public class ShortMessage extends MidiMessage {
 	 */
 	protected ShortMessage(@NonNull final byte[] data) {
 		super(data);
-	}
-
-	/**
-	 * Set the entire information of message.
-	 * 
-	 * @param status the status data
-     * @param data1 the first data
-     * @param data2 the second data
-	 * @throws InvalidMidiDataException
-	 */
-	public void setMessage(final int status, final int data1, final int data2) throws InvalidMidiDataException {
-		final int dataLength = getDataLength(status);
-		if (dataLength > 0) {
-			if (data1 < 0 || data1 > 0x7f) {
-				throw new InvalidMidiDataException("data1 out of range: " + data1);
-			}
-			if (dataLength > 1) {
-				if (data2 < 0 || data2 > 0x7f) {
-					throw new InvalidMidiDataException("data2 out of range: " + data2);
-				}
-			}
-		}
-		
-		if (data == null || data.length != dataLength + 1) {
-			data = new byte[dataLength + 1];
-		}
-
-		data[0] = (byte) (status & 0xff);
-		if (data.length > 1) {
-			data[1] = (byte) (data1 & 0xff);
-			if (data.length > 2) {
-				data[2] = (byte) (data2 & 0xff);
-			}
-		}
 	}
 
     /**
@@ -122,46 +75,4 @@ public class ShortMessage extends MidiMessage {
 		return new ShortMessage(result);
 	}
 
-    /**
-     * Get data length of MIDI message from MIDI event status
-     *
-     * @param status MIDI event status
-     * @return length of MIDI message
-     * @throws InvalidMidiDataException
-     */
-	protected static int getDataLength(final int status) throws InvalidMidiDataException {
-		switch (status) {
-			case TUNE_REQUEST:
-			case END_OF_EXCLUSIVE:
-			case TIMING_CLOCK:
-			case 0xf9:
-			case START:
-			case CONTINUE:
-			case STOP:
-			case 0xfd:
-			case ACTIVE_SENSING:
-			case SYSTEM_RESET:
-				return 0;
-			case MIDI_TIME_CODE:
-			case SONG_SELECT:
-				return 1;
-			case SONG_POSITION_POINTER:
-				return 2;
-			default:
-		}
-
-		switch (status & MASK_EVENT) {
-			case NOTE_OFF:
-			case NOTE_ON:
-			case POLY_PRESSURE:
-			case CONTROL_CHANGE:
-			case PITCH_BEND:
-				return 2;
-			case PROGRAM_CHANGE:
-			case CHANNEL_PRESSURE:
-				return 1;
-			default:
-				throw new InvalidMidiDataException("Invalid status byte: " + status);
-		}
-	}
 }

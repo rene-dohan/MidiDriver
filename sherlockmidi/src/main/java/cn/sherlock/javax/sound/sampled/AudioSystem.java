@@ -175,9 +175,6 @@ public class AudioSystem {
 	 *            any audio format
 	 * @return the desired <code>SourceDataLine</code> object
 	 *
-	 * @throws LineUnavailableException
-	 *             if a matching source data line is not available due to
-	 *             resource restrictions
 	 * @throws SecurityException
 	 *             if a matching source data line is not available due to
 	 *             security restrictions
@@ -189,8 +186,7 @@ public class AudioSystem {
 	 * @see #getSourceDataLine(AudioFormat, Mixer.Info)
 	 * @since 1.5
 	 */
-	public static SourceDataLine getSourceDataLine(AudioFormat format)
-			throws LineUnavailableException {
+	public static SourceDataLine getSourceDataLine(AudioFormat format) {
 		// DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
 		// return (SourceDataLine) AudioSystem.getLine(info);
 		return new SourceDataLineImpl(format);

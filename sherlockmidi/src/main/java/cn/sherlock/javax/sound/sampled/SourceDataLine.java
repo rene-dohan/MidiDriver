@@ -90,8 +90,6 @@ public interface SourceDataLine extends DataLine {
      *
      * @param format the desired audio format
      * @param bufferSize the desired buffer size
-     * @throws LineUnavailableException if the line cannot be
-     * opened due to resource restrictions
      * @throws IllegalArgumentException if the buffer size does not represent
      * an integral number of sample frames,
      * or if <code>format</code> is not fully specified or invalid
@@ -103,7 +101,7 @@ public interface SourceDataLine extends DataLine {
      * @see Line#isOpen
      * @see LineEvent
      */
-    void open(AudioFormat format, int bufferSize) throws LineUnavailableException;
+    void open(AudioFormat format, int bufferSize);
 
 
     /**

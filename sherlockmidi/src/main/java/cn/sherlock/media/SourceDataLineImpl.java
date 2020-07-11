@@ -3,7 +3,6 @@ package cn.sherlock.media;
 import android.media.AudioManager;
 import android.media.AudioTrack;
 import cn.sherlock.javax.sound.sampled.AudioFormat;
-import cn.sherlock.javax.sound.sampled.LineUnavailableException;
 import cn.sherlock.javax.sound.sampled.SourceDataLine;
 
 public class SourceDataLineImpl implements SourceDataLine {
@@ -61,31 +60,8 @@ public class SourceDataLineImpl implements SourceDataLine {
 		return 0;
 	}
 
-	@Deprecated
-	public long getMicrosecondPosition() {
-		if (audioTrack != null) {
-			return audioTrack.getPlaybackHeadPosition() * 1000;
-		}
-		return 0;
-	}
-
-	@Deprecated
-	public float getLevel() {
-		if (audioTrack != null) {
-			// FIXME
-			return 0;
-		}
-		return 0;
-	}
-
-	@Deprecated
-	public Info getLineInfo() {
-		return null;
-	}
-
 	@Override
-	public void open(AudioFormat format, int bufferSize)
-			throws LineUnavailableException {
+	public void open(AudioFormat format, int bufferSize) {
 		// Get the smallest buffer to minimize latency.
 		this.format = format;
 		this.bufferSize = bufferSize;

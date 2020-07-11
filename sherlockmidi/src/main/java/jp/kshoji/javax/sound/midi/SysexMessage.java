@@ -1,7 +1,6 @@
 package jp.kshoji.javax.sound.midi;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 /**
  * Represents MIDI SysEx Message

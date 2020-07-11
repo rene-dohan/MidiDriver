@@ -24,12 +24,8 @@
  */
 package cn.sherlock.com.sun.media.sound;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 
 import cn.sherlock.javax.sound.sampled.AudioFileFormat;
 import cn.sherlock.javax.sound.sampled.AudioFormat;
@@ -129,14 +125,4 @@ public class WaveFloatFileReader extends AudioFileReader {
         throw new UnsupportedAudioFileException();
     }
 
-    public AudioInputStream getAudioInputStream(URL url)
-            throws UnsupportedAudioFileException, IOException {
-        return getAudioInputStream(new BufferedInputStream(url.openStream()));
-    }
-
-    public AudioInputStream getAudioInputStream(File file)
-            throws UnsupportedAudioFileException, IOException {
-        return getAudioInputStream(new BufferedInputStream(new FileInputStream(
-                file)));
-    }
 }

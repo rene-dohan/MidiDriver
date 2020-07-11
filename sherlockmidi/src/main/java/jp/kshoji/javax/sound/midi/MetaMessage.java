@@ -10,10 +10,8 @@ import java.util.Arrays;
  * @author K.Shoji
  */
 public class MetaMessage extends MidiMessage {
-	public static final int META = 0xff;
 
-	private static final byte[] defaultMessage = { (byte) META, 0, 0 };
-	private static final byte[] emptyData = {};
+    private static final byte[] emptyData = {};
 
 	private int dataLength = 0;
 
@@ -21,7 +19,7 @@ public class MetaMessage extends MidiMessage {
 	 * Constructor with raw data
 	 * 
 	 * @param data the data source with META header(2 bytes) + length( > 1 byte), the data.length must be >= 3 bytes
-     * @throws NegativeArraySizeException MUST be caught. We can't throw {@link InvalidMidiDataException} because of API compatibility.
+     * @throws NegativeArraySizeException MUST be caught.
 	 */
 	protected MetaMessage(@NonNull final byte[] data) {
 		super(data);
