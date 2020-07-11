@@ -54,8 +54,7 @@ import jp.kshoji.javax.sound.midi.Soundbank;
  *
  * @author Karl Helgason
  */
-public class SoftSynthesizer implements AudioSynthesizer,
-        ReferenceCountingDevice {
+public class SoftSynthesizer implements AudioSynthesizer {
 
     protected static class WeakAudioStream extends InputStream
     {

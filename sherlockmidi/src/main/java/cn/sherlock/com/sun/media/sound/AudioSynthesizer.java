@@ -24,18 +24,15 @@
  */
 package cn.sherlock.com.sun.media.sound;
 
-import jp.kshoji.javax.sound.midi.Synthesizer;
-
 /**
  * <code>AudioSynthesizer</code> is a <code>Synthesizer</code>
  * which renders it's output audio into <code>SourceDataLine</code>
  * or <code>AudioInputStream</code>.
  *
  * @see MidiSystem#getSynthesizer
- * @see Synthesizer
  *
  * @author Karl Helgason
  */
-public interface AudioSynthesizer extends Synthesizer {
+public interface AudioSynthesizer {
 
 }
