@@ -445,12 +445,6 @@ public class SoftMainMixer {
                 * (1000000.0 / samplerate));
     }
 
-    public void stopMixer(ModelChannelMixer mixer) {
-        if (stoppedMixers == null)
-            stoppedMixers = new HashSet<>();
-        stoppedMixers.add(mixer);
-    }
-
     public SoftMainMixer(SoftSynthesizer synth) {
         this.synth = synth;
 
