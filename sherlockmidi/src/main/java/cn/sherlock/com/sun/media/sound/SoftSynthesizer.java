@@ -81,53 +81,53 @@ public class SoftSynthesizer implements AudioSynthesizer {
         }
 
         public int read() throws IOException {
-             byte[] b = new byte[1];
-             if (read(b) == -1)
-                  return -1;
-             return b[0] & 0xFF;
+            byte[] b = new byte[1];
+            if (read(b) == -1)
+                return -1;
+            return b[0] & 0xFF;
         }
 
         public int read(byte[] b, int off, int len) throws IOException {
-             AudioInputStream local_stream = stream;
-             if(local_stream != null)
-                 return local_stream.read(b, off, len);
-             else
-             {
-                 int flen = len / samplesize;
-                 if(silentbuffer == null || silentbuffer.length < flen)
-                     silentbuffer = new float[flen];
-                 converter.toByteArray(silentbuffer, flen, b, off);
+            AudioInputStream local_stream = stream;
+            if(local_stream != null)
+                return local_stream.read(b, off, len);
+            else
+            {
+                int flen = len / samplesize;
+                if(silentbuffer == null || silentbuffer.length < flen)
+                    silentbuffer = new float[flen];
+                converter.toByteArray(silentbuffer, flen, b, off);
 
-                 silent_samples += (len / framesize);
+                silent_samples += (len / framesize);
 
-                 if(pusher != null)
-                 if(weak_stream_link.get() == null)
-                 {
-                     Runnable runnable = new Runnable()
-                     {
-                         SoftAudioPusher _pusher = pusher;
-                         AudioInputStream _jitter_stream = jitter_stream;
-                         SourceDataLine _sourceDataLine = sourceDataLine;
-                         public void run()
-                         {
-                             _pusher.stop();
-                             if(_jitter_stream != null)
-                                try {
-                                    _jitter_stream.close();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                } 
-                             if(_sourceDataLine != null)
-                                 _sourceDataLine.close();
-                         }
-                     };
-                     pusher = null;
-                     jitter_stream = null;
-                     sourceDataLine = null;
-                     new Thread(runnable).start();
-                 }
-                 return len;
-             }
+                if(pusher != null)
+                    if(weak_stream_link.get() == null)
+                    {
+                        Runnable runnable = new Runnable()
+                        {
+                            SoftAudioPusher _pusher = pusher;
+                            AudioInputStream _jitter_stream = jitter_stream;
+                            SourceDataLine _sourceDataLine = sourceDataLine;
+                            public void run()
+                            {
+                                _pusher.stop();
+                                if(_jitter_stream != null)
+                                    try {
+                                        _jitter_stream.close();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                if(_sourceDataLine != null)
+                                    _sourceDataLine.close();
+                            }
+                        };
+                        pusher = null;
+                        jitter_stream = null;
+                        sourceDataLine = null;
+                        new Thread(runnable).start();
+                    }
+                return len;
+            }
         }
 
         public WeakAudioStream(AudioInputStream stream) {
@@ -155,7 +155,7 @@ public class SoftSynthesizer implements AudioSynthesizer {
 
     protected WeakAudioStream weakstream = null;
 
-    protected Object control_mutex = this;
+    protected final Object control_mutex = this;
 
     protected int voiceIDCounter = 0;
 
@@ -211,7 +211,7 @@ public class SoftSynthesizer implements AudioSynthesizer {
             = new HashMap<String, ModelInstrument>();
 
     private void getBuffers(ModelInstrument instrument,
-            List<ModelByteBuffer> buffers) {
+                            List<ModelByteBuffer> buffers) {
         for (ModelPerformer performer : instrument.getPerformers()) {
             if (performer.getOscillators() != null) {
                 for (ModelOscillator osc : performer.getOscillators()) {
@@ -268,8 +268,8 @@ public class SoftSynthesizer implements AudioSynthesizer {
         return true;
     }
 
-    private void processPropertyInfo(Map<String, Object> info) {
-        AudioSynthesizerPropertyInfo[] items = getPropertyInfo(info);
+    private void processPropertyInfo() {
+        AudioSynthesizerPropertyInfo[] items = getPropertyInfo();
 
         String resamplerType = (String)items[0].value;
         if (resamplerType.equalsIgnoreCase("point"))
@@ -520,9 +520,8 @@ public class SoftSynthesizer implements AudioSynthesizer {
                 });
     }
 
-    private AudioSynthesizerPropertyInfo[] getPropertyInfo(Map<String, Object> info) {
-        List<AudioSynthesizerPropertyInfo> list =
-                new ArrayList<AudioSynthesizerPropertyInfo>();
+    private AudioSynthesizerPropertyInfo[] getPropertyInfo() {
+        List<AudioSynthesizerPropertyInfo> list = new ArrayList<>();
 
         AudioSynthesizerPropertyInfo item;
 
@@ -530,7 +529,7 @@ public class SoftSynthesizer implements AudioSynthesizer {
         //   we return how the synthesizer will be set on next open
         // If info == null and synthesizer is open
         //   we return current synthesizer properties.
-        boolean o = info == null && open;
+        boolean o = open;
 
         item = new AudioSynthesizerPropertyInfo("interpolation", o?resamplerType:"linear");
         list.add(item);
@@ -571,28 +570,26 @@ public class SoftSynthesizer implements AudioSynthesizer {
 
         item = new AudioSynthesizerPropertyInfo("light reverb", !o || reverb_light);
         list.add(item);
-        
+
         item = new AudioSynthesizerPropertyInfo("load default soundbank", !o || load_default_soundbank);
         list.add(item);
-        
+
         AudioSynthesizerPropertyInfo[] items;
-        items = list.toArray(new AudioSynthesizerPropertyInfo[list.size()]);
-        
+        items = list.toArray(new AudioSynthesizerPropertyInfo[0]);
+
         Properties storedProperties = getStoredProperties();
-        
+
         for (AudioSynthesizerPropertyInfo item2 : items) {
-            Object v = (info == null) ? null : info.get(item2.name);
-            v = (v != null) ? v : storedProperties.getProperty(item2.name);
+            String v = storedProperties.getProperty(item2.name);
             if (v != null) {
                 Class c = (item2.valueClass);
                 if (c.isInstance(v))
                     item2.value = v;
-                else if (v instanceof String) {
-                    String s = (String) v;
+                else {
                     if (c == Boolean.class) {
-                        if (s.equalsIgnoreCase("true"))
+                        if (v.equalsIgnoreCase("true"))
                             item2.value = Boolean.TRUE;
-                        if (s.equalsIgnoreCase("false"))
+                        if (v.equalsIgnoreCase("false"))
                             item2.value = Boolean.FALSE;
                     } else if (c == AudioFormat.class) {
                         int channels = 2;
@@ -601,7 +598,7 @@ public class SoftSynthesizer implements AudioSynthesizer {
                         int bits = 16;
                         float sampleRate = 44100f;
                         try {
-                            StringTokenizer st = new StringTokenizer(s, ", ");
+                            StringTokenizer st = new StringTokenizer(v, ", ");
                             String prevToken = "";
                             while (st.hasMoreTokens()) {
                                 String token = st.nextToken().toLowerCase();
@@ -621,39 +618,25 @@ public class SoftSynthesizer implements AudioSynthesizer {
                             }
                             item2.value = new AudioFormat(sampleRate, bits,
                                     channels, signed, bigendian);
-                        } catch (NumberFormatException e) {
+                        } catch (NumberFormatException ignored) {
                         }
 
                     } else
                         try {
                             if (c == Byte.class)
-                                item2.value = Byte.valueOf(s);
+                                item2.value = Byte.valueOf(v);
                             else if (c == Short.class)
-                                item2.value = Short.valueOf(s);
+                                item2.value = Short.valueOf(v);
                             else if (c == Integer.class)
-                                item2.value = Integer.valueOf(s);
+                                item2.value = Integer.valueOf(v);
                             else if (c == Long.class)
-                                item2.value = Long.valueOf(s);
+                                item2.value = Long.valueOf(v);
                             else if (c == Float.class)
-                                item2.value = Float.valueOf(s);
+                                item2.value = Float.valueOf(v);
                             else if (c == Double.class)
-                                item2.value = Double.valueOf(s);
-                        } catch (NumberFormatException e) {
+                                item2.value = Double.valueOf(v);
+                        } catch (NumberFormatException ignored) {
                         }
-                } else if (v instanceof Number) {
-                    Number n = (Number) v;
-                    if (c == Byte.class)
-                        item2.value = Byte.valueOf(n.byteValue());
-                    if (c == Short.class)
-                        item2.value = Short.valueOf(n.shortValue());
-                    if (c == Integer.class)
-                        item2.value = Integer.valueOf(n.intValue());
-                    if (c == Long.class)
-                        item2.value = Long.valueOf(n.longValue());
-                    if (c == Float.class)
-                        item2.value = Float.valueOf(n.floatValue());
-                    if (c == Double.class)
-                        item2.value = Double.valueOf(n.doubleValue());
                 }
             }
         }
@@ -662,49 +645,23 @@ public class SoftSynthesizer implements AudioSynthesizer {
     }
 
     public void open() throws MidiUnavailableException {
-        if (isOpen()) {
-            synchronized (control_mutex) {
-            }
-            return;
-        }
-        open(null, null);
-    }
-
-    private void open(SourceDataLine line, Map<String, Object> info) throws MidiUnavailableException {
-        if (isOpen()) {
-            synchronized (control_mutex) {
-            }
-            return;
-        }
         synchronized (control_mutex) {
+            if (open) return;
             Throwable causeException = null;
             try {
-                if (line != null) {
-                    // can throw IllegalArgumentException
-                    setFormat(line.getFormat());
-                }
 
-                AudioInputStream ais = openStream(getFormat(), info);
+                AudioInputStream ais = openStream(getFormat());
 
                 weakstream = new WeakAudioStream(ais);
                 ais = weakstream.getAudioInputStream();
 
-                if (line == null)
-                {
-                    if (testline != null) {
-                        line = testline;
-                    } else {
-                        // can throw LineUnavailableException,
-                        // IllegalArgumentException, SecurityException
-                        line = AudioSystem.getSourceDataLine(getFormat());
-                    }
-                }
+                SourceDataLine line = testline == null ? AudioSystem.getSourceDataLine(getFormat()) : testline;
 
                 double latency = this.latency;
 
                 if (!line.isOpen()) {
                     int bufferSize = getFormat().getFrameSize()
-                        * (int)(getFormat().getFrameRate() * (latency/1000000f));
+                            * (int)(getFormat().getFrameRate() * (latency/1000000f));
                     // can throw LineUnavailableException,
                     // IllegalArgumentException, SecurityException
                     line.open(getFormat(), bufferSize);
@@ -719,7 +676,7 @@ public class SoftSynthesizer implements AudioSynthesizer {
                 int controlbuffersize = 512;
                 try {
                     controlbuffersize = ais.available();
-                } catch (IOException e) {
+                } catch (IOException ignored) {
                 }
 
                 // Tell mixer not fill read buffers fully.
@@ -765,22 +722,18 @@ public class SoftSynthesizer implements AudioSynthesizer {
                 ex.initCause(causeException);
                 throw ex;
             }
-
         }
     }
 
-    private AudioInputStream openStream(AudioFormat targetFormat,
-                                        Map<String, Object> info) throws MidiUnavailableException {
-
-        if (isOpen())
-            throw new MidiUnavailableException("Synthesizer is already open");
+    private AudioInputStream openStream(AudioFormat targetFormat) {
 
         synchronized (control_mutex) {
+            if (open) throw new RuntimeException("Synthesizer is already open");
 
             gmmode = 0;
             voice_allocation_mode = 0;
 
-            processPropertyInfo(info);
+            processPropertyInfo();
 
             open = true;
 
@@ -808,21 +761,10 @@ public class SoftSynthesizer implements AudioSynthesizer {
                     external_channels = new SoftChannelProxy[channels.length];
                 for (int i = 0; i < external_channels.length; i++)
                     external_channels[i] = new SoftChannelProxy();
-            } else {
-                // We must resize external_channels array
-                // but we must also copy the old SoftChannelProxy
-                // into the new one
-                if (channels.length > external_channels.length) {
-                    SoftChannelProxy[] new_external_channels
-                            = new SoftChannelProxy[channels.length];
-                    for (int i = 0; i < external_channels.length; i++)
-                        new_external_channels[i] = external_channels[i];
-                    for (int i = external_channels.length;
-                            i < new_external_channels.length; i++) {
-                        new_external_channels[i] = new SoftChannelProxy();
-                    }
-                }
-            }
+            }  // We must resize external_channels array
+            // but we must also copy the old SoftChannelProxy
+            // into the new one
+
 
             for (int i = 0; i < channels.length; i++)
                 external_channels[i].setChannel(channels[i]);
@@ -893,5 +835,4 @@ public class SoftSynthesizer implements AudioSynthesizer {
             return open;
         }
     }
-
 }
