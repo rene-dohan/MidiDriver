@@ -9,10 +9,8 @@ public class SourceDataLineImpl implements SourceDataLine {
 
 	private AudioTrack audioTrack;
 	private int bufferSize;
-	private AudioFormat format = new AudioFormat(44100, 16, 2, true, false);
 
-	public SourceDataLineImpl(AudioFormat format) {
-		this.format = format;
+	public SourceDataLineImpl() {
 	}
 
 	@Override
@@ -48,11 +46,6 @@ public class SourceDataLineImpl implements SourceDataLine {
 	}
 
 	@Override
-	public AudioFormat getFormat() {
-		return format;
-	}
-
-	@Override
 	public int getBufferSize() {
 		if (audioTrack != null) {
 			return bufferSize;
@@ -63,7 +56,6 @@ public class SourceDataLineImpl implements SourceDataLine {
 	@Override
 	public void open(AudioFormat format, int bufferSize) {
 		// Get the smallest buffer to minimize latency.
-		this.format = format;
 		this.bufferSize = bufferSize;
 		int sampleRateInHz = (int) format.getSampleRate();
 		// int sampleSizeInBit = format.getSampleSizeInBits();

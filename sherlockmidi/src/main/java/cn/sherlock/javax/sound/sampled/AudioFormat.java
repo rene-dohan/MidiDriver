@@ -95,7 +95,6 @@ import java.util.Map;
  *
  * @author Kara Kytle
  * @author Florian Bomers
- * @see DataLine#getFormat
  * @see AudioInputStream#getFormat
  * @see AudioFileFormat
  * @see cn.sherlock.javax.sound.sampled.spi.FormatConversionProvider

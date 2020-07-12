@@ -655,7 +655,7 @@ public class SoftSynthesizer implements AudioSynthesizer {
                 weakstream = new WeakAudioStream(ais);
                 ais = weakstream.getAudioInputStream();
 
-                SourceDataLine line = testline == null ? AudioSystem.getSourceDataLine(getFormat()) : testline;
+                SourceDataLine line = testline == null ? AudioSystem.getSourceDataLine() : testline;
 
                 double latency = this.latency;
 

@@ -97,25 +97,6 @@ public interface DataLine extends Line {
     boolean isActive();
 
     /**
-     * Obtains the current format (encoding, sample rate, number of channels,
-     * etc.) of the data line's audio data.
-     *
-     * <p>If the line is not open and has never been opened, it returns
-     * the default format. The default format is an implementation
-     * specific audio format, or, if the <code>DataLine.Info</code>
-     * object, which was used to retrieve this <code>DataLine</code>,
-     * specifies at least one fully qualified audio format, the
-     * last one will be used as the default format. Opening the
-     * line with a specific audio format (e.g.
-     * {@link SourceDataLine#open(AudioFormat)}) will override the
-     * default format.
-     *
-     * @return current audio data format
-     * @see AudioFormat
-     */
-    AudioFormat getFormat();
-
-    /**
      * Obtains the maximum number of bytes of data that will fit in the data line's
      * internal buffer.  For a source data line, this is the size of the buffer to
      * which data can be written.  For a target data line, it is the size of

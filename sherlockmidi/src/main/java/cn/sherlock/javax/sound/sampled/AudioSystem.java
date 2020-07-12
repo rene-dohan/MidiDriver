@@ -169,10 +169,6 @@ public class AudioSystem {
 	 * used to retrieve the default source data line. For details, refer to the
 	 * {@link AudioSystem class description}.
 	 *
-	 * @param format
-	 *            an <code>AudioFormat</code> object specifying the supported
-	 *            audio format of the returned line, or <code>null</code> for
-	 *            any audio format
 	 * @return the desired <code>SourceDataLine</code> object
 	 *
 	 * @throws SecurityException
@@ -186,10 +182,10 @@ public class AudioSystem {
 	 * @see #getSourceDataLine(AudioFormat, Mixer.Info)
 	 * @since 1.5
 	 */
-	public static SourceDataLine getSourceDataLine(AudioFormat format) {
+	public static SourceDataLine getSourceDataLine() {
 		// DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
 		// return (SourceDataLine) AudioSystem.getLine(info);
-		return new SourceDataLineImpl(format);
+		return new SourceDataLineImpl();
 	}
 
 	/**
