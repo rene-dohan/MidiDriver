@@ -793,12 +793,6 @@ public class SoftVoice {
         SoftAudioBuffer eff1 = buffer[SoftMainMixer.CHANNEL_EFFECT1];
         SoftAudioBuffer eff2 = buffer[SoftMainMixer.CHANNEL_EFFECT2];
 
-        SoftAudioBuffer dleft = buffer[SoftMainMixer.CHANNEL_DELAY_LEFT];
-        SoftAudioBuffer dright = buffer[SoftMainMixer.CHANNEL_DELAY_RIGHT];
-        SoftAudioBuffer dmono = buffer[SoftMainMixer.CHANNEL_DELAY_MONO];
-        SoftAudioBuffer deff1 = buffer[SoftMainMixer.CHANNEL_DELAY_EFFECT1];
-        SoftAudioBuffer deff2 = buffer[SoftMainMixer.CHANNEL_DELAY_EFFECT2];
-
         SoftAudioBuffer leftdry = buffer[SoftMainMixer.CHANNEL_LEFT_DRY];
         SoftAudioBuffer rightdry = buffer[SoftMainMixer.CHANNEL_RIGHT_DRY];
 
