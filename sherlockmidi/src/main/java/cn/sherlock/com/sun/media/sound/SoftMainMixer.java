@@ -1015,28 +1015,10 @@ public class SoftMainMixer {
             return;
         }
 
-        int cmd = (status & 0xF0);
-        int ch = (status & 0x0F);
-
-        int data1;
-        int data2;
-        if (data.length > 1)
-            data1 = data[1] & 0xFF;
-        else
-            data1 = 0;
-        if (data.length > 2)
-            data2 = data[2] & 0xFF;
-        else
-            data2 = 0;
-
-        processMessage(ch, cmd, data1, data2);
-
-    }
-
-    public void processMessage(int ch, int cmd, int data1, int data2) {
         synchronized (synth.control_mutex) {
             activity();
         }
+
     }
 
     public void close() {
