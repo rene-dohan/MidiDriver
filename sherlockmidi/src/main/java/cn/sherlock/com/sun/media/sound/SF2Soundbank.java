@@ -50,7 +50,7 @@ public class SF2Soundbank {
     private ModelByteBuffer sampleData24 = null;
     private File sampleFile = null;
     private boolean largeFormat = false;
-    private List<SF2Instrument> instruments = new ArrayList<SF2Instrument>();
+    private List<SF2Instrument> instruments = new ArrayList<>();
     private List<SF2Layer> layers = new ArrayList<SF2Layer>();
     private List<SF2Sample> samples = new ArrayList<SF2Sample>();
 
@@ -450,13 +450,13 @@ public class SF2Soundbank {
 
     }
 
-    public Instrument getInstrument(Patch patch) {
+    public SF2Instrument getInstrument(Patch patch) {
         int program = patch.getProgram();
         int bank = patch.getBank();
         boolean percussion = false;
         if (patch instanceof ModelPatch)
             percussion = ((ModelPatch)patch).isPercussion();
-        for (Instrument instrument : instruments) {
+        for (SF2Instrument instrument : instruments) {
             Patch patch2 = instrument.getPatch();
             int program2 = patch2.getProgram();
             int bank2 = patch2.getBank();

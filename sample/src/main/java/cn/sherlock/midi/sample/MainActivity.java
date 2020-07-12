@@ -8,9 +8,9 @@ import android.view.View;
 
 import java.io.IOException;
 
+import cn.sherlock.com.sun.media.sound.SF2Instrument;
 import cn.sherlock.com.sun.media.sound.SF2Soundbank;
 import cn.sherlock.com.sun.media.sound.SoftSynthesizer;
-import jp.kshoji.javax.sound.midi.Instrument;
 import jp.kshoji.javax.sound.midi.MidiChannel;
 import jp.kshoji.javax.sound.midi.Patch;
 
@@ -18,7 +18,7 @@ public class MainActivity extends Activity {
 
 	private SoftSynthesizer synth;
 	private SF2Soundbank soundbank;
-	private Instrument currentInstrument;
+	private SF2Instrument currentInstrument;
 	private MidiChannel channel;
 
 	@Override

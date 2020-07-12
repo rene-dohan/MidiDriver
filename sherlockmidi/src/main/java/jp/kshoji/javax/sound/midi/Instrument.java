@@ -26,7 +26,7 @@ public abstract class Instrument extends SoundbankResource {
     }
 
     /**
-     * Get the patch of the {@link Instrument}
+     * Get the patch of the Instrument
      *
      * @return the patch
      */
