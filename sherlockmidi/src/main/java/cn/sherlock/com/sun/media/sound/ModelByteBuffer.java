@@ -168,12 +168,6 @@ public class ModelByteBuffer {
         this.len = buffer.length;
     }
 
-    public ModelByteBuffer(File file, long offset, long len) {
-        this.file = file;
-        this.fileoffset = offset;
-        this.len = len;
-    }
-
     public InputStream getInputStream() {
         if (root.file != null && root.buffer == null) {
             try {

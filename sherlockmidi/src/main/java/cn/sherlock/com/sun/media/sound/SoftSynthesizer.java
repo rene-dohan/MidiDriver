@@ -60,7 +60,7 @@ public class SoftSynthesizer {
         public AudioInputStream jitter_stream = null;
         public SourceDataLineImpl sourceDataLine = null;
         public volatile long silent_samples = 0;
-        private int framesize = 0;
+        private int framesize;
         private WeakReference<AudioInputStream> weak_stream_link;
         private AudioFloatConverter converter;
         private float[] silentbuffer = null;
@@ -203,7 +203,6 @@ public class SoftSynthesizer {
 
     private Map<String, SoftTuning> tunings = new HashMap<>();
     private Map<String, SoftInstrument> inslist = new HashMap<>();
-    private Map<String, SF2Instrument> loadedlist = new HashMap<>();
 
     private void getBuffers(SF2Instrument instrument,
                             List<ModelByteBuffer> buffers) {
@@ -254,7 +253,6 @@ public class SoftSynthesizer {
             for (SF2Instrument instrument : instruments) {
                 String pat = patchToString(instrument.getPatch());
                 inslist.put(pat, new SoftInstrument(instrument));
-                loadedlist.put(pat, instrument);
             }
         }
 
@@ -444,15 +442,14 @@ public class SoftSynthesizer {
                 ret = new MidiChannel[channels.length];
             else
                 ret = new MidiChannel[16];
-            for (int i = 0; i < ret.length; i++)
-                ret[i] = external_channels[i];
+            System.arraycopy(external_channels, 0, ret, 0, ret.length);
             return ret;
         }
     }
 
     public boolean loadInstrument(SF2Instrument instrument) {
         if (instrument == null) {
-            throw new IllegalArgumentException("Unsupported instrument: " + instrument);
+            throw new IllegalArgumentException("Instrument is null");
         }
         List<SF2Instrument> instruments = new ArrayList<>();
         instruments.add(instrument);
@@ -461,7 +458,7 @@ public class SoftSynthesizer {
 
     public void unloadInstrument(SF2Instrument instrument) {
         if (instrument == null) {
-            throw new IllegalArgumentException("Unsupported instrument: " + instrument);
+            throw new IllegalArgumentException("Instrument is null");
         }
         if (!isOpen())
             return;
@@ -471,9 +468,8 @@ public class SoftSynthesizer {
             for (SoftChannel c: channels)
                 c.current_instrument = null;
             inslist.remove(pat);
-            loadedlist.remove(pat);
-            for (int i = 0; i < channels.length; i++) {
-                channels[i].allSoundOff();
+            for (SoftChannel channel : channels) {
+                channel.allSoundOff();
             }
         }
     }
@@ -495,8 +491,7 @@ public class SoftSynthesizer {
                                         p.setProperty(prefs_key, val);
                                 }
                             }
-                        } catch (BackingStoreException e) {
-                        } catch (SecurityException e) {
+                        } catch (BackingStoreException | SecurityException ignored) {
                         }
                         return p;
                     }
@@ -786,8 +781,8 @@ public class SoftSynthesizer {
             channels = null;
 
             if (external_channels != null)
-                for (int i = 0; i < external_channels.length; i++)
-                    external_channels[i].setChannel(null);
+                for (SoftChannelProxy external_channel : external_channels)
+                    external_channel.setChannel(null);
 
             if (sourceDataLine != null) {
                 sourceDataLine.close();
@@ -795,7 +790,6 @@ public class SoftSynthesizer {
             }
 
             inslist.clear();
-            loadedlist.clear();
             tunings.clear();
 
         }

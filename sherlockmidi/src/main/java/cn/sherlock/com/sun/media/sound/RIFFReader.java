@@ -87,10 +87,6 @@ public class RIFFReader extends InputStream {
         }
     }
 
-    public long getFilePointer() {
-        return root.filepointer;
-    }
-
     public boolean hasNextChunk() throws IOException {
         if (lastiterator != null)
             lastiterator.finish();
