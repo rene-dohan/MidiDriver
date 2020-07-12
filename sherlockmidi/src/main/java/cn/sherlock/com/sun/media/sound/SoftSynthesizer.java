@@ -53,7 +53,7 @@ import jp.kshoji.javax.sound.midi.Patch;
  *
  * @author Karl Helgason
  */
-public class SoftSynthesizer implements AudioSynthesizer {
+public class SoftSynthesizer {
 
     protected static class WeakAudioStream extends InputStream
     {
