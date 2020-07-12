@@ -63,7 +63,7 @@ import cn.sherlock.media.SourceDataLineImpl;
  * </tr>
  * <tr>
  * <td><code>javax.sound.sampled.SourceDataLine</code></td>
- * <td>{@link SourceDataLine}</td>
+ * <td>{@link SourceDataLineImpl}</td>
  * <td>{@link #getLine}, {@link #getSourceDataLine}</td>
  * </tr>
  * <tr>
@@ -180,7 +180,7 @@ public class AudioSystem {
 	 * @see #getSourceDataLine(AudioFormat, Mixer.Info)
 	 * @since 1.5
 	 */
-	public static SourceDataLine getSourceDataLine() {
+	public static SourceDataLineImpl getSourceDataLine() {
 		// DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
 		// return (SourceDataLine) AudioSystem.getLine(info);
 		return new SourceDataLineImpl();

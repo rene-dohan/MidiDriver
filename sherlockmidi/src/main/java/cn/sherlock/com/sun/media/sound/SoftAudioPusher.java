@@ -27,7 +27,7 @@ package cn.sherlock.com.sun.media.sound;
 import java.io.IOException;
 
 import cn.sherlock.javax.sound.sampled.AudioInputStream;
-import cn.sherlock.javax.sound.sampled.SourceDataLine;
+import cn.sherlock.media.SourceDataLineImpl;
 
 /**
  * This is a processor object that writes into SourceDataLine
@@ -37,12 +37,12 @@ import cn.sherlock.javax.sound.sampled.SourceDataLine;
 public class SoftAudioPusher implements Runnable {
 
     private volatile boolean active = false;
-    private SourceDataLine sourceDataLine = null;
+    private SourceDataLineImpl sourceDataLine;
     private Thread audiothread;
     private AudioInputStream ais;
     private byte[] buffer;
 
-    public SoftAudioPusher(SourceDataLine sourceDataLine, AudioInputStream ais,
+    public SoftAudioPusher(SourceDataLineImpl sourceDataLine, AudioInputStream ais,
             int workbuffersizer) {
         this.ais = ais;
         this.buffer = new byte[workbuffersizer];
@@ -73,7 +73,7 @@ public class SoftAudioPusher implements Runnable {
     public void run() {
         byte[] buffer = SoftAudioPusher.this.buffer;
         AudioInputStream ais = SoftAudioPusher.this.ais;
-        SourceDataLine sourceDataLine = SoftAudioPusher.this.sourceDataLine;
+        SourceDataLineImpl sourceDataLine = SoftAudioPusher.this.sourceDataLine;
 
         try {
             while (active) {

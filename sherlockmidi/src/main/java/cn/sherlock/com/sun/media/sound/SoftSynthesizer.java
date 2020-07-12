@@ -42,7 +42,7 @@ import java.util.prefs.Preferences;
 import cn.sherlock.javax.sound.sampled.AudioFormat;
 import cn.sherlock.javax.sound.sampled.AudioInputStream;
 import cn.sherlock.javax.sound.sampled.AudioSystem;
-import cn.sherlock.javax.sound.sampled.SourceDataLine;
+import cn.sherlock.media.SourceDataLineImpl;
 import jp.kshoji.javax.sound.midi.Instrument;
 import jp.kshoji.javax.sound.midi.MidiChannel;
 import jp.kshoji.javax.sound.midi.MidiUnavailableException;
@@ -60,7 +60,7 @@ public class SoftSynthesizer {
         private volatile AudioInputStream stream;
         public SoftAudioPusher pusher = null;
         public AudioInputStream jitter_stream = null;
-        public SourceDataLine sourceDataLine = null;
+        public SourceDataLineImpl sourceDataLine = null;
         public volatile long silent_samples = 0;
         private int framesize = 0;
         private WeakReference<AudioInputStream> weak_stream_link;
@@ -107,7 +107,7 @@ public class SoftSynthesizer {
                         {
                             SoftAudioPusher _pusher = pusher;
                             AudioInputStream _jitter_stream = jitter_stream;
-                            SourceDataLine _sourceDataLine = sourceDataLine;
+                            SourceDataLineImpl _sourceDataLine = sourceDataLine;
                             public void run()
                             {
                                 _pusher.stop();
@@ -151,7 +151,7 @@ public class SoftSynthesizer {
         }
     }
 
-    private static SourceDataLine testline = null;
+    private static SourceDataLineImpl testline = null;
 
     protected WeakAudioStream weakstream = null;
 
@@ -183,7 +183,7 @@ public class SoftSynthesizer {
 
     private AudioFormat format = new AudioFormat(44100, 16, 2, true, false);
 
-    private SourceDataLine sourceDataLine = null;
+    private SourceDataLineImpl sourceDataLine = null;
 
     private SoftAudioPusher pusher = null;
     private AudioInputStream pusher_stream = null;
@@ -655,7 +655,7 @@ public class SoftSynthesizer {
                 weakstream = new WeakAudioStream(ais);
                 ais = weakstream.getAudioInputStream();
 
-                SourceDataLine line = testline == null ? AudioSystem.getSourceDataLine() : testline;
+                SourceDataLineImpl line = testline == null ? AudioSystem.getSourceDataLine() : testline;
 
                 double latency = this.latency;
 

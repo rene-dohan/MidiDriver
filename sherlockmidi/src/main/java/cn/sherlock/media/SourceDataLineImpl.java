@@ -3,9 +3,8 @@ package cn.sherlock.media;
 import android.media.AudioManager;
 import android.media.AudioTrack;
 import cn.sherlock.javax.sound.sampled.AudioFormat;
-import cn.sherlock.javax.sound.sampled.SourceDataLine;
 
-public class SourceDataLineImpl implements SourceDataLine {
+public class SourceDataLineImpl {
 
 	private AudioTrack audioTrack;
 	private int bufferSize;
@@ -13,7 +12,6 @@ public class SourceDataLineImpl implements SourceDataLine {
 	public SourceDataLineImpl() {
 	}
 
-	@Override
 	public void start() {
 		if (audioTrack != null) {
 			audioTrack.play();
@@ -28,7 +26,6 @@ public class SourceDataLineImpl implements SourceDataLine {
 		}
 	}
 
-	@Override
 	public boolean isOpen() {
 		return audioTrack != null;
 	}
@@ -40,12 +37,10 @@ public class SourceDataLineImpl implements SourceDataLine {
 		return false;
 	}
 
-	@Override
 	public boolean isActive() {
 		return isRunning();
 	}
 
-	@Override
 	public int getBufferSize() {
 		if (audioTrack != null) {
 			return bufferSize;
@@ -53,7 +48,6 @@ public class SourceDataLineImpl implements SourceDataLine {
 		return 0;
 	}
 
-	@Override
 	public void open(AudioFormat format, int bufferSize) {
 		// Get the smallest buffer to minimize latency.
 		this.bufferSize = bufferSize;
@@ -73,7 +67,6 @@ public class SourceDataLineImpl implements SourceDataLine {
 				bufferSize, AudioTrack.MODE_STREAM);
 	}
 
-	@Override
 	public int write(byte[] b, int off, int len) {
 		if(audioTrack != null){
 			return audioTrack.write(b, off, len);
