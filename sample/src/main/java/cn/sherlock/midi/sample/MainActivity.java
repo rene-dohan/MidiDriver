@@ -12,7 +12,6 @@ import cn.sherlock.com.sun.media.sound.SF2Soundbank;
 import cn.sherlock.com.sun.media.sound.SoftSynthesizer;
 import jp.kshoji.javax.sound.midi.Instrument;
 import jp.kshoji.javax.sound.midi.MidiChannel;
-import jp.kshoji.javax.sound.midi.MidiUnavailableException;
 import jp.kshoji.javax.sound.midi.Patch;
 
 public class MainActivity extends Activity {
@@ -33,7 +32,7 @@ public class MainActivity extends Activity {
 
 			synth.open();
 			changeInstrument(1); // Piano is program 1
-		} catch (IOException | MidiUnavailableException e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 

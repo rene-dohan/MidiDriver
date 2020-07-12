@@ -45,7 +45,6 @@ import cn.sherlock.javax.sound.sampled.AudioSystem;
 import cn.sherlock.media.SourceDataLineImpl;
 import jp.kshoji.javax.sound.midi.Instrument;
 import jp.kshoji.javax.sound.midi.MidiChannel;
-import jp.kshoji.javax.sound.midi.MidiUnavailableException;
 import jp.kshoji.javax.sound.midi.Patch;
 
 /**
@@ -636,10 +635,9 @@ public class SoftSynthesizer {
         return items;
     }
 
-    public void open() throws MidiUnavailableException {
+    public void open() {
         synchronized (control_mutex) {
             if (open) return;
-            Throwable causeException = null;
             try {
 
                 AudioInputStream ais = openStream(getFormat());
@@ -699,20 +697,9 @@ public class SoftSynthesizer {
                     weakstream.sourceDataLine = sourceDataLine;
                 }
 
-            } catch (IllegalArgumentException e) {
-                causeException = e;
-            } catch (SecurityException e) {
-                causeException = e;
-            }
-
-            if (causeException != null) {
-                if (isOpen())
-                    close();
-                // am: need MidiUnavailableException(Throwable) ctor!
-                MidiUnavailableException ex = new MidiUnavailableException(
-                        "Can not open line");
-                ex.initCause(causeException);
-                throw ex;
+            } catch (IllegalArgumentException | SecurityException e) {
+                if (open) close();
+                throw e;
             }
         }
     }
