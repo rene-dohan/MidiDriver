@@ -70,8 +70,7 @@ public class SoftVoice {
     private SoftFilter filter_right;
     private SoftProcess eg = new SoftEnvelopeGenerator();
     private SoftProcess lfo = new SoftLowFrequencyOscillator();
-    protected Map<String, SoftControl> objects =
-            new HashMap<String, SoftControl>();
+    protected Map<String, SoftControl> objects = new HashMap<>();
     protected SoftSynthesizer synthesizer;
     protected SoftPerformer performer;
     protected SoftChannel softchannel = null;
@@ -260,15 +259,14 @@ public class SoftVoice {
             return;
 
         double value = conn.getScale();
+        ModelSource[] srcs = conn.getSources();
         if (softchannel.keybasedcontroller_active == null) {
-            ModelSource[] srcs = conn.getSources();
             for (int i = 0; i < srcs.length; i++) {
                 value *= transformValue(src[i][0], srcs[i]);
                 if (value == 0)
                     break;
             }
         } else {
-            ModelSource[] srcs = conn.getSources();
             int[] src_kc = connections_src_kc[ix];
             for (int i = 0; i < srcs.length; i++) {
                 value *= transformValue(processKeyBasedController(src[i][0],
@@ -428,8 +426,7 @@ public class SoftVoice {
         int[] c = performer.midi_connections[2];
         if (c == null)
             return;
-        for (int i = 0; i < c.length; i++)
-            processConnection(c[i]);
+        for (int value : c) processConnection(value);
     }
 
     protected void setChannelPressure() {
@@ -438,8 +435,7 @@ public class SoftVoice {
         int[] c = performer.midi_connections[1];
         if (c == null)
             return;
-        for (int i = 0; i < c.length; i++)
-            processConnection(c[i]);
+        for (int value : c) processConnection(value);
     }
 
     protected void controlChange(int controller) {
@@ -448,8 +444,7 @@ public class SoftVoice {
         int[] c = performer.midi_ctrl_connections[controller];
         if (c == null)
             return;
-        for (int i = 0; i < c.length; i++)
-            processConnection(c[i]);
+        for (int value : c) processConnection(value);
     }
 
     protected void nrpnChange(int controller) {
@@ -458,8 +453,7 @@ public class SoftVoice {
         int[] c = performer.midi_nrpn_connections.get(controller);
         if (c == null)
             return;
-        for (int i = 0; i < c.length; i++)
-            processConnection(c[i]);
+        for (int value : c) processConnection(value);
     }
 
     protected void rpnChange(int controller) {
@@ -468,8 +462,7 @@ public class SoftVoice {
         int[] c = performer.midi_rpn_connections.get(controller);
         if (c == null)
             return;
-        for (int i = 0; i < c.length; i++)
-            processConnection(c[i]);
+        for (int value : c) processConnection(value);
     }
 
     protected void setPitchBend() {
@@ -478,8 +471,7 @@ public class SoftVoice {
         int[] c = performer.midi_connections[0];
         if (c == null)
             return;
-        for (int i = 0; i < c.length; i++)
-            processConnection(c[i]);
+        for (int value : c) processConnection(value);
     }
 
     protected void setMute(boolean mute) {
@@ -506,8 +498,7 @@ public class SoftVoice {
         int[] c = performer.midi_connections[3];
         if (c == null)
             return;
-        for (int i = 0; i < c.length; i++)
-            processConnection(c[i]);
+        for (int value : c) processConnection(value);
     }
 
     protected void soundOff() {
@@ -534,8 +525,7 @@ public class SoftVoice {
         int[] c = performer.midi_connections[3];
         if (c == null)
             return;
-        for (int i = 0; i < c.length; i++)
-            processConnection(c[i]);
+        for (int value : c) processConnection(value);
     }
 
     protected void redamp() {
@@ -552,8 +542,7 @@ public class SoftVoice {
         int[] c = performer.midi_connections[3];
         if (c == null)
             return;
-        for (int i = 0; i < c.length; i++)
-            processConnection(c[i]);
+        for (int value : c) processConnection(value);
     }
 
     protected void processControlLogic() {
@@ -630,8 +619,7 @@ public class SoftVoice {
                 int[] c = performer.midi_connections[4];
                 if (c == null)
                     return;
-                for (int i = 0; i < c.length; i++)
-                    processConnection(c[i]);
+                for (int value : c) processConnection(value);
             }
 
             eg.processControlLogic();
