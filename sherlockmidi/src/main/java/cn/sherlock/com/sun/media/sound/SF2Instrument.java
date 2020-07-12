@@ -67,7 +67,7 @@ public class SF2Instrument {
                     + " preset #" + preset;
     }
 
-    public ModelDirector getDirector(ModelPerformer[] performers, SoftChannel player) {
+    public ModelStandardIndexedDirector getDirector(ModelPerformer[] performers, SoftChannel player) {
         return new ModelStandardIndexedDirector(performers, player);
     }
 

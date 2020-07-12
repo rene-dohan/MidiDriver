@@ -114,7 +114,7 @@ public class SoftChannel implements MidiChannel {
     protected int tuning_bank = 0;
     protected int tuning_program = 0;
     protected SoftInstrument current_instrument = null;
-    protected ModelDirector current_director = null;
+    protected ModelStandardIndexedDirector current_director = null;
 
     // Controller Destination Settings
     protected int cds_control_number = -1;

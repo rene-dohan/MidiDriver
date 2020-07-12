@@ -30,7 +30,7 @@ package cn.sherlock.com.sun.media.sound;
  *
  * @author Karl Helgason
  */
-public class ModelStandardIndexedDirector implements ModelDirector {
+public class ModelStandardIndexedDirector {
 
     ModelPerformer[] performers;
     SoftChannel player;
