@@ -177,8 +177,7 @@ public class SoftMainMixer {
 
         for (SoftVoice softVoice : voicestatus)
             if (softVoice.active)
-                if (softVoice.channelmixer == null)
-                    softVoice.processAudioLogic(buffers);
+                softVoice.processAudioLogic(buffers);
 
         if(!buffers[CHANNEL_MONO].isSilent())
         {

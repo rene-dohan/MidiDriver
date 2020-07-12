@@ -54,13 +54,11 @@ public class SoftVoice {
     public int exclusiveClass = 0;
     public boolean releaseTriggered = false;
     private int delay = 0;
-    protected ModelChannelMixer channelmixer = null;
     protected double tunedKey = 0;
     protected SoftTuning tuning = null;
     protected SoftChannel stealer_channel = null;
     protected ModelConnectionBlock[] stealer_extendedConnectionBlocks = null;
     protected SoftPerformer stealer_performer = null;
-    protected ModelChannelMixer stealer_channelmixer = null;
     protected int stealer_voiceID = -1;
     protected int stealer_noteNumber = 0;
     protected int stealer_velocity = 0;
@@ -569,7 +567,6 @@ public class SoftVoice {
             performer = null;
             connections = null;
             extendedConnectionBlocks = null;
-            channelmixer = null;            
             if (osc_stream != null)
                 try {
                     osc_stream.close();
@@ -580,7 +577,7 @@ public class SoftVoice {
             if (stealer_channel != null) {
                 stealer_channel.initVoice(this, stealer_performer,
                         stealer_voiceID, stealer_noteNumber, stealer_velocity, 0,
-                        stealer_extendedConnectionBlocks, stealer_channelmixer,
+                        stealer_extendedConnectionBlocks,
                         stealer_releaseTriggered);
                 stealer_releaseTriggered = false;
                 stealer_channel = null;
@@ -589,7 +586,6 @@ public class SoftVoice {
                 stealer_noteNumber = 0;
                 stealer_velocity = 0;
                 stealer_extendedConnectionBlocks = null;
-                stealer_channelmixer = null;
             }
         }
         if (started) {

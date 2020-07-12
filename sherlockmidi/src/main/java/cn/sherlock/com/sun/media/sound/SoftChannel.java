@@ -335,8 +335,8 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
     }
 
     protected void initVoice(SoftVoice voice, SoftPerformer p, int voiceID,
-            int noteNumber, int velocity, int delay, ModelConnectionBlock[] connectionBlocks,
-            ModelChannelMixer channelmixer, boolean releaseTriggered) {
+                             int noteNumber, int velocity, int delay, ModelConnectionBlock[] connectionBlocks,
+                             boolean releaseTriggered) {
         if (voice.active) {
             // Voice is active , we must steal the voice
             voice.stealer_channel = this;
@@ -345,7 +345,6 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
             voice.stealer_noteNumber = noteNumber;
             voice.stealer_velocity = velocity;
             voice.stealer_extendedConnectionBlocks = connectionBlocks;
-            voice.stealer_channelmixer = channelmixer;
             voice.stealer_releaseTriggered = releaseTriggered;
             for (int i = 0; i < voices.length; i++)
                 if (voices[i].active && voices[i].voiceID == voice.voiceID)
@@ -354,7 +353,6 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
         }
 
         voice.extendedConnectionBlocks = connectionBlocks;
-        voice.channelmixer = channelmixer;
         voice.releaseTriggered = releaseTriggered;
         voice.voiceID = voiceID;
         voice.tuning = tuning;
@@ -566,7 +564,6 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
                     v.stealer_noteNumber = 0;
                     v.stealer_velocity = 0;
                     v.stealer_extendedConnectionBlocks = null;
-                    v.stealer_channelmixer = null;
                 }                            
             }
 
@@ -632,7 +629,7 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
             return;
 
         initVoice(voices[voiceNo], p, prevVoiceID, noteNumber, velocity, delay,
-                connectionBlocks, null, releasetriggered);
+                connectionBlocks, releasetriggered);
     }
 
     public void noteOff(int noteNumber) {
