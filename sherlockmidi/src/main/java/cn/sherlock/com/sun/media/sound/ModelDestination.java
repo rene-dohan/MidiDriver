@@ -32,7 +32,6 @@ package cn.sherlock.com.sun.media.sound;
  */
 public class ModelDestination {
 
-    public static final ModelIdentifier DESTINATION_NONE = null;
     public static final ModelIdentifier DESTINATION_KEYNUMBER
             = new ModelIdentifier("noteon", "keynumber");
     public static final ModelIdentifier DESTINATION_VELOCITY
@@ -85,7 +84,7 @@ public class ModelDestination {
             = new ModelIdentifier("filter", "freq", 0); // cent
     public static final ModelIdentifier DESTINATION_FILTER_Q
             = new ModelIdentifier("filter", "q", 0); // cB
-    private ModelIdentifier destination = DESTINATION_NONE;
+    private ModelIdentifier destination;
     private ModelTransform transform = new ModelStandardTransform();
 
     public ModelDestination(ModelIdentifier id) {

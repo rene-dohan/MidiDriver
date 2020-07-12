@@ -118,9 +118,7 @@ public class ModelConnectionBlock {
     public void addSource(ModelSource source) {
         ModelSource[] oldsources = sources;
         sources = new ModelSource[oldsources.length + 1];
-        for (int i = 0; i < oldsources.length; i++) {
-            sources[i] = oldsources[i];
-        }
+        if (oldsources.length >= 0) System.arraycopy(oldsources, 0, sources, 0, oldsources.length);
         sources[sources.length - 1] = source;
     }
 }

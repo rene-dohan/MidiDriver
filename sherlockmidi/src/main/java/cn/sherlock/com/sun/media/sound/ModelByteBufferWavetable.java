@@ -103,7 +103,7 @@ public class ModelByteBufferWavetable implements ModelWavetable {
             int ret = read(b, 0, 1);
             if (ret == -1)
                 return -1;
-            return 0 & 0xFF;
+            return 0;
         }
 
         public boolean markSupported() {
@@ -130,9 +130,8 @@ public class ModelByteBufferWavetable implements ModelWavetable {
     private float loopLength = -1;
     private ModelByteBuffer buffer;
     private ModelByteBuffer buffer8 = null;
-    private AudioFormat format = null;
-    private float pitchcorrection = 0;
-    private float attenuation = 0;
+    private AudioFormat format;
+    private float pitchcorrection;
     private int loopType = LOOP_TYPE_OFF;
 
     public ModelByteBufferWavetable(ModelByteBuffer buffer, AudioFormat format,
@@ -180,7 +179,7 @@ public class ModelByteBufferWavetable implements ModelWavetable {
             return null;
         if (format == null) {
             InputStream is = buffer.getInputStream();
-            AudioInputStream ais = null;
+            AudioInputStream ais;
             try {
                 ais = AudioSystem.getAudioInputStream(is);
             } catch (Exception e) {
@@ -203,7 +202,7 @@ public class ModelByteBufferWavetable implements ModelWavetable {
                         format.getSampleRate(),
                         format.getSampleSizeInBits() + 8,
                         format.getChannels(),
-                        format.getFrameSize() + (1 * format.getChannels()),
+                        format.getFrameSize() + format.getChannels(),
                         format.getFrameRate(),
                         format.isBigEndian());
 
@@ -227,7 +226,7 @@ public class ModelByteBufferWavetable implements ModelWavetable {
 
     // attenuation is in cB
     public float getAttenuation() {
-        return attenuation;
+        return 0f;
     }
 
     public float getLoopLength() {

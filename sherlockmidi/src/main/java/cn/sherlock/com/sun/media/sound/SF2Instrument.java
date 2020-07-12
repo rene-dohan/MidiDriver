@@ -67,8 +67,7 @@ public class SF2Instrument {
                     + " preset #" + preset;
     }
 
-    public ModelDirector getDirector(ModelPerformer[] performers,
-                                     ModelDirectedPlayer player) {
+    public ModelDirector getDirector(ModelPerformer[] performers, ModelDirectedPlayer player) {
         return new ModelStandardIndexedDirector(performers, player);
     }
 
@@ -81,8 +80,7 @@ public class SF2Instrument {
 
         SF2GlobalRegion presetglobal = globalregion;
         for (SF2InstrumentRegion presetzone : regions) {
-            Map<Integer, Short> pgenerators = new HashMap<Integer, Short>();
-            pgenerators.putAll(presetzone.getGenerators());
+            Map<Integer, Short> pgenerators = new HashMap<>(presetzone.getGenerators());
             if (presetglobal != null)
                 pgenerators.putAll(presetglobal.getGenerators());
 
@@ -210,7 +208,7 @@ public class SF2Instrument {
                 if (buff24 != null)
                     osc.set8BitExtensionBuffer(buff24);
 
-                Map<Integer, Short> generators = new HashMap<Integer, Short>();
+                Map<Integer, Short> generators = new HashMap<>();
                 if (layerglobal != null)
                     generators.putAll(layerglobal.getGenerators());
                 generators.putAll(layerzone.getGenerators());
@@ -527,20 +525,18 @@ public class SF2Instrument {
                         SF2Region.GENERATOR_SCALETUNING) != 100) {
                     short fvalue = getGeneratorValue(generators,
                             SF2Region.GENERATOR_SCALETUNING);
+                    ModelIdentifier dest = ModelDestination.DESTINATION_PITCH;
                     if (fvalue == 0) {
-                        ModelIdentifier dest = ModelDestination.DESTINATION_PITCH;
                         performer.getConnectionBlocks().add(
                             new ModelConnectionBlock(null, rootkey * 100,
                                 new ModelDestination(dest)));
                     } else {
-                        ModelIdentifier dest = ModelDestination.DESTINATION_PITCH;
                         performer.getConnectionBlocks().add(
                             new ModelConnectionBlock(null, rootkey * (100 - fvalue),
                                 new ModelDestination(dest)));
                     }
 
                     ModelIdentifier src = ModelSource.SOURCE_NOTEON_KEYNUMBER;
-                    ModelIdentifier dest = ModelDestination.DESTINATION_PITCH;
                     performer.getConnectionBlocks().add(
                         new ModelConnectionBlock(new ModelSource(src),
                             128 * fvalue, new ModelDestination(dest)));
@@ -597,8 +593,7 @@ public class SF2Instrument {
         return performers;
     }
 
-    private void convertModulator(ModelPerformer performer,
-            SF2Modulator modulator) {
+    private void convertModulator(ModelPerformer performer, SF2Modulator modulator) {
         ModelSource src1 = convertSource(modulator.getSourceOperator());
         ModelSource src2 = convertSource(modulator.getAmountSourceOperator());
         if (src1 == null && modulator.getSourceOperator() != 0)
@@ -673,8 +668,7 @@ public class SF2Instrument {
         return msrc;
     }
 
-    protected static ModelDestination convertDestination(int dst,
-            double[] amountcorrection, ModelSource[] extrasrc) {
+    protected static ModelDestination convertDestination(int dst, double[] amountcorrection, ModelSource[] extrasrc) {
         ModelIdentifier id = null;
         switch (dst) {
             case SF2Region.GENERATOR_INITIALFILTERFC:
@@ -821,29 +815,21 @@ public class SF2Instrument {
         return null;
     }
 
-    private void addTimecentValue(ModelPerformer performer,
-            ModelIdentifier dest, short value) {
+    private void addTimecentValue(ModelPerformer performer, ModelIdentifier dest, short value) {
         double fvalue;
         if (value == -12000)
             fvalue = Double.NEGATIVE_INFINITY;
         else
             fvalue = value;
-        performer.getConnectionBlocks().add(
-                new ModelConnectionBlock(fvalue, new ModelDestination(dest)));
+        performer.getConnectionBlocks().add(new ModelConnectionBlock(fvalue, new ModelDestination(dest)));
     }
 
-    private void addValue(ModelPerformer performer,
-            ModelIdentifier dest, short value) {
-        double fvalue = value;
-        performer.getConnectionBlocks().add(
-                new ModelConnectionBlock(fvalue, new ModelDestination(dest)));
+    private void addValue(ModelPerformer performer, ModelIdentifier dest, short value) {
+        performer.getConnectionBlocks().add(new ModelConnectionBlock(value, new ModelDestination(dest)));
     }
 
-    private void addValue(ModelPerformer performer,
-            ModelIdentifier dest, double value) {
-        double fvalue = value;
-        performer.getConnectionBlocks().add(
-                new ModelConnectionBlock(fvalue, new ModelDestination(dest)));
+    private void addValue(ModelPerformer performer, ModelIdentifier dest, double value) {
+        performer.getConnectionBlocks().add(new ModelConnectionBlock(value, new ModelDestination(dest)));
     }
 
     private short getGeneratorValue(Map<Integer, Short> generators, int gen) {
