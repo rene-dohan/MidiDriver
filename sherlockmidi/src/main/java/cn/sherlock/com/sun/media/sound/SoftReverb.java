@@ -391,8 +391,8 @@ public class SoftReverb implements SoftAudioProcessor {
         
     }
 
-    public void globalParameterControlChange(int[] slothpath, long param,
-            long value) {
+    private void globalParameterControlChange(int[] slothpath, long param,
+                                              long value) {
         if (slothpath.length == 1) {
             if (slothpath[0] == 0x01 * 128 + 0x01) {
 

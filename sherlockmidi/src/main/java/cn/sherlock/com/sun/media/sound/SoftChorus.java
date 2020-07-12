@@ -202,8 +202,8 @@ public class SoftChorus implements SoftAudioProcessor {
         globalParameterControlChange(new int[]{0x01 * 128 + 0x02}, 0, 2);
     }
 
-    public void globalParameterControlChange(int[] slothpath, long param,
-            long value) {
+    private void globalParameterControlChange(int[] slothpath, long param,
+                                              long value) {
         if (slothpath.length == 1) {
             if (slothpath[0] == 0x01 * 128 + 0x02) {
                 if (param == 0) { // Chorus Type

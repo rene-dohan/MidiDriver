@@ -31,9 +31,6 @@ package cn.sherlock.com.sun.media.sound;
  */
 public interface SoftAudioProcessor {
 
-    void globalParameterControlChange(int[] slothpath, long param,
-                                      long value);
-
     void init(float samplerate, float controlrate);
 
     void setInput(int pin, SoftAudioBuffer input);

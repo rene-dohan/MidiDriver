@@ -411,14 +411,6 @@ public class SoftSynthesizer {
         return gmmode;
     }
 
-    protected void setGeneralMidiMode(int gmmode) {
-        this.gmmode = gmmode;
-    }
-
-    protected int getDeviceID() {
-        return deviceid;
-    }
-
     protected float getControlRate() {
         return controlrate;
     }

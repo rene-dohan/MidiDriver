@@ -65,10 +65,6 @@ public class SoftLimiter implements SoftAudioProcessor {
         this.mix = mix;
     }
 
-    public void globalParameterControlChange(int[] slothpath, long param,
-            long value) {
-    }
-
     double silentcounter = 0;
 
     public void processAudio() {
