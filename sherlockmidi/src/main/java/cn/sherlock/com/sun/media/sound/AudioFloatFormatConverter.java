@@ -52,7 +52,7 @@ public class AudioFloatFormatConverter extends FormatConversionProvider {
 
         private float[] readfloatbuffer;
 
-        private int fsize = 0;
+        private int fsize;
 
         public AudioFloatFormatConverterInputStream(AudioFormat targetFormat,
                 AudioFloatInputStream stream) {
@@ -240,15 +240,13 @@ public class AudioFloatFormatConverter extends FormatConversionProvider {
 
         private float[][] ibuffer;
 
-        private float ibuffer_index = 0;
+        private float ibuffer_index;
 
-        private int ibuffer_len = 0;
+        private int ibuffer_len;
 
-        private int nrofchannels = 0;
+        private int nrofchannels;
 
         private float[][] cbuffer;
-
-        private int buffer_len = 512;
 
         private int pad;
 
@@ -274,7 +272,7 @@ public class AudioFloatFormatConverter extends FormatConversionProvider {
                     format.getSampleRate(), sourceFormat.isBigEndian());
             nrofchannels = targetFormat.getChannels();
             Object interpolation = format.getProperty("interpolation");
-            if (interpolation != null && (interpolation instanceof String)) {
+            if ((interpolation instanceof String)) {
                 String resamplerType = (String) interpolation;
                 if (resamplerType.equalsIgnoreCase("point"))
                     this.resampler = new SoftPointResampler();
@@ -297,6 +295,7 @@ public class AudioFloatFormatConverter extends FormatConversionProvider {
             pitch[0] = sourceFormat.getSampleRate() / format.getSampleRate();
             pad = resampler.getPadding();
             pad2 = pad * 2;
+            int buffer_len = 512;
             ibuffer = new float[nrofchannels][buffer_len + pad2];
             ibuffer2 = new float[nrofchannels * buffer_len];
             ibuffer_index = buffer_len + pad;
@@ -329,9 +328,7 @@ public class AudioFloatFormatConverter extends FormatConversionProvider {
             for (int c = 0; c < ibuffer.length; c++) {
                 float[] from = ibuffer[c];
                 float[] to = mark_ibuffer[c];
-                for (int i = 0; i < to.length; i++) {
-                    to[i] = from[i];
-                }
+                System.arraycopy(from, 0, to, 0, to.length);
             }
         }
 
@@ -438,9 +435,7 @@ public class AudioFloatFormatConverter extends FormatConversionProvider {
             for (int c = 0; c < ibuffer.length; c++) {
                 float[] from = mark_ibuffer[c];
                 float[] to = ibuffer[c];
-                for (int i = 0; i < to.length; i++) {
-                    to[i] = from[i];
-                }
+                System.arraycopy(from, 0, to, 0, to.length);
             }
 
         }
@@ -504,7 +499,7 @@ public class AudioFloatFormatConverter extends FormatConversionProvider {
             return new AudioFormat[0];
         int channels = sourceFormat.getChannels();
 
-        ArrayList<AudioFormat> formats = new ArrayList<AudioFormat>();
+        ArrayList<AudioFormat> formats = new ArrayList<>();
 
         if (targetEncoding.equals(Encoding.PCM_SIGNED))
             formats.add(new AudioFormat(Encoding.PCM_SIGNED,
@@ -549,7 +544,7 @@ public class AudioFloatFormatConverter extends FormatConversionProvider {
                     AudioSystem.NOT_SPECIFIED, true));
         }
 
-        return formats.toArray(new AudioFormat[formats.size()]);
+        return formats.toArray(new AudioFormat[0]);
     }
 
     public boolean isConversionSupported(AudioFormat targetFormat,

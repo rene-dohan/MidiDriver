@@ -40,8 +40,7 @@ import cn.sherlock.javax.sound.sampled.AudioSystem;
  */
 public abstract class AudioFloatInputStream {
 
-    private static class BytaArrayAudioFloatInputStream
-            extends AudioFloatInputStream {
+    private static class BytaArrayAudioFloatInputStream extends AudioFloatInputStream {
 
         private int pos = 0;
         private int markpos = 0;
@@ -139,17 +138,13 @@ public abstract class AudioFloatInputStream {
                     newformat = formats[0];
                 } else {
                     float samplerate = format.getSampleRate();
-                    int samplesizeinbits = format.getSampleSizeInBits();
-                    int framesize = format.getFrameSize();
-                    float framerate = format.getFrameRate();
-                    samplesizeinbits = 16;
-                    framesize = format.getChannels() * (samplesizeinbits / 8);
-                    framerate = samplerate;
+                    int samplesizeinbits = 16;
+                    int framesize = format.getChannels() * (samplesizeinbits / 8);
 
                     newformat = new AudioFormat(
                             AudioFormat.Encoding.PCM_SIGNED, samplerate,
                             samplesizeinbits, format.getChannels(), framesize,
-                            framerate, false);
+                            samplerate, false);
                 }
 
                 stream = AudioSystem.getAudioInputStream(newformat, stream);
@@ -182,8 +177,6 @@ public abstract class AudioFloatInputStream {
         public long skip(long len) throws IOException {
             long b_len = len * framesize_pc;
             long ret = stream.skip(b_len);
-            if (ret == -1)
-                return -1;
             return ret / framesize_pc;
         }
 

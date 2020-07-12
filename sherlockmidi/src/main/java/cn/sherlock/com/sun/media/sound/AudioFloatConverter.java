@@ -113,9 +113,7 @@ public abstract class AudioFloatConverter {
             for (int i = in_offset + offset; i < in_offset_end; i += stepsize) {
                 mask_buffer[i] = (byte) (mask_buffer[i] & mask);
             }
-            float[] ret = converter.toFloatArray(mask_buffer, in_offset,
-                    out_buff, out_offset, out_len);
-            return ret;
+            return converter.toFloatArray(mask_buffer, in_offset, out_buff, out_offset, out_len);
         }
 
     }
