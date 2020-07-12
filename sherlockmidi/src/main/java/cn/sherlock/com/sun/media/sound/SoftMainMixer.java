@@ -28,14 +28,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 
-import jp.kshoji.javax.sound.midi.Patch;
-import jp.kshoji.javax.sound.midi.ShortMessage;
 import cn.sherlock.javax.sound.sampled.AudioInputStream;
 import cn.sherlock.javax.sound.sampled.AudioSystem;
+import jp.kshoji.javax.sound.midi.Patch;
 
 /**
  * Software synthesizer main audio mixer.
@@ -1004,10 +1003,6 @@ public class SoftMainMixer {
     public void processMessage(Object object) {
         if (object instanceof byte[])
             processMessage((byte[]) object);
-        if (object instanceof ShortMessage) {
-            ShortMessage sms = (ShortMessage)object;
-            processMessage(sms.getChannel(), sms.getCommand(), sms.getData1(), sms.getData2());
-        }
     }
 
     public void processMessage(byte[] data) {
@@ -1042,55 +1037,6 @@ public class SoftMainMixer {
         synchronized (synth.control_mutex) {
             activity();
         }
-
-        if (cmd == 0xF0) {
-            int status = cmd | ch;
-            switch (status) {
-            case ShortMessage.ACTIVE_SENSING:
-                synchronized (synth.control_mutex) {
-                    active_sensing_on = true;
-                }
-                break;
-            default:
-                break;
-            }
-            return;
-        }
-
-        SoftChannel[] channels = synth.channels;
-        if (ch >= channels.length)
-            return;
-        SoftChannel softchannel = channels[ch];
-
-        switch (cmd) {
-        case ShortMessage.NOTE_ON:
-            if(delay_midievent != 0)
-                softchannel.noteOn(data1, data2, delay_midievent);
-            else
-                softchannel.noteOn(data1, data2);
-            break;
-        case ShortMessage.NOTE_OFF:
-            softchannel.noteOff(data1, data2);
-            break;
-        case ShortMessage.POLY_PRESSURE:
-            softchannel.setPolyPressure(data1, data2);
-            break;
-        case ShortMessage.CONTROL_CHANGE:
-            softchannel.controlChange(data1, data2);
-            break;
-        case ShortMessage.PROGRAM_CHANGE:
-            softchannel.programChange(data1);
-            break;
-        case ShortMessage.CHANNEL_PRESSURE:
-            softchannel.setChannelPressure(data1);
-            break;
-        case ShortMessage.PITCH_BEND:
-            softchannel.setPitchBend(data1 + data2 * 128);
-            break;
-        default:
-            break;
-        }
-
     }
 
     public void close() {
