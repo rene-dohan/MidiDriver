@@ -32,7 +32,7 @@ import java.util.Arrays;
  *
  * @author Karl Helgason
  */
-public abstract class SoftAbstractResampler implements SoftResampler {
+public abstract class SoftAbstractResampler {
 
     private class ModelAbstractResamplerStream implements SoftResamplerStreamer {
 

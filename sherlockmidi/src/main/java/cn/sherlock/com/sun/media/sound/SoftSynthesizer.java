@@ -193,7 +193,7 @@ public class SoftSynthesizer {
     private boolean open = false;
 
     private String resamplerType = "linear";
-    private SoftResampler resampler = new SoftLinearResampler();
+    private SoftAbstractResampler resampler = new SoftLinearResampler();
 
     private int number_of_midi_channels = 16;
     private int maxpoly = 64;
