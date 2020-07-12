@@ -33,7 +33,7 @@ package cn.sherlock.com.sun.media.sound;
 public class ModelStandardIndexedDirector implements ModelDirector {
 
     ModelPerformer[] performers;
-    ModelDirectedPlayer player;
+    SoftChannel player;
     boolean noteOnUsed = false;
     boolean noteOffUsed = false;
 
@@ -42,7 +42,7 @@ public class ModelStandardIndexedDirector implements ModelDirector {
     int[] counters;
     int[][] mat;
 
-    public ModelStandardIndexedDirector(ModelPerformer[] performers, ModelDirectedPlayer player) {
+    public ModelStandardIndexedDirector(ModelPerformer[] performers, SoftChannel player) {
         this.performers = performers;
         this.player = player;
         for (ModelPerformer p : performers) {

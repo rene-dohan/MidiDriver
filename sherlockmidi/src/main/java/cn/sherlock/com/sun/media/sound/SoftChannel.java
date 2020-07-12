@@ -39,7 +39,7 @@ import jp.kshoji.javax.sound.midi.Patch;
  *
  * @author Karl Helgason
  */
-public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
+public class SoftChannel implements MidiChannel {
 
     private static boolean[] dontResetControls = new boolean[128];
     static {

@@ -52,7 +52,7 @@ public class SoftInstrument {
             performers[i] = new SoftPerformer(modelperformers[i]);
     }
 
-    public ModelDirector getDirector(ModelDirectedPlayer player) {
+    public ModelDirector getDirector(SoftChannel player) {
         return ins.getDirector(modelperformers, player);
     }
 
