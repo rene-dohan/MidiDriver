@@ -29,14 +29,27 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import jp.kshoji.javax.sound.midi.VoiceStatus;
-
 /**
  * Software synthesizer voice class.
  *
  * @author Karl Helgason
  */
-public class SoftVoice extends VoiceStatus {
+public class SoftVoice {
+
+    /**
+     * Indicates the voice is active or not
+     */
+    public boolean active;
+
+    /**
+     * The channel number 0-15
+     */
+    public int channel;
+
+    /**
+     * The note number 0-127
+     */
+    public int note;
 
     public int exclusiveClass = 0;
     public boolean releaseTriggered = false;
