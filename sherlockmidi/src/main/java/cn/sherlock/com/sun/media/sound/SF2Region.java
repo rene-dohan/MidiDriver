@@ -88,8 +88,8 @@ public class SF2Region {
     public final static int GENERATOR_SCALETUNING = 56;
     public final static int GENERATOR_EXCLUSIVECLASS = 57;
     public final static int GENERATOR_OVERRIDINGROOTKEY = 58;
-    protected Map<Integer, Short> generators = new HashMap<Integer, Short>();
-    protected List<SF2Modulator> modulators = new ArrayList<SF2Modulator>();
+    protected Map<Integer, Short> generators = new HashMap<>();
+    protected List<SF2Modulator> modulators = new ArrayList<>();
 
     public Map<Integer, Short> getGenerators() {
         return generators;

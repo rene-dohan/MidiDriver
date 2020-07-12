@@ -37,10 +37,9 @@ import java.nio.charset.StandardCharsets;
 public class RIFFReader extends InputStream {
 
     private RIFFReader root;
-    private long filepointer = 0;
     private String fourcc;
     private String riff_type = null;
-    private long ckSize = 0;
+    private long ckSize;
     private InputStream stream;
     private long avail;
     private RIFFReader lastiterator = null;
@@ -58,7 +57,7 @@ public class RIFFReader extends InputStream {
 
         // Check for RIFF null paddings,
         int b;
-        while (true) {
+        do {
             b = read();
             if (b == -1) {
                 fourcc = ""; // don't put null value into fourcc,
@@ -68,9 +67,7 @@ public class RIFFReader extends InputStream {
                 avail = 0;
                 return;
             }
-            if (b != 0)
-                break;
-        }
+        } while (b == 0);
 
         byte[] fourcc = new byte[4];
         fourcc[0] = (byte) b;
@@ -121,7 +118,6 @@ public class RIFFReader extends InputStream {
         if (b == -1)
             return -1;
         avail--;
-        filepointer++;
         return b;
     }
 
@@ -130,8 +126,6 @@ public class RIFFReader extends InputStream {
             return -1;
         if (len > avail) {
             int rlen = stream.read(b, offset, (int)avail);
-            if (rlen != -1)
-                filepointer += rlen;
             avail = 0;
             return rlen;
         } else {            
@@ -139,7 +133,6 @@ public class RIFFReader extends InputStream {
             if (ret == -1)
                 return -1;
             avail -= ret;
-            filepointer += ret;
             return ret;
         }
     }
@@ -168,8 +161,6 @@ public class RIFFReader extends InputStream {
         long skipped = 0;
         while (skipped != n) {
             long s = skip(n - skipped);
-            if (s < 0)
-                break;
             if (s == 0)
                 Thread.yield();
             skipped += s;
@@ -182,16 +173,11 @@ public class RIFFReader extends InputStream {
             return -1;
         if (n > avail) {
             long len = stream.skip(avail);
-            if (len != -1)
-                filepointer += len;
             avail = 0;
             return len;
         } else {
             long ret = stream.skip(n);
-            if (ret == -1)
-                return -1;
             avail -= ret;
-            filepointer += ret;
             return ret;
         }
     }

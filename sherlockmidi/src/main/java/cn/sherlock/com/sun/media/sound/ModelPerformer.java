@@ -35,17 +35,13 @@ import java.util.List;
  */
 public class ModelPerformer {
 
-    private List<ModelOscillator> oscillators = new ArrayList<ModelOscillator>();
-    private List<ModelConnectionBlock> connectionBlocks
-            = new ArrayList<ModelConnectionBlock>();
+    private List<ModelOscillator> oscillators = new ArrayList<>();
+    private List<ModelConnectionBlock> connectionBlocks = new ArrayList<>();
     private int keyFrom = 0;
     private int keyTo = 127;
     private int velFrom = 0;
     private int velTo = 127;
     private int exclusiveClass = 0;
-    private boolean releaseTrigger = false;
-    private boolean selfNonExclusive = false;
-    private boolean addDefaultConnections = true;
     private String name = null;
 
     public String getName() {
@@ -73,7 +69,7 @@ public class ModelPerformer {
     }
 
     public boolean isSelfNonExclusive() {
-        return selfNonExclusive;
+        return false;
     }
 
     public int getKeyFrom() {
@@ -109,11 +105,11 @@ public class ModelPerformer {
     }
 
     public boolean isReleaseTriggered() {
-        return releaseTrigger;
+        return false;
     }
 
     public boolean isDefaultConnectionsEnabled() {
-        return addDefaultConnections;
+        return true;
     }
 
 }

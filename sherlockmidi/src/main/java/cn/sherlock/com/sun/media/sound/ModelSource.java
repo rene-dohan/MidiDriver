@@ -32,7 +32,6 @@ package cn.sherlock.com.sun.media.sound;
  */
 public class ModelSource {
 
-    public static final ModelIdentifier SOURCE_NONE = null;
     public static final ModelIdentifier SOURCE_NOTEON_KEYNUMBER =
             new ModelIdentifier("noteon", "keynumber");     // midi keynumber
     public static final ModelIdentifier SOURCE_NOTEON_VELOCITY =
@@ -51,7 +50,7 @@ public class ModelSource {
 //            new ModelIdentifier("midi","mono_pressure",0);    // (0..127)
     public static final ModelIdentifier SOURCE_MIDI_POLY_PRESSURE =
             new ModelIdentifier("midi", "poly_pressure", 0);    // (0..127)
-    private ModelIdentifier source = SOURCE_NONE;
+    private ModelIdentifier source;
     private ModelTransform transform;
 
     public ModelSource(ModelIdentifier id) {
