@@ -46,9 +46,9 @@ public class SoftMainMixer {
 
     // A private class thats contains a ModelChannelMixer and it's private buffers.
     // This becomes necessary when we want to have separate delay buffers for each channel mixer.
-    private class SoftChannelMixerContainer
+    private static class SoftChannelMixerContainer
     {
-        ModelChannelMixer mixer;
+        ModelChannelMixer mixer = null;
         SoftAudioBuffer[] buffers;
     }
     
