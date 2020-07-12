@@ -121,8 +121,6 @@ import cn.sherlock.media.SourceDataLineImpl;
  * @see AudioFormat
  * @see AudioInputStream
  * @see Mixer
- * @see Line
- * @see Line.Info
  * @since 1.3
  */
 public class AudioSystem {

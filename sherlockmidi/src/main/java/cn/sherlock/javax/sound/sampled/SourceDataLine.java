@@ -58,12 +58,76 @@ package cn.sherlock.javax.sound.sampled;
  *
  * @author Kara Kytle
  * @see Mixer
- * @see DataLine
  * @see TargetDataLine
  * @since 1.3
  */
-public interface SourceDataLine extends DataLine {
+public interface SourceDataLine {
 
+    /**
+     * Closes the line, indicating that any system resources
+     * in use by the line can be released.  If this operation
+     * succeeds, the line is marked closed and a <code>CLOSE</code> event is dispatched
+     * to the line's listeners.
+     * @throws SecurityException if the line cannot be
+     * closed due to security restrictions.
+     *
+     * @see #isOpen
+     * @see LineEvent
+     */
+    void close();
+
+
+
+    /**
+     * Indicates whether the line is open, meaning that it has reserved
+     * system resources and is operational, although it might not currently be
+     * playing or capturing sound.
+     * @return <code>true</code> if the line is open, otherwise <code>false</code>
+     *
+     * @see #close()
+     */
+    boolean isOpen();
+
+
+    /**
+     * Allows a line to engage in data I/O.  If invoked on a line
+     * that is already running, this method does nothing.  Unless the data in
+     * the buffer has been flushed, the line resumes I/O starting
+     * with the first frame that was unprocessed at the time the line was
+     * stopped. When audio capture or playback starts, a
+     * <code>{@link LineEvent.Type#START START}</code> event is generated.
+     *
+     * @see LineEvent
+     */
+    void start();
+
+    /**
+     * Indicates whether the line is engaging in active I/O (such as playback
+     * or capture).  When an inactive line becomes active, it sends a
+     * <code>{@link LineEvent.Type#START START}</code> event to its listeners.  Similarly, when
+     * an active line becomes inactive, it sends a
+     * <code>{@link LineEvent.Type#STOP STOP}</code> event.
+     * @return <code>true</code> if the line is actively capturing or rendering
+     * sound, otherwise <code>false</code>
+     * @see #isOpen
+     * @see #addLineListener
+     * @see #removeLineListener
+     * @see LineEvent
+     * @see LineListener
+     */
+    boolean isActive();
+
+    /**
+     * Obtains the maximum number of bytes of data that will fit in the data line's
+     * internal buffer.  For a source data line, this is the size of the buffer to
+     * which data can be written.  For a target data line, it is the size of
+     * the buffer from which data can be read.  Note that
+     * the units used are bytes, but will always correspond to an integral
+     * number of sample frames of audio data.
+     *
+     * @return the size of the buffer in bytes
+     */
+    int getBufferSize();
 
     /**
      * Opens the line with the specified format and suggested buffer size,
@@ -97,8 +161,6 @@ public interface SourceDataLine extends DataLine {
      * @throws SecurityException if the line cannot be
      * opened due to security restrictions
      *
-     * @see Line#close
-     * @see Line#isOpen
      * @see LineEvent
      */
     void open(AudioFormat format, int bufferSize);
