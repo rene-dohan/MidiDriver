@@ -584,7 +584,7 @@ public class SoftMainMixer {
                 boolean hasactivevoices = false;
                 for (int i = 0; i < voicestatus.length; i++)
                     if (voicestatus[i].active)
-                        if (voicestatus[i].channelmixer == cmixer.mixer) {
+                        if (voicestatus[i].channelmixer == null) {
                             voicestatus[i].processAudioLogic(buffers);
                             hasactivevoices = true;
                         }
@@ -779,16 +779,15 @@ public class SoftMainMixer {
         stoppedMixers.add(mixer);
     }
 
-    public void registerMixer(ModelChannelMixer mixer) {
+    public void registerMixer() {
         if (registeredMixers == null)
-            registeredMixers = new HashSet<SoftChannelMixerContainer>();
+            registeredMixers = new HashSet<>();
         SoftChannelMixerContainer mixercontainer = new SoftChannelMixerContainer();
         mixercontainer.buffers = new SoftAudioBuffer[6];
         for (int i = 0; i < mixercontainer.buffers.length; i++) {
             mixercontainer.buffers[i] = 
                 new SoftAudioBuffer(buffer_len, synth.getFormat());
         }
-        mixercontainer.mixer = mixer;
         registeredMixers.add(mixercontainer);
         cur_registeredMixers = null;
     }

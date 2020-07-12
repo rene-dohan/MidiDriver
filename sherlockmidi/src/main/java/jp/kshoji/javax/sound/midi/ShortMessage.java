@@ -8,7 +8,7 @@ import android.support.annotation.Nullable;
  * 
  * @author K.Shoji
  */
-public class ShortMessage implements Cloneable {
+public class ShortMessage {
 
 	@Nullable
 	protected byte[] data;
@@ -117,12 +117,4 @@ public class ShortMessage implements Cloneable {
 		}
 		return 0;
 	}
-
-	@Override
-	public Object clone() {
-		final byte[] result = new byte[data.length];
-		System.arraycopy(data, 0, result, 0, result.length);
-		return new ShortMessage(result);
-	}
-
 }

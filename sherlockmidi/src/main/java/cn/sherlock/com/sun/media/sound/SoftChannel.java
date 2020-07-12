@@ -492,7 +492,7 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
                 current_mixer = current_instrument.getSourceInstrument()
                         .getChannelMixer();
                 if (current_mixer != null)
-                    mainmixer.registerMixer(current_mixer);
+                    mainmixer.registerMixer();
                 current_director = current_instrument.getDirector(this);
                 applyInstrumentCustomization();
             }
@@ -595,7 +595,7 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
                 current_mixer = current_instrument.getSourceInstrument()
                         .getChannelMixer();
                 if (current_mixer != null)
-                    mainmixer.registerMixer(current_mixer);
+                    mainmixer.registerMixer();
                 current_director = current_instrument.getDirector(this);
                 applyInstrumentCustomization();
 
