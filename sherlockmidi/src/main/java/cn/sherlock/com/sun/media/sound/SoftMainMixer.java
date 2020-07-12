@@ -64,18 +64,18 @@ public class SoftMainMixer {
     private long msec_last_activity = -1;
     private boolean pusher_silent = false;
     private int pusher_silent_count = 0;
-    private long sample_pos = 0;
+    private long sample_pos;
     protected boolean readfully = true;
-    private Object control_mutex;
+    private final Object control_mutex;
     private SoftSynthesizer synth;
-    private float samplerate = 44100;
-    private int nrofchannels = 2;
-    private SoftVoice[] voicestatus = null;
+    private float samplerate;
+    private int nrofchannels;
+    private SoftVoice[] voicestatus;
     private SoftAudioBuffer[] buffers;
     private SoftReverb reverb;
     private SoftAudioProcessor chorus;
     private SoftAudioProcessor agc;
-    private int buffer_len = 0;
+    private int buffer_len;
     protected TreeMap<Long, Object> midimessages = new TreeMap<>();
     double last_volume_left = 1.0;
     double last_volume_right = 1.0;
@@ -169,9 +169,9 @@ public class SoftMainMixer {
 
             }
 
-            for (int i = 0; i < voicestatus.length; i++)
-                if (voicestatus[i].active)
-                    voicestatus[i].processControlLogic();
+            for (SoftVoice softVoice : voicestatus)
+                if (softVoice.active)
+                    softVoice.processControlLogic();
             sample_pos += buffer_len;
 
             double volume = co_master_volume[0];
@@ -254,10 +254,10 @@ public class SoftMainMixer {
                     cbuffer[1] = buffers[CHANNEL_RIGHT].array();
                 
                 boolean hasactivevoices = false;
-                for (int i = 0; i < voicestatus.length; i++)
-                    if (voicestatus[i].active)
-                        if (voicestatus[i].channelmixer == null) {
-                            voicestatus[i].processAudioLogic(buffers);
+                for (SoftVoice softVoice : voicestatus)
+                    if (softVoice.active)
+                        if (softVoice.channelmixer == null) {
+                            softVoice.processAudioLogic(buffers);
                             hasactivevoices = true;
                         }
                 
@@ -318,10 +318,10 @@ public class SoftMainMixer {
 
         }
 
-        for (int i = 0; i < voicestatus.length; i++)
-            if (voicestatus[i].active)
-                if (voicestatus[i].channelmixer == null)
-                    voicestatus[i].processAudioLogic(buffers);
+        for (SoftVoice softVoice : voicestatus)
+            if (softVoice.active)
+                if (softVoice.channelmixer == null)
+                    softVoice.processAudioLogic(buffers);
 
         if(!buffers[CHANNEL_MONO].isSilent())
         {
@@ -447,21 +447,8 @@ public class SoftMainMixer {
 
     public void stopMixer(ModelChannelMixer mixer) {
         if (stoppedMixers == null)
-            stoppedMixers = new HashSet<ModelChannelMixer>();
+            stoppedMixers = new HashSet<>();
         stoppedMixers.add(mixer);
-    }
-
-    public void registerMixer() {
-        if (registeredMixers == null)
-            registeredMixers = new HashSet<>();
-        SoftChannelMixerContainer mixercontainer = new SoftChannelMixerContainer();
-        mixercontainer.buffers = new SoftAudioBuffer[6];
-        for (int i = 0; i < mixercontainer.buffers.length; i++) {
-            mixercontainer.buffers[i] = 
-                new SoftAudioBuffer(buffer_len, synth.getFormat());
-        }
-        registeredMixers.add(mixercontainer);
-        cur_registeredMixers = null;
     }
 
     public SoftMainMixer(SoftSynthesizer synth) {
@@ -474,7 +461,6 @@ public class SoftMainMixer {
         co_master_coarse_tuning[0] = 0.5;
         co_master_fine_tuning[0] = 0.5;
 
-        long msec_buffer_len = (long) (1000000.0 / synth.getControlRate());
         samplerate = synth.getFormat().getSampleRate();
         nrofchannels = synth.getFormat().getChannels();
 

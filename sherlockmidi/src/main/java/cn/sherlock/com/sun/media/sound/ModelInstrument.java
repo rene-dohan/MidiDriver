@@ -59,9 +59,4 @@ public abstract class ModelInstrument extends Instrument {
     public ModelPerformer[] getPerformers() {
         return new ModelPerformer[0];
     }
-
-    public ModelChannelMixer getChannelMixer() {
-        return null;
-    }
-
 }
