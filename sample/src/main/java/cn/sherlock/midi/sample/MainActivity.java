@@ -45,6 +45,8 @@ public class MainActivity extends Activity {
 						@Override
 						public void run() {
 							int pause = 500;
+							channel.controlChange(65, 127);
+							channel.controlChange(5, 80);
 							try {
 								channel.noteOn(60, 64);
 								Thread.sleep(pause);

@@ -25,6 +25,7 @@
 package cn.sherlock.com.sun.media.sound;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -42,8 +43,7 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
 
     private static boolean[] dontResetControls = new boolean[128];
     static {
-        for (int i = 0; i < dontResetControls.length; i++)
-            dontResetControls[i] = false;
+        Arrays.fill(dontResetControls, false);
 
         dontResetControls[0] = true;   // Bank Select (MSB)
         dontResetControls[32] = true;  // Bank Select (LSB)
@@ -97,7 +97,7 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
     private boolean mute = false;
     private boolean solo = false;
     private boolean solomute = false;
-    private Object control_mutex;
+    private final Object control_mutex;
     private int channel;
     private SoftVoice[] voices;
     private int bank;
@@ -159,8 +159,8 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
             return cc[Integer.parseInt(name)];
         }
     };
-    Map<Integer, int[]> co_midi_rpn_rpn_i = new HashMap<Integer, int[]>();
-    Map<Integer, double[]> co_midi_rpn_rpn = new HashMap<Integer, double[]>();
+    Map<Integer, int[]> co_midi_rpn_rpn_i = new HashMap<>();
+    Map<Integer, double[]> co_midi_rpn_rpn = new HashMap<>();
     private SoftControl co_midi_rpn = new SoftControl() {
         Map<Integer, double[]> rpn = co_midi_rpn_rpn;
         public double[] get(int instance, String name) {
@@ -175,8 +175,8 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
             return v;
         }
     };
-    Map<Integer, int[]> co_midi_nrpn_nrpn_i = new HashMap<Integer, int[]>();
-    Map<Integer, double[]> co_midi_nrpn_nrpn = new HashMap<Integer, double[]>();
+    Map<Integer, int[]> co_midi_nrpn_nrpn_i = new HashMap<>();
+    Map<Integer, double[]> co_midi_nrpn_nrpn = new HashMap<>();
     private SoftControl co_midi_nrpn = new SoftControl() {
         Map<Integer, double[]> nrpn = co_midi_nrpn_nrpn;
         public double[] get(int instance, String name) {
@@ -195,15 +195,13 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
     private static int restrict7Bit(int value)
     {
         if(value < 0) return 0;
-        if(value > 127) return 127;
-        return value;
+        return Math.min(value, 127);
     }
     
     private static int restrict14Bit(int value)
     {
         if(value < 0) return 0;
-        if(value > 16256) return 16256;
-        return value;
+        return Math.min(value, 16256);
     }
 
     public SoftChannel(SoftSynthesizer synth, int channel) {
@@ -238,14 +236,14 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
             //  * priority ( 10, 1-9, 11-16)
             // Search for channel to steal from
             int steal_channel = channel;
-            for (int j = 0; j < voices.length; j++) {
-                if (voices[j].stealer_channel == null) {
+            for (SoftVoice voice : voices) {
+                if (voice.stealer_channel == null) {
                     if (steal_channel == 9) {
-                        steal_channel = voices[j].channel;
+                        steal_channel = voice.channel;
                     } else {
-                        if (voices[j].channel != 9) {
-                            if (voices[j].channel > steal_channel)
-                                steal_channel = voices[j].channel;
+                        if (voice.channel != 9) {
+                            if (voice.channel > steal_channel)
+                                steal_channel = voice.channel;
                         }
                     }
                 }
@@ -346,9 +344,9 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
             voice.stealer_velocity = velocity;
             voice.stealer_extendedConnectionBlocks = connectionBlocks;
             voice.stealer_releaseTriggered = releaseTriggered;
-            for (int i = 0; i < voices.length; i++)
-                if (voices[i].active && voices[i].voiceID == voice.voiceID)
-                    voices[i].soundOff();
+            for (SoftVoice softVoice : voices)
+                if (softVoice.active && softVoice.voiceID == voice.voiceID)
+                    softVoice.soundOff();
             return;
         }
 
@@ -423,13 +421,13 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
         synchronized (control_mutex) {
             if (sustain) {
                 sustain = false;
-                for (int i = 0; i < voices.length; i++) {
-                    if ((voices[i].sustain || voices[i].on)
-                            && voices[i].channel == channel && voices[i].active
-                            && voices[i].note == noteNumber) {
-                        voices[i].sustain = false;
-                        voices[i].on = true;
-                        voices[i].noteOff();
+                for (SoftVoice voice : voices) {
+                    if ((voice.sustain || voice.on)
+                            && voice.channel == channel && voice.active
+                            && voice.note == noteNumber) {
+                        voice.sustain = false;
+                        voice.on = true;
+                        voice.noteOff();
                     }
                 }
                 sustain = true;
@@ -440,12 +438,12 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
             if (mono) {
                 if (portamento) {
                     boolean n_found = false;
-                    for (int i = 0; i < voices.length; i++) {
-                        if (voices[i].on && voices[i].channel == channel
-                                && voices[i].active
-                                && voices[i].releaseTriggered == false) {
-                            voices[i].portamento = true;
-                            voices[i].setNote(noteNumber);
+                    for (SoftVoice voice : voices) {
+                        if (voice.on && voice.channel == channel
+                                && voice.active
+                                && !voice.releaseTriggered) {
+                            voice.portamento = true;
+                            voice.setNote(noteNumber);
                             n_found = true;
                         }
                     }
@@ -457,13 +455,13 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
 
                 if (controller[84] != 0) {
                     boolean n_found = false;
-                    for (int i = 0; i < voices.length; i++) {
-                        if (voices[i].on && voices[i].channel == channel
-                                && voices[i].active
-                                && voices[i].note == controller[84]
-                                && voices[i].releaseTriggered == false) {
-                            voices[i].portamento = true;
-                            voices[i].setNote(noteNumber);
+                    for (SoftVoice voice : voices) {
+                        if (voice.on && voice.channel == channel
+                                && voice.active
+                                && voice.note == controller[84]
+                                && !voice.releaseTriggered) {
+                            voice.portamento = true;
+                            voice.setNote(noteNumber);
                             n_found = true;
                         }
                     }
@@ -548,23 +546,22 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
             }
 
             mainmixer.activity();
-            for (int i = 0; i < voices.length; i++) {
-                if (voices[i].on && voices[i].channel == channel
-                        && voices[i].note == noteNumber
-                        && voices[i].releaseTriggered == false) {
-                    voices[i].noteOff();
+            for (SoftVoice voice : voices) {
+                if (voice.on && voice.channel == channel
+                        && voice.note == noteNumber
+                        && !voice.releaseTriggered) {
+                    voice.noteOff();
                 }
                 // We must also check stolen voices
-                if (voices[i].stealer_channel == this && voices[i].stealer_noteNumber == noteNumber) {
-                    SoftVoice v = voices[i];
-                    v.stealer_releaseTriggered = false;
-                    v.stealer_channel = null;
-                    v.stealer_performer = null;
-                    v.stealer_voiceID = -1;
-                    v.stealer_noteNumber = 0;
-                    v.stealer_velocity = 0;
-                    v.stealer_extendedConnectionBlocks = null;
-                }                            
+                if (voice.stealer_channel == this && voice.stealer_noteNumber == noteNumber) {
+                    voice.stealer_releaseTriggered = false;
+                    voice.stealer_channel = null;
+                    voice.stealer_performer = null;
+                    voice.stealer_voiceID = -1;
+                    voice.stealer_noteNumber = 0;
+                    voice.stealer_velocity = 0;
+                    voice.stealer_extendedConnectionBlocks = null;
+                }
             }
 
             // Try play back note-off triggered voices,
@@ -613,11 +610,11 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
             firstVoice = false;
             if (p.exclusiveClass != 0) {
                 int x = p.exclusiveClass;
-                for (int j = 0; j < voices.length; j++) {
-                    if (voices[j].active && voices[j].channel == channel
-                            && voices[j].exclusiveClass == x) {
-                        if (!(p.selfNonExclusive && voices[j].note == noteNumber))
-                            voices[j].shutdown();
+                for (SoftVoice voice : voices) {
+                    if (voice.active && voice.channel == channel
+                            && voice.exclusiveClass == x) {
+                        if (!(p.selfNonExclusive && voice.note == noteNumber))
+                            voice.shutdown();
                     }
                 }
             }
@@ -645,9 +642,9 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
             mainmixer.activity();
             co_midi[noteNumber].get(0, "poly_pressure")[0] = pressure*(1.0/128.0);
             polypressure[noteNumber] = pressure;
-            for (int i = 0; i < voices.length; i++) {
-                if (voices[i].active && voices[i].note == noteNumber)
-                    voices[i].setPolyPressure();
+            for (SoftVoice voice : voices) {
+                if (voice.active && voice.note == noteNumber)
+                    voice.setPolyPressure();
             }
         }
     }
@@ -664,9 +661,9 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
             mainmixer.activity();
             co_midi_channel_pressure[0] = pressure * (1.0 / 128.0);
             channelpressure = pressure;
-            for (int i = 0; i < voices.length; i++) {
-                if (voices[i].active)
-                    voices[i].setChannelPressure();
+            for (SoftVoice voice : voices) {
+                if (voice.active)
+                    voice.setChannelPressure();
             }
         }
     }
@@ -697,12 +694,10 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
             new_performer.setVelFrom(performer.getVelFrom());
             new_performer.setVelTo(performer.getVelTo());
             new_performer.getOscillators().addAll(performer.getOscillators());
-            new_performer.getConnectionBlocks().addAll(
-                    performer.getConnectionBlocks());
+            new_performer.getConnectionBlocks().addAll(performer.getConnectionBlocks());
             new_performers[i] = new_performer;
 
-            List<ModelConnectionBlock> connblocks =
-                    new_performer.getConnectionBlocks();
+            List<ModelConnectionBlock> connblocks = new_performer.getConnectionBlocks();
 
             if (cds_control_connections != null) {
                 String cc = Integer.toString(cds_control_number);
@@ -710,21 +705,16 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
                 while (iter.hasNext()) {
                     ModelConnectionBlock conn = iter.next();
                     ModelSource[] sources = conn.getSources();
-                    boolean removeok = false;
                     if (sources != null) {
-                        for (int j = 0; j < sources.length; j++) {
-                            ModelSource src = sources[j];
-                            if ("midi_cc".equals(src.getIdentifier().getObject())
-                                    && cc.equals(src.getIdentifier().getVariable())) {
-                                removeok = true;
+                        for (ModelSource src : sources) {
+                            if ("midi_cc".equals(src.getIdentifier().getObject()) && cc.equals(src.getIdentifier().getVariable())) {
+                                iter.remove();
+                                break;
                             }
                         }
                     }
-                    if (removeok)
-                        iter.remove();
                 }
-                for (int j = 0; j < cds_control_connections.length; j++)
-                    connblocks.add(cds_control_connections[j]);
+                connblocks.addAll(Arrays.asList(cds_control_connections));
             }
 
             if (cds_polypressure_connections != null) {
@@ -732,22 +722,16 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
                 while (iter.hasNext()) {
                     ModelConnectionBlock conn = iter.next();
                     ModelSource[] sources = conn.getSources();
-                    boolean removeok = false;
                     if (sources != null) {
-                        for (int j = 0; j < sources.length; j++) {
-                            ModelSource src = sources[j];
-                            if ("midi".equals(src.getIdentifier().getObject())
-                                    && "poly_pressure".equals(
-                                        src.getIdentifier().getVariable())) {
-                                removeok = true;
+                        for (ModelSource src : sources) {
+                            if ("midi".equals(src.getIdentifier().getObject()) && "poly_pressure".equals(src.getIdentifier().getVariable())) {
+                                iter.remove();
+                                break;
                             }
                         }
                     }
-                    if (removeok)
-                        iter.remove();
                 }
-                for (int j = 0; j < cds_polypressure_connections.length; j++)
-                    connblocks.add(cds_polypressure_connections[j]);
+                Collections.addAll(connblocks, cds_polypressure_connections);
             }
 
 
@@ -756,21 +740,18 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
                 while (iter.hasNext()) {
                     ModelConnectionBlock conn = iter.next();
                     ModelSource[] sources = conn.getSources();
-                    boolean removeok = false;
                     if (sources != null) {
-                        for (int j = 0; j < sources.length; j++) {
-                            ModelIdentifier srcid = sources[j].getIdentifier();
-                            if ("midi".equals(srcid.getObject()) &&
-                                    "channel_pressure".equals(srcid.getVariable())) {
-                                removeok = true;
+                        for (ModelSource source : sources) {
+                            ModelIdentifier srcid = source.getIdentifier();
+                            if ("midi".equals(srcid.getObject()) && "channel_pressure".equals(srcid.getVariable())) {
+                                iter.remove();
+                                break;
                             }
                         }
                     }
-                    if (removeok)
-                        iter.remove();
+
                 }
-                for (int j = 0; j < cds_channelpressure_connections.length; j++)
-                    connblocks.add(cds_channelpressure_connections[j]);
+                connblocks.addAll(Arrays.asList(cds_channelpressure_connections));
             }
 
         }
@@ -820,17 +801,17 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
         }
 
         if (controller < 120) {
-            for (int i = 0; i < voices.length; i++)
-                if (voices[i].active)
-                    voices[i].controlChange(controller);
+            for (SoftVoice voice : voices)
+                if (voice.active)
+                    voice.controlChange(controller);
         } else if (controller == 120) {
-            for (int i = 0; i < voices.length; i++)
-                if (voices[i].active)
-                    voices[i].rpnChange(1);
+            for (SoftVoice voice : voices)
+                if (voice.active)
+                    voice.rpnChange(1);
         } else if (controller == 121) {
-            for (int i = 0; i < voices.length; i++)
-                if (voices[i].active)
-                    voices[i].rpnChange(2);
+            for (SoftVoice voice : voices)
+                if (voice.active)
+                    voice.rpnChange(2);
         }
 
     }
@@ -879,7 +860,7 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
                     val = (val & 127) + (value << 7);
                 else if (controller == 38)
                     val = (val & (127 << 7)) + value;
-                else if (controller == 96 || controller == 97) {
+                else {
                     int step = 1;
                     if (rpn_control == 2 || rpn_control == 3 || rpn_control == 4)
                         step = 128;
@@ -900,20 +881,20 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
                 if (sustain != on) {
                     sustain = on;
                     if (!on) {
-                        for (int i = 0; i < voices.length; i++) {
-                            if (voices[i].active && voices[i].sustain &&
-                                    voices[i].channel == channel) {
-                                voices[i].sustain = false;
-                                if (!voices[i].on) {
-                                    voices[i].on = true;
-                                    voices[i].noteOff();
+                        for (SoftVoice voice : voices) {
+                            if (voice.active && voice.sustain &&
+                                    voice.channel == channel) {
+                                voice.sustain = false;
+                                if (!voice.on) {
+                                    voice.on = true;
+                                    voice.noteOff();
                                 }
                             }
                         }
                     } else {
-                        for (int i = 0; i < voices.length; i++)
-                            if (voices[i].active && voices[i].channel == channel)
-                                voices[i].redamp();
+                        for (SoftVoice voice : voices)
+                            if (voice.active && voice.channel == channel)
+                                voice.redamp();
                     }
                 }
                 break;
@@ -930,21 +911,21 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
             case 66: // Sostenuto (cc#66)
                 on = value >= 64;
                 if (on) {
-                    for (int i = 0; i < voices.length; i++) {
-                        if (voices[i].active && voices[i].on &&
-                                voices[i].channel == channel) {
-                            voices[i].sostenuto = true;
+                    for (SoftVoice voice : voices) {
+                        if (voice.active && voice.on &&
+                                voice.channel == channel) {
+                            voice.sostenuto = true;
                         }
                     }
                 }
                 if (!on) {
-                    for (int i = 0; i < voices.length; i++) {
-                        if (voices[i].active && voices[i].sostenuto &&
-                                voices[i].channel == channel) {
-                            voices[i].sostenuto = false;
-                            if (!voices[i].on) {
-                                voices[i].on = true;
-                                voices[i].noteOff();
+                    for (SoftVoice voice : voices) {
+                        if (voice.active && voice.sostenuto &&
+                                voice.channel == channel) {
+                            voice.sostenuto = false;
+                            if (!voice.on) {
+                                voice.on = true;
+                                voice.noteOff();
                             }
                         }
                     }
@@ -1010,11 +991,11 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
 
             this.controller[controller] = value;
             if(controller < 0x20)
-                this.controller[controller + 0x20] = 0; 
+                this.controller[controller + 0x20] = 0;
 
-            for (int i = 0; i < voices.length; i++)
-                if (voices[i].active)
-                    voices[i].controlChange(controller);
+            for (SoftVoice voice : voices)
+                if (voice.active)
+                    voice.controlChange(controller);
 
         }
     }
@@ -1063,9 +1044,9 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
             mainmixer.activity();
             co_midi_pitch[0] = bend * (1.0 / 16384.0);
             pitchbend = bend;
-            for (int i = 0; i < voices.length; i++)
-                if (voices[i].active)
-                    voices[i].setPitchBend();
+            for (SoftVoice voice : voices)
+                if (voice.active)
+                    voice.setPitchBend();
         }
     }
 
@@ -1128,9 +1109,9 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
         val_i[0] = value;
         val_d[0] = val_i[0] * (1.0 / 16384.0);
 
-        for (int i = 0; i < voices.length; i++)
-            if (voices[i].active)
-                voices[i].nrpnChange(controller);
+        for (SoftVoice voice : voices)
+            if (voice.active)
+                voice.nrpnChange(controller);
 
     }
 
@@ -1165,9 +1146,9 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
         val_i[0] = value;
         val_d[0] = val_i[0] * (1.0 / 16384.0);
 
-        for (int i = 0; i < voices.length; i++)
-            if (voices[i].active)
-                voices[i].rpnChange(controller);
+        for (SoftVoice voice : voices)
+            if (voice.active)
+                voice.rpnChange(controller);
     }
 
     public void resetAllControllers() {
@@ -1237,19 +1218,19 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
 
     public void allNotesOff() {
         synchronized (control_mutex) {
-            for (int i = 0; i < voices.length; i++)
-                if (voices[i].on && voices[i].channel == channel
-                        && voices[i].releaseTriggered == false) {
-                    voices[i].noteOff();
+            for (SoftVoice voice : voices)
+                if (voice.on && voice.channel == channel
+                        && !voice.releaseTriggered) {
+                    voice.noteOff();
                 }
         }
     }
 
     public void allSoundOff() {
         synchronized (control_mutex) {
-            for (int i = 0; i < voices.length; i++)
-                if (voices[i].on && voices[i].channel == channel)
-                    voices[i].soundOff();
+            for (SoftVoice voice : voices)
+                if (voice.on && voice.channel == channel)
+                    voice.soundOff();
         }
     }
 
@@ -1282,9 +1263,9 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
     public void setMute(boolean mute) {
         synchronized (control_mutex) {
             this.mute = mute;
-            for (int i = 0; i < voices.length; i++)
-                if (voices[i].active && voices[i].channel == channel)
-                    voices[i].setMute(mute);
+            for (SoftVoice voice : voices)
+                if (voice.active && voice.channel == channel)
+                    voice.setMute(mute);
         }
     }
 
@@ -1325,9 +1306,9 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
             if (solomute == mute)
                 return;
             this.solomute = mute;
-            for (int i = 0; i < voices.length; i++)
-                if (voices[i].active && voices[i].channel == channel)
-                    voices[i].setSoloMute(solomute);
+            for (SoftVoice voice : voices)
+                if (voice.active && voice.channel == channel)
+                    voice.setSoloMute(solomute);
         }
     }
 
