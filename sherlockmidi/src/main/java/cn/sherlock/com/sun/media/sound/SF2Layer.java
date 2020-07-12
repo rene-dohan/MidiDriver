@@ -27,22 +27,16 @@ package cn.sherlock.com.sun.media.sound;
 import java.util.ArrayList;
 import java.util.List;
 
-import jp.kshoji.javax.sound.midi.SoundbankResource;
-
 /**
  * Soundfont layer.
  *
  * @author Karl Helgason
  */
-public class SF2Layer extends SoundbankResource {
+public class SF2Layer {
 
     protected String name = "";
     protected SF2GlobalRegion globalregion = null;
     protected List<SF2LayerRegion> regions = new ArrayList<SF2LayerRegion>();
-
-    public SF2Layer(SF2Soundbank soundBank) {
-        super(soundBank);
-    }
 
     public String getName() {
         return name;

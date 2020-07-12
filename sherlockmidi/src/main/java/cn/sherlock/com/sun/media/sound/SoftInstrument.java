@@ -24,28 +24,23 @@
  */
 package cn.sherlock.com.sun.media.sound;
 
-import jp.kshoji.javax.sound.midi.SoundbankResource;
-
 /**
  * Software synthesizer internal instrument.
  *
  * @author Karl Helgason
  */
-public class SoftInstrument extends SoundbankResource {
+public class SoftInstrument {
 
     private SoftPerformer[] performers;
     private ModelPerformer[] modelperformers;
     private SF2Instrument ins;
 
     public SoftInstrument(SF2Instrument ins) {
-        super(ins.getSoundbank());
         this.ins = ins;
         initPerformers(ins.getPerformers());
     }
 
-    public SoftInstrument(SF2Instrument ins,
-            ModelPerformer[] overrideperformers) {
-        super(ins.getSoundbank());
+    public SoftInstrument(SF2Instrument ins, ModelPerformer[] overrideperformers) {
         this.ins = ins;
         initPerformers(overrideperformers);
     }

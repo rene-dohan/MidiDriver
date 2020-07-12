@@ -191,7 +191,7 @@ public class SF2Soundbank {
                     throw new RIFFInvalidDataException();
                 int count = chunk.available() / 38;
                 for (int i = 0; i < count; i++) {
-                    SF2Instrument preset = new SF2Instrument(this);
+                    SF2Instrument preset = new SF2Instrument();
                     preset.name = chunk.readString(20);
                     preset.preset = chunk.readUnsignedShort();
                     preset.bank = chunk.readUnsignedShort();
@@ -280,7 +280,7 @@ public class SF2Soundbank {
                     throw new RIFFInvalidDataException();
                 int count = chunk.available() / 22;
                 for (int i = 0; i < count; i++) {
-                    SF2Layer layer = new SF2Layer(this);
+                    SF2Layer layer = new SF2Layer();
                     layer.name = chunk.readString(20);
                     instruments_bagNdx.add(chunk.readUnsignedShort());
                     instruments.add(layer);
@@ -364,7 +364,7 @@ public class SF2Soundbank {
                     throw new RIFFInvalidDataException();
                 int count = chunk.available() / 46;
                 for (int i = 0; i < count; i++) {
-                    SF2Sample sample = new SF2Sample(this);
+                    SF2Sample sample = new SF2Sample();
                     sample.name = chunk.readString(20);
                     long start = chunk.readUnsignedInt();
                     long end = chunk.readUnsignedInt();

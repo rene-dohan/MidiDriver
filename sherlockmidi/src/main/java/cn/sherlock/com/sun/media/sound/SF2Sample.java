@@ -25,14 +25,13 @@
 package cn.sherlock.com.sun.media.sound;
 
 import cn.sherlock.javax.sound.sampled.AudioFormat;
-import jp.kshoji.javax.sound.midi.SoundbankResource;
 
 /**
  * Soundfont sample storage.
  *
  * @author Karl Helgason
  */
-public class SF2Sample extends SoundbankResource {
+public class SF2Sample {
 
     protected String name = "";
     protected long startLoop = 0;
@@ -42,10 +41,6 @@ public class SF2Sample extends SoundbankResource {
     protected byte pitchCorrection = 0;
     protected ModelByteBuffer data;
     protected ModelByteBuffer data24;
-
-    public SF2Sample(SF2Soundbank soundBank) {
-        super(soundBank);
-    }
 
     public ModelByteBuffer getDataBuffer() {
         return data;

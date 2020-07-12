@@ -30,25 +30,19 @@ import java.util.List;
 import java.util.Map;
 
 import jp.kshoji.javax.sound.midi.Patch;
-import jp.kshoji.javax.sound.midi.SoundbankResource;
 
 /**
  * Soundfont instrument.
  *
  * @author Karl Helgason
  */
-public class SF2Instrument extends SoundbankResource {
+public class SF2Instrument {
 
     protected String name = "";
     protected int preset = 0;
     protected int bank = 0;
     protected SF2GlobalRegion globalregion = null;
-    protected List<SF2InstrumentRegion> regions
-            = new ArrayList<SF2InstrumentRegion>();
-
-    public SF2Instrument(SF2Soundbank soundbank) {
-        super(soundbank);
-    }
+    protected List<SF2InstrumentRegion> regions = new ArrayList<>();
 
     public Patch getPatch() {
         if (bank == 128)
