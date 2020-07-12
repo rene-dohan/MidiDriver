@@ -36,9 +36,9 @@ public class SoftInstrument extends Instrument {
     private SoftPerformer[] performers;
     private ModelPerformer[] modelperformers;
     private Object data;
-    private ModelInstrument ins;
+    private SF2Instrument ins;
 
-    public SoftInstrument(ModelInstrument ins) {
+    public SoftInstrument(SF2Instrument ins) {
         super(ins.getSoundbank(), ins.getPatch(), ins.getName(),
                 ins.getDataClass());
         data = ins.getData();
@@ -46,7 +46,7 @@ public class SoftInstrument extends Instrument {
         initPerformers(ins.getPerformers());
     }
 
-    public SoftInstrument(ModelInstrument ins,
+    public SoftInstrument(SF2Instrument ins,
             ModelPerformer[] overrideperformers) {
         super(ins.getSoundbank(), ins.getPatch(), ins.getName(),
                 ins.getDataClass());
@@ -66,7 +66,7 @@ public class SoftInstrument extends Instrument {
         return ins.getDirector(modelperformers, player);
     }
 
-    public ModelInstrument getSourceInstrument() {
+    public SF2Instrument getSourceInstrument() {
         return ins;
     }
 

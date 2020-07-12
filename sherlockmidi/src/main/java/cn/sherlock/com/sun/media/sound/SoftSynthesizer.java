@@ -206,10 +206,10 @@ public class SoftSynthesizer {
             = new HashMap<String, SoftTuning>();
     private Map<String, SoftInstrument> inslist
             = new HashMap<String, SoftInstrument>();
-    private Map<String, ModelInstrument> loadedlist
-            = new HashMap<String, ModelInstrument>();
+    private Map<String, SF2Instrument> loadedlist
+            = new HashMap<>();
 
-    private void getBuffers(ModelInstrument instrument,
+    private void getBuffers(SF2Instrument instrument,
                             List<ModelByteBuffer> buffers) {
         for (ModelPerformer performer : instrument.getPerformers()) {
             if (performer.getOscillators() != null) {
@@ -228,11 +228,11 @@ public class SoftSynthesizer {
         }
     }
 
-    private boolean loadSamples(List<ModelInstrument> instruments) {
+    private boolean loadSamples(List<SF2Instrument> instruments) {
         if (largemode)
             return true;
         List<ModelByteBuffer> buffers = new ArrayList<ModelByteBuffer>();
-        for (ModelInstrument instrument : instruments)
+        for (SF2Instrument instrument : instruments)
             getBuffers(instrument, buffers);
         try {
             ModelByteBuffer.loadAll(buffers);
@@ -242,7 +242,7 @@ public class SoftSynthesizer {
         return true;
     }
 
-    private boolean loadInstruments(List<ModelInstrument> instruments) {
+    private boolean loadInstruments(List<SF2Instrument> instruments) {
         if (!isOpen())
             return false;
         if (!loadSamples(instruments))
@@ -258,9 +258,9 @@ public class SoftSynthesizer {
             for (Instrument instrument : instruments) {
                 String pat = patchToString(instrument.getPatch());
                 SoftInstrument softins
-                        = new SoftInstrument((ModelInstrument) instrument);
+                        = new SoftInstrument((SF2Instrument) instrument);
                 inslist.put(pat, softins);
-                loadedlist.put(pat, (ModelInstrument) instrument);
+                loadedlist.put(pat, (SF2Instrument) instrument);
             }
         }
 
@@ -457,17 +457,17 @@ public class SoftSynthesizer {
     }
 
     public boolean loadInstrument(Instrument instrument) {
-        if (instrument == null || (!(instrument instanceof ModelInstrument))) {
+        if (instrument == null || (!(instrument instanceof SF2Instrument))) {
             throw new IllegalArgumentException("Unsupported instrument: " +
                     instrument);
         }
-        List<ModelInstrument> instruments = new ArrayList<ModelInstrument>();
-        instruments.add((ModelInstrument)instrument);
+        List<SF2Instrument> instruments = new ArrayList<>();
+        instruments.add((SF2Instrument) instrument);
         return loadInstruments(instruments);
     }
 
     public void unloadInstrument(Instrument instrument) {
-        if (instrument == null || (!(instrument instanceof ModelInstrument))) {
+        if (instrument == null || (!(instrument instanceof SF2Instrument))) {
             throw new IllegalArgumentException("Unsupported instrument: " +
                     instrument);
         }

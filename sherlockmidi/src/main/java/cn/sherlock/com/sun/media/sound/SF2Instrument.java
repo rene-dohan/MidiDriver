@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jp.kshoji.javax.sound.midi.Instrument;
 import jp.kshoji.javax.sound.midi.Patch;
 
 /**
@@ -36,7 +37,7 @@ import jp.kshoji.javax.sound.midi.Patch;
  *
  * @author Karl Helgason
  */
-public class SF2Instrument extends ModelInstrument {
+public class SF2Instrument extends Instrument {
 
     protected String name = "";
     protected int preset = 0;
@@ -78,6 +79,11 @@ public class SF2Instrument extends ModelInstrument {
         else
             return "Instrument: " + name + " bank #" + bank
                     + " preset #" + preset;
+    }
+
+    public ModelDirector getDirector(ModelPerformer[] performers,
+                                     ModelDirectedPlayer player) {
+        return new ModelStandardIndexedDirector(performers, player);
     }
 
     public ModelPerformer[] getPerformers() {

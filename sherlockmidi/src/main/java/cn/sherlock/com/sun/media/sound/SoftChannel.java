@@ -684,7 +684,7 @@ public class SoftChannel implements MidiChannel, ModelDirectedPlayer {
             return;
         }
 
-        ModelInstrument src_instrument = current_instrument.getSourceInstrument();
+        SF2Instrument src_instrument = current_instrument.getSourceInstrument();
         ModelPerformer[] performers = src_instrument.getPerformers();
         ModelPerformer[] new_performers = new ModelPerformer[performers.length];
         for (int i = 0; i < new_performers.length; i++) {
