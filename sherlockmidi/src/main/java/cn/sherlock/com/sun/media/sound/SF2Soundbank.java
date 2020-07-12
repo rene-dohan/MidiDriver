@@ -451,13 +451,6 @@ public class SF2Soundbank {
 
     }
 
-    public SF2Instrument[] getInstruments() {
-        SF2Instrument[] inslist_array
-                = instruments.toArray(new SF2Instrument[instruments.size()]);
-        Arrays.sort(inslist_array, new ModelInstrumentComparator());
-        return inslist_array;
-    }
-
     public Instrument getInstrument(Patch patch) {
         int program = patch.getProgram();
         int bank = patch.getBank();
