@@ -29,7 +29,15 @@ package cn.sherlock.com.sun.media.sound;
  *
  * @author Karl Helgason
  */
-public interface ModelWavetable extends ModelOscillator {
+public interface ModelWavetable {
+
+    int getChannels();
+
+    /**
+     * Attenuation is in cB.
+     * @return
+     */
+    float getAttenuation();
 
     int LOOP_TYPE_OFF = 0;
     int LOOP_TYPE_FORWARD = 1;

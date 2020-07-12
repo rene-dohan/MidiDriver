@@ -208,7 +208,7 @@ public class SoftSynthesizer {
                             List<ModelByteBuffer> buffers) {
         for (ModelPerformer performer : instrument.getPerformers()) {
             if (performer.getOscillators() != null) {
-                for (ModelOscillator osc : performer.getOscillators()) {
+                for (ModelWavetable osc : performer.getOscillators()) {
                     if (osc instanceof ModelByteBufferWavetable) {
                         ModelByteBufferWavetable w = (ModelByteBufferWavetable)osc;
                         ModelByteBuffer buff = w.getBuffer();

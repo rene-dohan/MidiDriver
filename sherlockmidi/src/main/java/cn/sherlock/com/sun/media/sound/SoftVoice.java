@@ -577,20 +577,17 @@ public class SoftVoice {
         if (started) {
             audiostarted = true;
 
-            ModelOscillator osc = performer.oscillators[0];
+            ModelWavetable osc = performer.oscillators[0];
 
             osc_stream_off_transmitted = false;
-            if (osc instanceof ModelWavetable) {
-                try {
-                    resampler.open((ModelWavetable)osc,
-                            synthesizer.getFormat().getSampleRate());
-                    osc_stream = resampler;
-                } catch (IOException e) {
-                    //e.printStackTrace();
-                }
-            } else {
-                osc_stream = osc.open();
+
+            try {
+                resampler.open(osc, synthesizer.getFormat().getSampleRate());
+                osc_stream = resampler;
+            } catch (IOException e) {
+                //e.printStackTrace();
             }
+
             osc_attenuation = osc.getAttenuation();
             osc_stream_nrofchannels = osc.getChannels();
             if (osc_buff == null || osc_buff.length < osc_stream_nrofchannels)
