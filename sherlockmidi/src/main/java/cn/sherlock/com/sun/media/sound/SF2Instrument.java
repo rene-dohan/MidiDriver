@@ -29,15 +29,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jp.kshoji.javax.sound.midi.Instrument;
 import jp.kshoji.javax.sound.midi.Patch;
+import jp.kshoji.javax.sound.midi.SoundbankResource;
 
 /**
  * Soundfont instrument.
  *
  * @author Karl Helgason
  */
-public class SF2Instrument extends Instrument {
+public class SF2Instrument extends SoundbankResource {
 
     protected String name = "";
     protected int preset = 0;
@@ -47,7 +47,7 @@ public class SF2Instrument extends Instrument {
             = new ArrayList<SF2InstrumentRegion>();
 
     public SF2Instrument(SF2Soundbank soundbank) {
-        super(soundbank, null);
+        super(soundbank);
     }
 
     public Patch getPatch() {

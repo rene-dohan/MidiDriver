@@ -25,7 +25,6 @@
 package cn.sherlock.com.sun.media.sound;
 
 import cn.sherlock.javax.sound.sampled.AudioFormat;
-import cn.sherlock.javax.sound.sampled.AudioInputStream;
 import jp.kshoji.javax.sound.midi.SoundbankResource;
 
 /**
@@ -45,7 +44,7 @@ public class SF2Sample extends SoundbankResource {
     protected ModelByteBuffer data24;
 
     public SF2Sample(SF2Soundbank soundBank) {
-        super(soundBank, AudioInputStream.class);
+        super(soundBank);
     }
 
     public ModelByteBuffer getDataBuffer() {
