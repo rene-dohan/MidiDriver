@@ -1,13 +1,63 @@
 package jp.kshoji.javax.sound.midi;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 /**
  * Represents MIDI Short Message
  * 
  * @author K.Shoji
  */
-public class ShortMessage extends MidiMessage {
+public class ShortMessage implements Cloneable {
+
+	@Nullable
+	protected byte[] data;
+
+	/**
+	 * Get the status of the MidiMessage
+	 *
+	 * @return the status
+	 */
+	public int getStatus() {
+		if (data == null || data.length < 1) {
+			return 0;
+		}
+
+		return data[0] & 0xff;
+	}
+
+	/**
+	 * Convert the byte array to the hex dumped string
+	 *
+	 * @param src the byte array
+	 * @return hex dumped string
+	 */
+	@NonNull
+	static String toHexString(@Nullable final byte[] src) {
+		if (src == null) {
+			return "null";
+		}
+
+		final StringBuilder buffer = new StringBuilder();
+		buffer.append("[");
+		boolean needComma = false;
+		for (final byte srcByte : src) {
+			if (needComma) {
+				buffer.append(", ");
+			}
+			buffer.append(String.format("%02x", srcByte & 0xff));
+			needComma = true;
+		}
+		buffer.append("]");
+
+		return buffer.toString();
+	}
+
+	@Override
+	public String toString() {
+		return getClass().getName() + ":" + toHexString(data);
+	}
+
 	public static final int NOTE_OFF = 0x80;
 	public static final int NOTE_ON = 0x90;
 	public static final int POLY_PRESSURE = 0xa0;
@@ -23,7 +73,7 @@ public class ShortMessage extends MidiMessage {
 	 * @param data the raw data
 	 */
 	protected ShortMessage(@NonNull final byte[] data) {
-		super(data);
+		this.data = data;
 	}
 
     /**

@@ -32,7 +32,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 
-import jp.kshoji.javax.sound.midi.MidiMessage;
 import jp.kshoji.javax.sound.midi.Patch;
 import jp.kshoji.javax.sound.midi.ShortMessage;
 import cn.sherlock.javax.sound.sampled.AudioInputStream;
@@ -1006,18 +1005,10 @@ public class SoftMainMixer {
     public void processMessage(Object object) {
         if (object instanceof byte[])
             processMessage((byte[]) object);
-        if (object instanceof MidiMessage)
-            processMessage((MidiMessage)object);
-    }
-
-    public void processMessage(MidiMessage message) {
-        if (message instanceof ShortMessage) {
-            ShortMessage sms = (ShortMessage)message;
-            processMessage(sms.getChannel(), sms.getCommand(),
-                    sms.getData1(), sms.getData2());
-            return;
+        if (object instanceof ShortMessage) {
+            ShortMessage sms = (ShortMessage)object;
+            processMessage(sms.getChannel(), sms.getCommand(), sms.getData1(), sms.getData2());
         }
-        processMessage(message.getMessage());
     }
 
     public void processMessage(byte[] data) {
