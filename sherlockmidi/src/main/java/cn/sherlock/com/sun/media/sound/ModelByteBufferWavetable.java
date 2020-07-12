@@ -219,7 +219,7 @@ public class ModelByteBufferWavetable implements ModelWavetable {
         return getFormat().getChannels();
     }
 
-    public ModelOscillatorStream open() {
+    public SoftResamplerStreamer open() {
         // ModelWavetableOscillator doesn't support ModelOscillatorStream
         return null;
     }

@@ -31,8 +31,17 @@ import java.io.IOException;
  *
  * @author Karl Helgason
  */
-public interface SoftResamplerStreamer extends ModelOscillatorStream {
+public interface SoftResamplerStreamer {
 
-    void open(ModelWavetable osc, float outputsamplerate)
-            throws IOException;
+    void setPitch(float pitch); // Pitch is in cents!
+
+    void noteOn();
+
+    void noteOff();
+
+    int read(float[][] buffer, int offset, int len) throws IOException;
+
+    void close() throws IOException;
+
+    void open(ModelWavetable osc, float outputsamplerate) throws IOException;
 }

@@ -79,7 +79,7 @@ public class SoftVoice {
     private boolean started = false;
     private boolean stopping = false;
     private float osc_attenuation = 0.0f;
-    private ModelOscillatorStream osc_stream;
+    private SoftResamplerStreamer osc_stream;
     private int osc_stream_nrofchannels;
     private float[][] osc_buff = new float[2][];
     private boolean osc_stream_off_transmitted = false;
