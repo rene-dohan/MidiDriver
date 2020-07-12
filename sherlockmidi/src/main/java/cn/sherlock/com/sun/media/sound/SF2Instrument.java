@@ -47,11 +47,7 @@ public class SF2Instrument extends Instrument {
             = new ArrayList<SF2InstrumentRegion>();
 
     public SF2Instrument(SF2Soundbank soundbank) {
-        super(soundbank, null, null, null);
-    }
-
-    public String getName() {
-        return name;
+        super(soundbank, null);
     }
 
     public Patch getPatch() {
@@ -59,10 +55,6 @@ public class SF2Instrument extends Instrument {
             return new ModelPatch(0, preset, true);
         else
             return new ModelPatch(bank << 7, preset, false);
-    }
-
-    public Object getData() {
-        return null;
     }
 
     public List<SF2InstrumentRegion> getRegions() {

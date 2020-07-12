@@ -10,28 +10,14 @@ import cn.sherlock.com.sun.media.sound.SF2Soundbank;
  * @author K.Shoji
  */
 public abstract class Instrument extends SoundbankResource {
-    private final Patch patch;
 
     /**
      * Constructor
-     *
      * @param soundbank the soundbank
-     * @param patch the patch
-     * @param name the name
      * @param dataClass the dataClass
      */
-    protected Instrument(@NonNull final SF2Soundbank soundbank, @NonNull final Patch patch, @NonNull final String name, @NonNull final Class<?> dataClass) {
-        super(soundbank, name, dataClass);
-        this.patch = patch;
+    protected Instrument(@NonNull final SF2Soundbank soundbank, @NonNull final Class<?> dataClass) {
+        super(soundbank, dataClass);
     }
 
-    /**
-     * Get the patch of the Instrument
-     *
-     * @return the patch
-     */
-    @NonNull
-    public Patch getPatch() {
-        return patch;
-    }
 }

@@ -12,29 +12,17 @@ import cn.sherlock.com.sun.media.sound.SF2Soundbank;
  */
 public abstract class SoundbankResource {
     private final SF2Soundbank soundbank;
-    private final String name;
     private final Class<?> dataClass;
 
     /**
      * Constructor
-     *
-     * @param soundbank the Soundbank
-     * @param name the name of {@link SoundbankResource}
+     *  @param soundbank the Soundbank
      * @param dataClass the class of data
      */
-    protected SoundbankResource(@NonNull final SF2Soundbank soundbank, @NonNull final String name, @NonNull final Class<?> dataClass) {
+    protected SoundbankResource(@NonNull final SF2Soundbank soundbank, @NonNull final Class<?> dataClass) {
         this.soundbank = soundbank;
-        this.name = name;
         this.dataClass = dataClass;
     }
-
-    /**
-     * Get the data of {@link SoundbankResource}
-     *
-     * @return the data
-     */
-    @Nullable
-    public abstract Object getData();
 
     /**
      * Get the class of data(obtained by {@link #getData()}
@@ -44,16 +32,6 @@ public abstract class SoundbankResource {
     @Nullable
     public Class<?> getDataClass() {
         return dataClass;
-    }
-
-    /**
-     * Get the name of {@link SoundbankResource}
-     *
-     * @return the name
-     */
-    @NonNull
-    public String getName() {
-        return name;
     }
 
     /**

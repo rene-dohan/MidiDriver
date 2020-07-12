@@ -41,11 +41,7 @@ public class SF2Layer extends SoundbankResource {
     protected List<SF2LayerRegion> regions = new ArrayList<SF2LayerRegion>();
 
     public SF2Layer(SF2Soundbank soundBank) {
-        super(soundBank, null, null);
-    }
-
-    public Object getData() {
-        return null;
+        super(soundBank, null);
     }
 
     public String getName() {

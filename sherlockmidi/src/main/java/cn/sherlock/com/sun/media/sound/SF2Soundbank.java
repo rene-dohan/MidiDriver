@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import jp.kshoji.javax.sound.midi.Instrument;
 import jp.kshoji.javax.sound.midi.Patch;
 
 /**

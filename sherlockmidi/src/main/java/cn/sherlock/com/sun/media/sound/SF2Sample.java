@@ -24,8 +24,6 @@
  */
 package cn.sherlock.com.sun.media.sound;
 
-import java.io.InputStream;
-
 import cn.sherlock.javax.sound.sampled.AudioFormat;
 import cn.sherlock.javax.sound.sampled.AudioInputStream;
 import jp.kshoji.javax.sound.midi.SoundbankResource;
@@ -47,51 +45,7 @@ public class SF2Sample extends SoundbankResource {
     protected ModelByteBuffer data24;
 
     public SF2Sample(SF2Soundbank soundBank) {
-        super(soundBank, null, AudioInputStream.class);
-    }
-
-    public Object getData() {
-
-        AudioFormat format = getFormat();
-        /*
-        if (sampleFile != null) {
-            FileInputStream fis;
-            try {
-                fis = new FileInputStream(sampleFile);
-                RIFFReader riff = new RIFFReader(fis);
-                if (!riff.getFormat().equals("RIFF")) {
-                    throw new RIFFInvalidDataException(
-                        "Input stream is not a valid RIFF stream!");
-                }
-                if (!riff.getType().equals("sfbk")) {
-                    throw new RIFFInvalidDataException(
-                        "Input stream is not a valid SoundFont!");
-                }
-                while (riff.hasNextChunk()) {
-                    RIFFReader chunk = riff.nextChunk();
-                    if (chunk.getFormat().equals("LIST")) {
-                        if (chunk.getType().equals("sdta")) {
-                            while(chunk.hasNextChunk()) {
-                                RIFFReader chunkchunk = chunk.nextChunk();
-                                if(chunkchunk.getFormat().equals("smpl")) {
-                                    chunkchunk.skip(sampleOffset);
-                                    return new AudioInputStream(chunkchunk,
-                                            format, sampleLen);
-                                }
-                            }
-                        }
-                    }
-                }
-                return null;
-            } catch (Exception e) {
-                return new Throwable(e.toString());
-            }
-        }
-        */
-        InputStream is = data.getInputStream();
-        if (is == null)
-            return null;
-        return new AudioInputStream(is, format, data.capacity());
+        super(soundBank, AudioInputStream.class);
     }
 
     public ModelByteBuffer getDataBuffer() {
