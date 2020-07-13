@@ -32,7 +32,7 @@ import java.util.Arrays;
  *
  * @author Karl Helgason
  */
-public class SoftChorus implements SoftAudioProcessor {
+public class SoftChorus {
 
     private static class VariableDelay {
 

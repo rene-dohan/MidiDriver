@@ -30,7 +30,7 @@ package cn.sherlock.com.sun.media.sound;
  *
  * @author Karl Helgason
  */
-public class SoftLimiter implements SoftAudioProcessor {
+public class SoftLimiter {
 
     float lastmax = 0;
     float gain = 1;

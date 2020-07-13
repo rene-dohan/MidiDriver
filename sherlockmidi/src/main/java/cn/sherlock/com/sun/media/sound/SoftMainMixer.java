@@ -63,8 +63,8 @@ public class SoftMainMixer {
     private SoftVoice[] voicestatus;
     private SoftAudioBuffer[] buffers;
     private SoftReverb reverb;
-    private SoftAudioProcessor chorus;
-    private SoftAudioProcessor agc;
+    private SoftChorus chorus;
+    private SoftLimiter agc;
     private int buffer_len;
     protected TreeMap<Long, Object> midimessages = new TreeMap<>();
     double last_volume_left = 1.0;

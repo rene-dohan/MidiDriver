@@ -33,7 +33,7 @@ import java.util.Arrays;
  *
  * @author Karl Helgason
  */
-public class SoftReverb implements SoftAudioProcessor {
+public class SoftReverb {
 
     private final static class Delay {
 
