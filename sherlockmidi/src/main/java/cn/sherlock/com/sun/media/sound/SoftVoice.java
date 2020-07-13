@@ -577,7 +577,7 @@ public class SoftVoice {
         if (started) {
             audiostarted = true;
 
-            ModelWavetable osc = performer.oscillators[0];
+            ModelByteBufferWavetable osc = performer.oscillators[0];
 
             osc_stream_off_transmitted = false;
 

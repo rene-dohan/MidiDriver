@@ -78,8 +78,7 @@ public abstract class SoftAbstractResampler {
             noteOff_flag = true;
         }
 
-        public void open(ModelWavetable osc, float outputsamplerate)
-                throws IOException {
+        public void open(ModelByteBufferWavetable osc, float outputsamplerate) throws IOException {
 
             eof = false;
             nrofchannels = osc.getChannels();

@@ -37,7 +37,11 @@ import cn.sherlock.javax.sound.sampled.AudioFormat.Encoding;
  *
  * @author Karl Helgason
  */
-public class ModelByteBufferWavetable implements ModelWavetable {
+public class ModelByteBufferWavetable {
+
+    public static final int LOOP_TYPE_OFF = 0;
+    public static final int LOOP_TYPE_FORWARD = 1;
+    public static final int LOOP_TYPE_RELEASE = 2;
 
     private class Buffer8PlusInputStream extends InputStream {
 

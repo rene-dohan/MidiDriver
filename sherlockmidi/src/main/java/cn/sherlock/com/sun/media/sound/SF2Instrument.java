@@ -237,9 +237,9 @@ public class SF2Instrument {
                         osc.setLoopLength((int)(sample.endLoop - sample.startLoop
                                 + endloopAddrsOffset - startloopAddrsOffset));
                         if (sampleMode == 1)
-                            osc.setLoopType(ModelWavetable.LOOP_TYPE_FORWARD);
+                            osc.setLoopType(ModelByteBufferWavetable.LOOP_TYPE_FORWARD);
                         if (sampleMode == 3)
-                            osc.setLoopType(ModelWavetable.LOOP_TYPE_RELEASE);
+                            osc.setLoopType(ModelByteBufferWavetable.LOOP_TYPE_RELEASE);
                     }
                 }
                 performer.getOscillators().add(osc);

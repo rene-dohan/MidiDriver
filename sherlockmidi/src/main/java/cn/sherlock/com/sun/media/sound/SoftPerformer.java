@@ -304,13 +304,13 @@ public class SoftPerformer {
     public boolean forcedVelocity = false;
     public boolean forcedKeynumber = false;
     public ModelConnectionBlock[] connections;
-    public ModelWavetable[] oscillators;
-    public Map<Integer, int[]> midi_rpn_connections = new HashMap<Integer, int[]>();
-    public Map<Integer, int[]> midi_nrpn_connections = new HashMap<Integer, int[]>();
+    public ModelByteBufferWavetable[] oscillators;
+    public Map<Integer, int[]> midi_rpn_connections = new HashMap<>();
+    public Map<Integer, int[]> midi_nrpn_connections = new HashMap<>();
     public int[][] midi_ctrl_connections;
     public int[][] midi_connections;
     public int[] ctrl_connections;
-    private List<Integer> ctrl_connections_list = new ArrayList<Integer>();
+    private List<Integer> ctrl_connections_list = new ArrayList<>();
 
     private static class KeySortComparator implements Comparator<ModelSource> {
 
@@ -728,7 +728,7 @@ public class SoftPerformer {
         for (int i = 0; i < this.ctrl_connections.length; i++)
             this.ctrl_connections[i] = ctrl_connections_list.get(i);
 
-        oscillators = new ModelWavetable[performer.getOscillators().size()];
+        oscillators = new ModelByteBufferWavetable[performer.getOscillators().size()];
         performer.getOscillators().toArray(oscillators);
 
         for (ModelConnectionBlock conn : connections) {
