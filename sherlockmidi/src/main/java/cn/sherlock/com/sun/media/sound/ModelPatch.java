@@ -35,7 +35,7 @@ import jp.kshoji.javax.sound.midi.Patch;
  */
 public class ModelPatch extends Patch {
 
-    private boolean percussion = false;
+    private boolean percussion;
 
     public ModelPatch(int bank, int program, boolean percussion) {
         super(bank, program);

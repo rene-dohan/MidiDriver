@@ -83,7 +83,7 @@ public class SoftFilter {
     private boolean last_set = false;
     private double cutoff = 44100;
     private double resonancedB = 0;
-    private boolean dirty = true;
+    private boolean dirty;
 
     public SoftFilter(float samplerate) {
         this.samplerate = samplerate;
@@ -309,7 +309,6 @@ public class SoftFilter {
             double sn = Math.sin(omega);
             double alpha = sn * sinh((Math.log(2)*bandwidth*omega) / (sn * 2));
 
-            double b0 = alpha;
             double b1 = 0;
             double b2 = -alpha;
             double a0 = 1 + alpha;
@@ -319,7 +318,7 @@ public class SoftFilter {
             double cf = 1.0 / a0;
             this.b1 = (float) (a1 * cf);
             this.b2 = (float) (a2 * cf);
-            this.a0 = (float) (b0 * cf);
+            this.a0 = (float) (alpha * cf);
             this.a1 = (float) (b1 * cf);
             this.a2 = (float) (b2 * cf);
         }
@@ -371,13 +370,12 @@ public class SoftFilter {
             double q = Math.sqrt(2.0f) * resonance;
             double a0 = 1.0 / (1.0 + (q * c) + (csq));
             double a1 = 2.0 * a0;
-            double a2 = a0;
             double b1 = (2.0 * a0) * (1.0 - csq);
             double b2 = a0 * (1.0 - (q * c) + csq);
 
             this.a0 = (float)a0;
             this.a1 = (float)a1;
-            this.a2 = (float)a2;
+            this.a2 = (float) a0;
             this.b1 = (float)b1;
             this.b2 = (float)b2;
 
@@ -396,13 +394,12 @@ public class SoftFilter {
             double q = Math.sqrt(2.0f) * resonance;
             double a0 = 1.0 / (1.0 + (q * c) + (csq));
             double a1 = -2.0 * a0;
-            double a2 = a0;
             double b1 = (2.0 * a0) * (csq - 1.0);
             double b2 = a0 * (1.0 - (q * c) + csq);
 
             this.a0 = (float)a0;
             this.a1 = (float)a1;
-            this.a2 = (float)a2;
+            this.a2 = (float) a0;
             this.b1 = (float)b1;
             this.b2 = (float)b2;
 

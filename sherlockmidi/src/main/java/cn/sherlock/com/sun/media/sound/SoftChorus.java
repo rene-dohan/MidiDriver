@@ -136,8 +136,7 @@ public class SoftChorus {
         }
 
         public void setRate(double rate) {
-            double g = (Math.PI * 2) * (rate / controlrate);
-            phase_step = g;
+            phase_step = (Math.PI * 2) * (rate / controlrate);
         }
 
         public void setPhase(double phase) {
@@ -199,13 +198,13 @@ public class SoftChorus {
         vdelay1L.setPhase(0.5 * Math.PI);
         vdelay1R.setPhase(0);
 
-        globalParameterControlChange(new int[]{0x01 * 128 + 0x02}, 0, 2);
+        globalParameterControlChange(new int[]{128 + 0x02}, 0, 2);
     }
 
     private void globalParameterControlChange(int[] slothpath, long param,
                                               long value) {
         if (slothpath.length == 1) {
-            if (slothpath[0] == 0x01 * 128 + 0x02) {
+            if (slothpath[0] == 128 + 0x02) {
                 if (param == 0) { // Chorus Type
                     switch ((int)value) {
                     case 0: // Chorus 1 0 (0%) 3 (0.4Hz) 5 (1.9ms) 0 (0%)

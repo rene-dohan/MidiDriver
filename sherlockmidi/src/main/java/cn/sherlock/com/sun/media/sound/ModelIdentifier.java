@@ -84,7 +84,7 @@ public class ModelIdentifier {
      *            chorus                   0.1 %
      *
      */
-    private String object = null;
+    private String object;
     private String variable = null;
     private int instance = 0;
 

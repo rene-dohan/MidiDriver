@@ -181,7 +181,6 @@ public class SoftEnvelopeGenerator implements SoftControl {
                         stage[i] = EG_HOLD;
                         stage_count[i] = (int)(Math.pow(2,
                                 this.hold[i][0] / 1200.0) / control_time);
-                        stage_ix[i] = 0;
                     } else {
                         stage[i] = EG_ATTACK;
                         stage_count[i] = (int)(Math.pow(2,
@@ -189,8 +188,8 @@ public class SoftEnvelopeGenerator implements SoftControl {
                         stage_count[i] += (int)(attack2 / (control_time * 1000));
                         if (stage_count[i] < 0)
                             stage_count[i] = 0;
-                        stage_ix[i] = 0;
                     }
+                    stage_ix[i] = 0;
                 } else
                     stage_ix[i]--;
                 break;
@@ -238,9 +237,7 @@ public class SoftEnvelopeGenerator implements SoftControl {
                     out[i][0] = (1 - m) + sustain * m;
                 }
                 break;
-            case EG_SUSTAIN:
-                break;
-            case EG_RELEASE:
+                case EG_RELEASE:
                 stage_ix[i]++;
                 if (stage_ix[i] >= stage_count[i]) {
                     out[i][0] = 0;

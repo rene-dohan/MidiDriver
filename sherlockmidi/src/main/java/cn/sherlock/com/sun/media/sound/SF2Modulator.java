@@ -37,10 +37,10 @@ public class SF2Modulator {
     public final static int SOURCE_CHANNEL_PRESSURE = 13;
     public final static int SOURCE_PITCH_WHEEL = 14;
     public final static int SOURCE_PITCH_SENSITIVITY = 16;
-    public final static int SOURCE_MIDI_CONTROL = 128 * 1;
-    public final static int SOURCE_DIRECTION_MAX_MIN = 256 * 1;
-    public final static int SOURCE_POLARITY_BIPOLAR = 512 * 1;
-    public final static int SOURCE_TYPE_CONCAVE = 1024 * 1;
+    public final static int SOURCE_MIDI_CONTROL = 128;
+    public final static int SOURCE_DIRECTION_MAX_MIN = 256;
+    public final static int SOURCE_POLARITY_BIPOLAR = 512;
+    public final static int SOURCE_TYPE_CONCAVE = 1024;
     public final static int SOURCE_TYPE_CONVEX = 1024 * 2;
     public final static int SOURCE_TYPE_SWITCH = 1024 * 3;
     public final static int TRANSFORM_ABSOLUTE = 2;

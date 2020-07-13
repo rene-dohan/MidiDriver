@@ -36,7 +36,7 @@ public class SF2Layer {
 
     protected String name = "";
     protected SF2GlobalRegion globalregion = null;
-    protected List<SF2LayerRegion> regions = new ArrayList<SF2LayerRegion>();
+    protected List<SF2LayerRegion> regions = new ArrayList<>();
 
     public String getName() {
         return name;

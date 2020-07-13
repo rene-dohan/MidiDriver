@@ -108,14 +108,13 @@ public class SoftAudioBuffer {
             if (channel >= format.getChannels())
                 return;
             int z_stepover = format.getChannels() * framesize_pc;
-            int k_stepover = framesize_pc;
             for (int j = 0; j < framesize_pc; j++) {
                 int k = j;
                 int z = channel * framesize_pc + j;
                 for (int i = 0; i < size; i++) {
                     buffer[z] = converter_buffer[k];
                     z += z_stepover;
-                    k += k_stepover;
+                    k += framesize_pc;
                 }
             }
         }

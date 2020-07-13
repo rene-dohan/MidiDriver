@@ -41,10 +41,8 @@ public class SoftCubicResampler extends SoftAbstractResampler {
         float pitch = startpitch[0];
         float ix = in_offset[0];
         int ox = out_offset[0];
-        float ix_end = in_end;
-        int ox_end = out_end;
         if (pitchstep == 0) {
-            while (ix < ix_end && ox < ox_end) {
+            while (ix < in_end && ox < out_end) {
                 int iix = (int) ix;
                 float fix = ix - iix;
                 float y0 = in[iix - 1];
@@ -54,14 +52,13 @@ public class SoftCubicResampler extends SoftAbstractResampler {
                 float a0 = y3 - y2 + y1 - y0;
                 float a1 = y0 - y1 - a0;
                 float a2 = y2 - y0;
-                float a3 = y1;
                 //float fix2 = fix * fix;
                 //out[ox++] = (a0 * fix + a1) * fix2 + (a2 * fix + a3);
-                out[ox++] = ((a0 * fix + a1) * fix + a2) * fix + a3;
+                out[ox++] = ((a0 * fix + a1) * fix + a2) * fix + y1;
                 ix += pitch;
             }
         } else {
-            while (ix < ix_end && ox < ox_end) {
+            while (ix < in_end && ox < out_end) {
                 int iix = (int) ix;
                 float fix = ix - iix;
                 float y0 = in[iix - 1];
@@ -71,10 +68,9 @@ public class SoftCubicResampler extends SoftAbstractResampler {
                 float a0 = y3 - y2 + y1 - y0;
                 float a1 = y0 - y1 - a0;
                 float a2 = y2 - y0;
-                float a3 = y1;
                 //float fix2 = fix * fix;
                 //out[ox++] = (a0 * fix + a1) * fix2 + (a2 * fix + a3);
-                out[ox++] = ((a0 * fix + a1) * fix + a2) * fix + a3;
+                out[ox++] = ((a0 * fix + a1) * fix + a2) * fix + y1;
                 ix += pitch;
                 pitch += pitchstep;
             }

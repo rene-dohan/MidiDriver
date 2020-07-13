@@ -48,17 +48,17 @@ public class SoftJitterCorrector extends AudioInputStream {
         int writepos = 0;
         int readpos = 0;
         byte[][] buffers;
-        Object buffers_mutex = new Object();
+        final Object buffers_mutex = new Object();
 
         // Adapative Drift Statistics
-        int w_count = 1000;
+        int w_count;
         int w_min_tol = 2;
         int w_max_tol = 10;
         int w = 0;
         int w_min = -1;
         // Current read buffer
         int bbuffer_pos = 0;
-        int bbuffer_max = 0;
+        int bbuffer_max;
         byte[] bbuffer = null;
 
         public byte[] nextReadBuffer() {
@@ -112,13 +112,11 @@ public class SoftJitterCorrector extends AudioInputStream {
             }
         }
 
-        public JitterStream(AudioInputStream s, int buffersize,
-                int smallbuffersize) {
+        public JitterStream(AudioInputStream s, int buffersize, int smallbuffersize) {
             this.w_count = 10 * (buffersize / smallbuffersize);
             if (w_count < 100)
                 w_count = 100;
-            this.buffers
-                    = new byte[(buffersize/smallbuffersize)+10][smallbuffersize];
+            this.buffers = new byte[(buffersize/smallbuffersize)+10][smallbuffersize];
             this.bbuffer_max = MAX_BUFFER_SIZE / smallbuffersize;
             this.stream = s;
 
@@ -146,7 +144,6 @@ public class SoftJitterCorrector extends AudioInputStream {
                                 w++;
                                 if (w_min != Integer.MAX_VALUE) {
                                     if (w == w_count) {
-                                        correction = 0;
                                         if (w_min < w_min_tol) {
                                             correction = (w_min_tol + w_max_tol)
                                                             / 2 - w_min;
@@ -269,9 +266,7 @@ public class SoftJitterCorrector extends AudioInputStream {
         }
     }
 
-    public SoftJitterCorrector(AudioInputStream stream, int buffersize,
-            int smallbuffersize) {
-        super(new JitterStream(stream, buffersize, smallbuffersize),
-                stream.getFormat(), stream.getFrameLength());
+    public SoftJitterCorrector(AudioInputStream stream, int buffersize, int smallbuffersize) {
+        super(new JitterStream(stream, buffersize, smallbuffersize), stream.getFormat(), stream.getFrameLength());
     }
 }

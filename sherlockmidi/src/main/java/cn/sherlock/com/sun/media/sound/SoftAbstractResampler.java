@@ -55,7 +55,7 @@ public abstract class SoftAbstractResampler {
         int nrofchannels = 2;
         boolean noteOff_flag = false;
         float[][] ibuffer;
-        boolean ibuffer_order = true;
+        boolean ibuffer_order;
         float[] sbuffer;
         int pad;
         int pad2;
@@ -189,8 +189,7 @@ public abstract class SoftAbstractResampler {
 
                 for (int c = 0; c < nrofchannels; c++) {
                     float[] cbuffer = ibuffer[c];
-                    for (int i = 0; i < pad2; i++)
-                        cbuffer[i] = cbuffer[i + sector_size];
+                    if (pad2 >= 0) System.arraycopy(cbuffer, sector_size, cbuffer, 0, pad2);
                 }
 
                 int ret;
@@ -218,7 +217,6 @@ public abstract class SoftAbstractResampler {
                 }
 
                 if (ret == -1) {
-                    ret = 0;
                     stream_eof = true;
                     for (int i = 0; i < nrofchannels; i++)
                         Arrays.fill(ibuffer[i], pad2, pad2 + sector_size, 0f);
@@ -294,7 +292,7 @@ public abstract class SoftAbstractResampler {
                         }
                     }
 
-                    if (ibuffer_order != loopdirection)
+                    if (ibuffer_order)
                         reverseBuffers();
 
                     ix[0] = (sector_size + pad2) - ix[0];
@@ -342,7 +340,7 @@ public abstract class SoftAbstractResampler {
                     }
                 }
 
-                if (ibuffer_order != loopdirection)
+                if (!ibuffer_order)
                     reverseBuffers();
 
                 float bak_ix = ix[0];
