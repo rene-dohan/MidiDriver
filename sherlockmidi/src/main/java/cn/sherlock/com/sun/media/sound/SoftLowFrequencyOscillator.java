@@ -29,7 +29,7 @@ package cn.sherlock.com.sun.media.sound;
  *
  * @author Karl Helgason
  */
-public class SoftLowFrequencyOscillator implements SoftProcess {
+public class SoftLowFrequencyOscillator implements SoftControl {
 
     private int max_count = 10;
     private int used_count = 0;

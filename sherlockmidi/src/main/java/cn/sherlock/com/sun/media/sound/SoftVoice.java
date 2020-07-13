@@ -68,8 +68,8 @@ public class SoftVoice {
     protected boolean portamento = false;
     private SoftFilter filter_left;
     private SoftFilter filter_right;
-    private SoftProcess eg = new SoftEnvelopeGenerator();
-    private SoftProcess lfo = new SoftLowFrequencyOscillator();
+    private SoftEnvelopeGenerator eg = new SoftEnvelopeGenerator();
+    private SoftLowFrequencyOscillator lfo = new SoftLowFrequencyOscillator();
     protected Map<String, SoftControl> objects = new HashMap<>();
     protected SoftSynthesizer synthesizer;
     protected SoftPerformer performer;

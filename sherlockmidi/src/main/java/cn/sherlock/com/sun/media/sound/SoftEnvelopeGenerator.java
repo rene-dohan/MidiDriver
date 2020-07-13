@@ -29,7 +29,7 @@ package cn.sherlock.com.sun.media.sound;
  *
  * @author Karl Helgason
  */
-public class SoftEnvelopeGenerator implements SoftProcess {
+public class SoftEnvelopeGenerator implements SoftControl {
 
     public final static int EG_OFF = 0;
     public final static int EG_DELAY = 1;
