@@ -41,15 +41,13 @@ public class SoftPointResampler extends SoftAbstractResampler {
         float pitch = startpitch[0];
         float ix = in_offset[0];
         int ox = out_offset[0];
-        float ix_end = in_end;
-        float ox_end = out_end;
         if (pitchstep == 0) {
-            while (ix < ix_end && ox < ox_end) {
+            while (ix < in_end && ox < (float) out_end) {
                 out[ox++] = in[(int) ix];
                 ix += pitch;
             }
         } else {
-            while (ix < ix_end && ox < ox_end) {
+            while (ix < in_end && ox < (float) out_end) {
                 out[ox++] = in[(int) ix];
                 ix += pitch;
                 pitch += pitchstep;

@@ -176,19 +176,19 @@ public class AudioFileFormat {
 
         //$$fb2002-11-01: fix for 4672864: AudioFileFormat.toString() throws unexpected NullPointerException
         if (type != null) {
-            buf.append(type.toString() + " (." + type.getExtension() + ") file");
+            buf.append(type.toString()).append(" (.").append(type.getExtension()).append(") file");
         } else {
             buf.append("unknown file format");
         }
 
         if (byteLength != AudioSystem.NOT_SPECIFIED) {
-            buf.append(", byte length: " + byteLength);
+            buf.append(", byte length: ").append(byteLength);
         }
 
-        buf.append(", data format: " + format);
+        buf.append(", data format: ").append(format);
 
         if (frameLength != AudioSystem.NOT_SPECIFIED) {
-            buf.append(", frame length: " + frameLength);
+            buf.append(", frame length: ").append(frameLength);
         }
 
         return new String(buf);

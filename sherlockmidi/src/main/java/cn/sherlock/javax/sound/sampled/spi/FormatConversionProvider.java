@@ -80,8 +80,8 @@ public abstract class FormatConversionProvider {
 		AudioFormat[] targetFormats = getTargetFormats(
 				targetFormat.getEncoding(), sourceFormat);
 
-		for (int i = 0; i < targetFormats.length; i++) {
-			if (targetFormat.matches(targetFormats[i])) {
+		for (AudioFormat format : targetFormats) {
+			if (targetFormat.matches(format)) {
 				return true;
 			}
 		}

@@ -42,10 +42,8 @@ public class SoftLinearResampler extends SoftAbstractResampler {
         float pitch = startpitch[0];
         float ix = in_offset[0];
         int ox = out_offset[0];
-        float ix_end = in_end;
-        int ox_end = out_end;
         if (pitchstep == 0f) {
-            while (ix < ix_end && ox < ox_end) {
+            while (ix < in_end && ox < out_end) {
                 int iix = (int) ix;
                 float fix = ix - iix;
                 float i = in[iix];
@@ -53,7 +51,7 @@ public class SoftLinearResampler extends SoftAbstractResampler {
                 ix += pitch;
             }
         } else {
-            while (ix < ix_end && ox < ox_end) {
+            while (ix < in_end && ox < out_end) {
                 int iix = (int) ix;
                 float fix = ix - iix;
                 float i = in[iix];

@@ -100,10 +100,9 @@ public class WaveFloatFileReader extends AudioFileReader {
         AudioFormat audioformat = new AudioFormat(
                 AudioFloatConverter.PCM_FLOAT, samplerate, bits, channels,
                 framesize, samplerate, false);
-        AudioFileFormat fileformat = new AudioFileFormat(
+        return new AudioFileFormat(
                 AudioFileFormat.Type.WAVE, audioformat,
                 AudioSystem.NOT_SPECIFIED);
-        return fileformat;
     }
 
     public AudioInputStream getAudioInputStream(InputStream stream)

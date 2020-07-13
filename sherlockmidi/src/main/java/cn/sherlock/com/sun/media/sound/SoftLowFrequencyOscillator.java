@@ -24,6 +24,8 @@
  */
 package cn.sherlock.com.sun.media.sound;
 
+import java.util.Arrays;
+
 /**
  * LFO control signal generator.
  *
@@ -41,15 +43,11 @@ public class SoftLowFrequencyOscillator implements SoftControl {
     private double[] sin_phase = new double[max_count];
     private double[] sin_stepfreq = new double[max_count];
     private double[] sin_step = new double[max_count];
-    private double control_time = 0;
     private double sin_factor = 0;
-    private static double PI2 = 2.0 * Math.PI;
 
     public SoftLowFrequencyOscillator() {
         // If sin_step is 0 then sin_stepfreq must be -INF
-        for (int i = 0; i < sin_stepfreq.length; i++) {
-            sin_stepfreq[i] = Double.NEGATIVE_INFINITY;
-        }
+        Arrays.fill(sin_stepfreq, Double.NEGATIVE_INFINITY);
     }
 
     public void reset() {
@@ -68,7 +66,7 @@ public class SoftLowFrequencyOscillator implements SoftControl {
     }
 
     public void init(SoftSynthesizer synth) {
-        control_time = 1.0 / synth.getControlRate();
+        double control_time = 1.0 / synth.getControlRate();
         sin_factor = control_time * 2 * Math.PI;
         for (int i = 0; i < used_count; i++) {
             delay_counter[i] = (int)(Math.pow(2,
@@ -105,6 +103,7 @@ public class SoftLowFrequencyOscillator implements SoftControl {
                  */
                 double p = sin_phase[i];
                 p += sin_step[i];
+                double PI2 = 2.0 * Math.PI;
                 while (p > PI2)
                     p -= PI2;
                 out[i][0] = 0.5 + Math.sin(p) * 0.5;

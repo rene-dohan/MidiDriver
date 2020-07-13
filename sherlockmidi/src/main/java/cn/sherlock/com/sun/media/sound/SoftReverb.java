@@ -179,8 +179,7 @@ public class SoftReverb {
             filtercoeff2 = (1 - filtercoeff1)* feedback;
         }
     }
-    private float roomsize;
-    private float damp;
+
     private float gain = 1;
     private Delay delay;
     private Comb[] combL;
@@ -251,7 +250,7 @@ public class SoftReverb {
         }
 
         /* Init other settings */
-        globalParameterControlChange(new int[]{0x01 * 128 + 0x01}, 0, 4);
+        globalParameterControlChange(new int[]{128 + 0x01});
 
     }
 
@@ -314,9 +313,8 @@ public class SoftReverb {
                 pre2 = new float[numsamples];
                 pre3 = new float[numsamples];
             }
-            
-            for (int i = 0; i < allpassL.length; i++)
-                allpassL[i].processReplace(input);
+
+            for (AllPass allPass : allpassL) allPass.processReplace(input);
 
             combL[0].processReplace(input, pre3);
             combL[1].processReplace(input, pre3);
@@ -358,8 +356,7 @@ public class SoftReverb {
                 allpassR[0].processReplace(input, out);
                 for (int i = 1; i < allpassR.length; i++)
                     allpassR[i].processReplace(out);
-                for (int i = 0; i < combR.length; i++)
-                    combR[i].processMix(out, right);
+                for (Comb comb : combR) comb.processMix(out, right);
             }
 
             if (!mix)            
@@ -367,8 +364,7 @@ public class SoftReverb {
             allpassL[0].processReplace(input, out);
             for (int i = 1; i < allpassL.length; i++)
                 allpassL[i].processReplace(out);
-            for (int i = 0; i < combL.length; i++)
-                combL[i].processMix(out, left);            
+            for (Comb comb : combL) comb.processMix(out, left);
         }
         
         
@@ -391,68 +387,17 @@ public class SoftReverb {
         
     }
 
-    private void globalParameterControlChange(int[] slothpath, long param,
-                                              long value) {
+    private void globalParameterControlChange(int[] slothpath) {
         if (slothpath.length == 1) {
-            if (slothpath[0] == 0x01 * 128 + 0x01) {
+            if (slothpath[0] == 128 + 0x01) {
 
-                if (param == 0) {
-                    if (value == 0) {
-                        // Small Room A small size room with a length
-                        // of 5m or so.
-                        dirty_roomsize = (1.1f);
-                        dirty_damp = (5000);
-                        dirty_predelay = (0);
-                        dirty_gain = (4);
-                        dirty = true;
-                    }
-                    if (value == 1) {
-                        // Medium Room A medium size room with a length
-                        // of 10m or so.
-                        dirty_roomsize = (1.3f);
-                        dirty_damp = (5000);
-                        dirty_predelay = (0);
-                        dirty_gain = (3);
-                        dirty = true;
-                    }
-                    if (value == 2) {
-                        // Large Room A large size room suitable for
-                        // live performances.
-                        dirty_roomsize = (1.5f);
-                        dirty_damp = (5000);
-                        dirty_predelay = (0);
-                        dirty_gain = (2);
-                        dirty = true;
-                    }
-                    if (value == 3) {
-                        // Medium Hall A medium size concert hall.
-                        dirty_roomsize = (1.8f);
-                        dirty_damp = (24000);
-                        dirty_predelay = (0.02f);
-                        dirty_gain = (1.5f);
-                        dirty = true;
-                    }
-                    if (value == 4) {
-                        // Large Hall A large size concert hall
-                        // suitable for a full orchestra.
-                        dirty_roomsize = (1.8f);
-                        dirty_damp = (24000);
-                        dirty_predelay = (0.03f);
-                        dirty_gain = (1.5f);
-                        dirty = true;
-                    }
-                    if (value == 8) {
-                        // Plate A plate reverb simulation.
-                        dirty_roomsize = (1.3f);
-                        dirty_damp = (2500);
-                        dirty_predelay = (0);
-                        dirty_gain = (6);
-                        dirty = true;
-                    }
-                } else if (param == 1) {
-                    dirty_roomsize = ((float) (Math.exp((value - 40) * 0.025)));
-                    dirty = true;
-                }
+                // Large Hall A large size concert hall
+                // suitable for a full orchestra.
+                dirty_roomsize = (1.8f);
+                dirty_damp = (24000);
+                dirty_predelay = (0.03f);
+                dirty_gain = (1.5f);
+                dirty = true;
 
             }
         }
@@ -469,7 +414,7 @@ public class SoftReverb {
     }
 
     public void setRoomSize(float value) {
-        roomsize = 1 - (0.17f / value);
+        float roomsize = 1 - (0.17f / value);
 
         for (int i = 0; i < combL.length; i++) {
             combL[i].feedback = roomsize;
@@ -488,7 +433,7 @@ public class SoftReverb {
     public void setDamp(float value) {
         double x = (value / samplerate) * (2 * Math.PI);
         double cx = 2 - Math.cos(x);
-        damp = (float)(cx - Math.sqrt(cx * cx - 1));
+        float damp = (float) (cx - Math.sqrt(cx * cx - 1));
         if (damp > 1)
             damp = 1;
         if (damp < 0)

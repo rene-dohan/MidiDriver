@@ -109,24 +109,12 @@ public class ModelStandardTransform implements ModelTransform {
         return value;
     }
 
-    public boolean getDirection() {
-        return direction;
-    }
-
     public void setDirection(boolean direction) {
         this.direction = direction;
     }
 
-    public boolean getPolarity() {
-        return polarity;
-    }
-
     public void setPolarity(boolean polarity) {
         this.polarity = polarity;
-    }
-
-    public int getTransform() {
-        return transform;
     }
 
     public void setTransform(int transform) {

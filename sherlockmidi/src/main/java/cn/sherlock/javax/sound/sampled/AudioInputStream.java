@@ -325,9 +325,7 @@ public class AudioInputStream extends InputStream {
             // Throw an IOException if we've skipped a fractional number of frames
             throw new IOException("Could not skip an integer number of frames.");
         }
-        if( temp >= 0 ) {
-            framePos += temp/frameSize;
-        }
+        framePos += temp/frameSize;
         return temp;
 
     }

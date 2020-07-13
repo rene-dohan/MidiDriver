@@ -26,7 +26,6 @@ package cn.sherlock.com.sun.media.sound;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -293,14 +292,14 @@ public class SoftPerformer {
                 new ModelIdentifier("lfo", "delay", 0)));
         defaultconnections[o++] = new ModelConnectionBlock(-8.51318,
                 new ModelDestination(new ModelIdentifier("lfo", "freq", 1)));
-        defaultconnections[o++] = new ModelConnectionBlock(
+        defaultconnections[o] = new ModelConnectionBlock(
                 Float.NEGATIVE_INFINITY, new ModelDestination(
                 new ModelIdentifier("lfo", "delay", 1)));
 
     }
 
-    public int exclusiveClass = 0;
-    public boolean selfNonExclusive = false;
+    public int exclusiveClass;
+    public boolean selfNonExclusive;
     public boolean forcedVelocity = false;
     public boolean forcedKeynumber = false;
     public ModelConnectionBlock[] connections;
@@ -312,26 +311,13 @@ public class SoftPerformer {
     public int[] ctrl_connections;
     private List<Integer> ctrl_connections_list = new ArrayList<>();
 
-    private static class KeySortComparator implements Comparator<ModelSource> {
-
-        public int compare(ModelSource o1, ModelSource o2) {
-            return o1.getIdentifier().toString().compareTo(
-                    o2.getIdentifier().toString());
-        }
-    }
-    private static KeySortComparator keySortComparator = new KeySortComparator();
-
     private String extractKeys(ModelConnectionBlock conn) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         if (conn.getSources() != null) {
             sb.append("[");
             ModelSource[] srcs = conn.getSources();
-            ModelSource[] srcs2 = new ModelSource[srcs.length];
-            for (int i = 0; i < srcs.length; i++)
-                srcs2[i] = srcs[i];
-            Arrays.sort(srcs2, keySortComparator);
-            for (int i = 0; i < srcs.length; i++) {
-                sb.append(srcs[i].getIdentifier());
+            for (ModelSource src : srcs) {
+                sb.append(src.getIdentifier());
                 sb.append(";");
             }
             sb.append("]");
@@ -347,22 +333,29 @@ public class SoftPerformer {
     private void processSource(ModelSource src, int ix) {
         ModelIdentifier id = src.getIdentifier();
         String o = id.getObject();
-        if (o.equals("midi_cc"))
-            processMidiControlSource(src, ix);
-        else if (o.equals("midi_rpn"))
-            processMidiRpnSource(src, ix);
-        else if (o.equals("midi_nrpn"))
-            processMidiNrpnSource(src, ix);
-        else if (o.equals("midi"))
-            processMidiSource(src, ix);
-        else if (o.equals("noteon"))
-            processNoteOnSource(src, ix);
-        else if (o.equals("osc"))
-            return;
-        else if (o.equals("mixer"))
-            return;
-        else
-            ctrl_connections_list.add(ix);
+        switch (o) {
+            case "midi_cc":
+                processMidiControlSource(src, ix);
+                break;
+            case "midi_rpn":
+                processMidiRpnSource(src, ix);
+                break;
+            case "midi_nrpn":
+                processMidiNrpnSource(src, ix);
+                break;
+            case "midi":
+                processMidiSource(src, ix);
+                break;
+            case "noteon":
+                processNoteOnSource(src, ix);
+                break;
+            case "osc":
+            case "mixer":
+                return;
+            default:
+                ctrl_connections_list.add(ix);
+                break;
+        }
     }
 
     private void processMidiControlSource(ModelSource src, int ix) {
@@ -375,8 +368,7 @@ public class SoftPerformer {
         else {
             int[] olda = midi_ctrl_connections[c];
             int[] newa = new int[olda.length + 1];
-            for (int i = 0; i < olda.length; i++)
-                newa[i] = olda[i];
+            System.arraycopy(olda, 0, newa, 0, olda.length);
             newa[newa.length - 1] = ix;
             midi_ctrl_connections[c] = newa;
         }
@@ -396,8 +388,7 @@ public class SoftPerformer {
         else {
             int[] olda = midi_connections[c];
             int[] newa = new int[olda.length + 1];
-            for (int i = 0; i < olda.length; i++)
-                newa[i] = olda[i];
+            System.arraycopy(olda, 0, newa, 0, olda.length);
             newa[newa.length - 1] = ix;
             midi_connections[c] = newa;
         }
@@ -419,8 +410,7 @@ public class SoftPerformer {
         else {
             int[] olda = midi_connections[c];
             int[] newa = new int[olda.length + 1];
-            for (int i = 0; i < olda.length; i++)
-                newa[i] = olda[i];
+            System.arraycopy(olda, 0, newa, 0, olda.length);
             newa[newa.length - 1] = ix;
             midi_connections[c] = newa;
         }
@@ -436,8 +426,7 @@ public class SoftPerformer {
         else {
             int[] olda = midi_rpn_connections.get(c);
             int[] newa = new int[olda.length + 1];
-            for (int i = 0; i < olda.length; i++)
-                newa[i] = olda[i];
+            System.arraycopy(olda, 0, newa, 0, olda.length);
             newa[newa.length - 1] = ix;
             midi_rpn_connections.put(c, newa);
         }
@@ -453,8 +442,7 @@ public class SoftPerformer {
         else {
             int[] olda = midi_nrpn_connections.get(c);
             int[] newa = new int[olda.length + 1];
-            for (int i = 0; i < olda.length; i++)
-                newa[i] = olda[i];
+            System.arraycopy(olda, 0, newa, 0, olda.length);
             newa[newa.length - 1] = ix;
             midi_nrpn_connections.put(c, newa);
         }
@@ -464,10 +452,9 @@ public class SoftPerformer {
         exclusiveClass = performer.getExclusiveClass();
         selfNonExclusive = performer.isSelfNonExclusive();
 
-        Map<String, ModelConnectionBlock> connmap = new HashMap<String, ModelConnectionBlock>();
+        Map<String, ModelConnectionBlock> connmap = new HashMap<>();
 
-        List<ModelConnectionBlock> performer_connections = new ArrayList<ModelConnectionBlock>();
-        performer_connections.addAll(performer.getConnectionBlocks());
+        List<ModelConnectionBlock> performer_connections = new ArrayList<>(performer.getConnectionBlocks());
 
         if (performer.isDefaultConnectionsEnabled()) {
 
@@ -480,12 +467,12 @@ public class SoftPerformer {
                 ModelDestination dest = connection.getDestination();
                 boolean isModulationWheelConection = false;
                 if (dest != null && sources != null && sources.length > 1) {
-                    for (int i = 0; i < sources.length; i++) {
+                    for (ModelSource source : sources) {
                         // check if connection block has the source "modulation
                         // wheel cc#1"
-                        if (sources[i].getIdentifier().getObject().equals(
+                        if (source.getIdentifier().getObject().equals(
                                 "midi_cc")) {
-                            if (sources[i].getIdentifier().getVariable()
+                            if (source.getIdentifier().getVariable()
                                     .equals("1")) {
                                 isModulationWheelConection = true;
                                 isModulationWheelConectionFound = true;
@@ -566,8 +553,7 @@ public class SoftPerformer {
                     mc.setScale(mod_cc_1_connection.getScale());
                     ModelSource[] src_list = mod_cc_1_connection.getSources();
                     ModelSource[] src_list_new = new ModelSource[src_list.length];
-                    for (int i = 0; i < src_list_new.length; i++)
-                        src_list_new[i] = src_list[i];
+                    System.arraycopy(src_list, 0, src_list_new, 0, src_list_new.length);
                     src_list_new[mod_cc_1_connection_src_ix] = new ModelSource(
                             new ModelIdentifier("midi", "channel_pressure"));
                     mc.setSources(src_list_new);
@@ -579,8 +565,7 @@ public class SoftPerformer {
                     mc.setScale(mod_cc_1_connection.getScale());
                     ModelSource[] src_list = mod_cc_1_connection.getSources();
                     ModelSource[] src_list_new = new ModelSource[src_list.length];
-                    for (int i = 0; i < src_list_new.length; i++)
-                        src_list_new[i] = src_list[i];
+                    System.arraycopy(src_list, 0, src_list_new, 0, src_list_new.length);
                     src_list_new[mod_cc_1_connection_src_ix] = new ModelSource(
                             new ModelIdentifier("midi", "poly_pressure"));
                     mc.setSources(src_list_new);
@@ -677,16 +662,12 @@ public class SoftPerformer {
             connmap.put(extractKeys(connection), connection);
         // seperate connection blocks : Init time, Midi Time, Midi/Control Time,
         // Control Time
-        List<ModelConnectionBlock> connections = new ArrayList<ModelConnectionBlock>();
+        List<ModelConnectionBlock> connections = new ArrayList<>();
 
         midi_ctrl_connections = new int[128][];
-        for (int i = 0; i < midi_ctrl_connections.length; i++) {
-            midi_ctrl_connections[i] = null;
-        }
+        Arrays.fill(midi_ctrl_connections, null);
         midi_connections = new int[5][];
-        for (int i = 0; i < midi_connections.length; i++) {
-            midi_connections[i] = null;
-        }
+        Arrays.fill(midi_connections, null);
 
         int ix = 0;
         boolean mustBeOnTop = false;
@@ -713,8 +694,8 @@ public class SoftPerformer {
         for (ModelConnectionBlock connection : connections) {
             if (connection.getSources() != null) {
                 ModelSource[] srcs = connection.getSources();
-                for (int i = 0; i < srcs.length; i++) {
-                    processSource(srcs[i], ix);
+                for (ModelSource src : srcs) {
+                    processSource(src, ix);
                 }
             }
             ix++;
@@ -733,13 +714,13 @@ public class SoftPerformer {
 
         for (ModelConnectionBlock conn : connections) {
             if (conn.getDestination() != null) {
-                if (isUnnecessaryTransform(conn.getDestination().getTransform())) {
+                if (isUnnecessaryTransform()) {
                     conn.getDestination().setTransform(null);
                 }
             }
             if (conn.getSources() != null) {
                 for (ModelSource src : conn.getSources()) {
-                    if (isUnnecessaryTransform(src.getTransform())) {
+                    if (isUnnecessaryTransform()) {
                         src.setTransform(null);
                     }
                 }
@@ -748,18 +729,7 @@ public class SoftPerformer {
 
     }
 
-    private static boolean isUnnecessaryTransform(ModelTransform transform) {
-        if (transform == null)
-            return false;
-        if (!(transform instanceof ModelStandardTransform))
-            return false;
-        ModelStandardTransform stransform = (ModelStandardTransform)transform;
-        if (stransform.getDirection() != ModelStandardTransform.DIRECTION_MIN2MAX)
-            return false;
-        if (stransform.getPolarity() != ModelStandardTransform.POLARITY_UNIPOLAR)
-            return false;
-        if (stransform.getTransform() != ModelStandardTransform.TRANSFORM_LINEAR)
-            return false;
+    private static boolean isUnnecessaryTransform() {
         return false;
     }
 }

@@ -87,8 +87,6 @@ public class SoftSincResampler extends SoftAbstractResampler {
         float pitch = startpitch[0];
         float ix = in_offset[0];
         int ox = out_offset[0];
-        float ix_end = in_end;
-        int ox_end = out_end;
         int max_p = sinc_scale_size - 1;
         if (pitchstep == 0) {
 
@@ -98,7 +96,7 @@ public class SoftSincResampler extends SoftAbstractResampler {
             else if (p > max_p)
                 p = max_p;
             float[][] sinc_table_f = this.sinc_table[p];
-            while (ix < ix_end && ox < ox_end) {
+            while (ix < in_end && ox < out_end) {
                 int iix = (int) ix;
                 float[] sinc_table =
                         sinc_table_f[(int)((ix - iix) * sinc_table_fsize)];
@@ -110,7 +108,7 @@ public class SoftSincResampler extends SoftAbstractResampler {
                 ix += pitch;
             }
         } else {
-            while (ix < ix_end && ox < ox_end) {
+            while (ix < in_end && ox < out_end) {
                 int iix = (int) ix;
                 int p = (int) ((pitch - 1) * 10.0f);
                 if (p < 0)

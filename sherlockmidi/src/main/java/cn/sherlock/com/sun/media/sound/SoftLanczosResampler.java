@@ -75,11 +75,9 @@ public class SoftLanczosResampler extends SoftAbstractResampler {
         float pitch = startpitch[0];
         float ix = in_offset[0];
         int ox = out_offset[0];
-        float ix_end = in_end;
-        int ox_end = out_end;
 
         if (pitchstep == 0) {
-            while (ix < ix_end && ox < ox_end) {
+            while (ix < in_end && ox < out_end) {
                 int iix = (int) ix;
                 float[] sinc_table
                         = this.sinc_table[(int) ((ix - iix) * sinc_table_fsize)];
@@ -91,7 +89,7 @@ public class SoftLanczosResampler extends SoftAbstractResampler {
                 ix += pitch;
             }
         } else {
-            while (ix < ix_end && ox < ox_end) {
+            while (ix < in_end && ox < out_end) {
                 int iix = (int) ix;
                 float[] sinc_table
                         = this.sinc_table[(int) ((ix - iix) * sinc_table_fsize)];

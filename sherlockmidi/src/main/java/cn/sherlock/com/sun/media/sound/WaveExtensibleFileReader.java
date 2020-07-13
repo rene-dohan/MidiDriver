@@ -156,14 +156,14 @@ public class WaveExtensibleFileReader extends AudioFileReader {
             0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71);
 
     private String decodeChannelMask(long channelmask) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         long m = 1;
         for (int i = 0; i < allchannelnames.length; i++) {
             if ((channelmask & m) != 0L) {
                 if (i < channelnames.length) {
-                    sb.append(channelnames[i] + " ");
+                    sb.append(channelnames[i]).append(" ");
                 } else {
-                    sb.append(allchannelnames[i] + " ");
+                    sb.append(allchannelnames[i]).append(" ");
                 }
             }
             m *= 2L;
@@ -244,7 +244,7 @@ public class WaveExtensibleFileReader extends AudioFileReader {
         if (!data_found)
             throw new UnsupportedAudioFileException();
 
-        Map<String, Object> p = new HashMap<String, Object>();
+        Map<String, Object> p = new HashMap<>();
         String s_channelmask = decodeChannelMask(channelMask);
         if (s_channelmask != null)
             p.put("channelOrder", s_channelmask);
@@ -254,7 +254,7 @@ public class WaveExtensibleFileReader extends AudioFileReader {
         // data is still encode according to SampleSizeInBits.
         p.put("validBitsPerSample", validBitsPerSample);
 
-        AudioFormat audioformat = null;
+        AudioFormat audioformat;
         if (subFormat.equals(SUBTYPE_PCM)) {
             if (bits == 8) {
                 audioformat = new AudioFormat(Encoding.PCM_UNSIGNED,
@@ -270,10 +270,9 @@ public class WaveExtensibleFileReader extends AudioFileReader {
         } else
             throw new UnsupportedAudioFileException();
 
-        AudioFileFormat fileformat = new AudioFileFormat(
+        return new AudioFileFormat(
                 AudioFileFormat.Type.WAVE, audioformat,
                 AudioSystem.NOT_SPECIFIED);
-        return fileformat;
     }
 
     public AudioInputStream getAudioInputStream(InputStream stream)

@@ -200,7 +200,7 @@ public class AudioFormat {
                        boolean bigEndian, Map<String, Object> properties) {
         this(encoding, sampleRate, sampleSizeInBits, channels,
              frameSize, frameRate, bigEndian);
-        this.properties = new HashMap<String, Object>(properties);
+        this.properties = new HashMap<>(properties);
     }
 
 
@@ -221,7 +221,7 @@ public class AudioFormat {
     public AudioFormat(float sampleRate, int sampleSizeInBits,
                        int channels, boolean signed, boolean bigEndian) {
 
-        this((signed == true ? Encoding.PCM_SIGNED : Encoding.PCM_UNSIGNED),
+        this((signed ? Encoding.PCM_SIGNED : Encoding.PCM_UNSIGNED),
              sampleRate,
              sampleSizeInBits,
              channels,

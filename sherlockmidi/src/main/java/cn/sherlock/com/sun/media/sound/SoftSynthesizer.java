@@ -210,11 +210,10 @@ public class SoftSynthesizer {
             if (performer.getOscillators() != null) {
                 for (ModelByteBufferWavetable osc : performer.getOscillators()) {
                     if (osc instanceof ModelByteBufferWavetable) {
-                        ModelByteBufferWavetable w = (ModelByteBufferWavetable)osc;
-                        ModelByteBuffer buff = w.getBuffer();
+                        ModelByteBuffer buff = ((ModelByteBufferWavetable)osc).getBuffer();
                         if (buff != null)
                             buffers.add(buff);
-                        buff = w.get8BitExtensionBuffer();
+                        buff = ((ModelByteBufferWavetable)osc).get8BitExtensionBuffer();
                         if (buff != null)
                             buffers.add(buff);
                     }

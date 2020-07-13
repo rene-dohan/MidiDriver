@@ -98,11 +98,11 @@ public class SoftLimiter {
         int len = bufferL.length;
 
         if (bufferR == null) {
-            for (int i = 0; i < len; i++) {
-                if (bufferL[i] > max)
-                    max = bufferL[i];
-                if (-bufferL[i] > max)
-                    max = -bufferL[i];
+            for (float v : bufferL) {
+                if (v > max)
+                    max = v;
+                if (-v > max)
+                    max = -v;
             }
         } else {
             for (int i = 0; i < len; i++) {
@@ -125,8 +125,6 @@ public class SoftLimiter {
         float newgain = 1;
         if (max > 0.99f)
             newgain = 0.99f / max;
-        else
-            newgain = 1;
 
         if (newgain > gain)
             newgain = (newgain + gain * 9) / 10f;

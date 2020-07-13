@@ -44,17 +44,16 @@ public class SoftLinearResampler2 extends SoftAbstractResampler {
         float pitch = startpitch[0];
         float ix = in_offset[0];
         int ox = out_offset[0];
-        float ix_end = in_end;
         int ox_end = out_end;
 
         // Check if we have do anything
-        if (!(ix < ix_end && ox < ox_end))
+        if (!(ix < in_end && ox < ox_end))
             return;
 
         // 15 bit shift was choosed because
         // it resulted in no drift between p_ix and ix.
         int p_ix = (int) (ix * (1 << 15));
-        int p_ix_end = (int) (ix_end * (1 << 15));
+        int p_ix_end = (int) (in_end * (1 << 15));
         int p_pitch = (int) (pitch * (1 << 15));
         // Pitch needs to recalculated
         // to ensure no drift between p_ix and ix.

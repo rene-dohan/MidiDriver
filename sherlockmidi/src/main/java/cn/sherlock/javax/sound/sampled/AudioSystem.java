@@ -221,8 +221,7 @@ public class AudioSystem {
 				format = reader.getAudioFileFormat(stream); // throws
 															// IOException
 				break;
-			} catch (UnsupportedAudioFileException e) {
-				continue;
+			} catch (UnsupportedAudioFileException ignored) {
 			}
 		}
 
@@ -269,8 +268,7 @@ public class AudioSystem {
 				audioStream = reader.getAudioInputStream(stream); // throws
 																	// IOException
 				break;
-			} catch (UnsupportedAudioFileException e) {
-				continue;
+			} catch (UnsupportedAudioFileException ignored) {
 			}
 		}
 
@@ -305,11 +303,10 @@ public class AudioSystem {
 			return sourceStream;
 		}
 
-		List codecs = getFormatConversionProviders();
+		List<FormatConversionProvider> codecs = getFormatConversionProviders();
 
 		for (int i = 0; i < codecs.size(); i++) {
-			FormatConversionProvider codec = (FormatConversionProvider) codecs
-					.get(i);
+			FormatConversionProvider codec = codecs.get(i);
 			if (codec.isConversionSupported(targetFormat,
 					sourceStream.getFormat())) {
 				return codec.getAudioInputStream(targetFormat, sourceStream);
@@ -342,7 +339,7 @@ public class AudioSystem {
 
         int size = 0;
         int index = 0;
-        AudioFormat[] fmts = null;
+        AudioFormat[] fmts;
 
         // gather from all the codecs
 
@@ -358,9 +355,9 @@ public class AudioSystem {
         AudioFormat[] fmts2 = new AudioFormat[size];
         for(int i=0; i<formats.size(); i++ ) {
             fmts = (AudioFormat [])(formats.get(i));
-            for(int j=0; j<fmts.length; j++ ) {
-                fmts2[index++] = fmts[j];
-            }
+			for (AudioFormat fmt : fmts) {
+				fmts2[index++] = fmt;
+			}
         }
         return fmts2;
     }
@@ -377,7 +374,7 @@ public class AudioSystem {
 	 *         on the system, an array of length 0 is returned.
 	 */
 	private static List<FormatConversionProvider> getFormatConversionProviders() {
-		List<FormatConversionProvider> list = new ArrayList<FormatConversionProvider>();
+		List<FormatConversionProvider> list = new ArrayList<>();
 		list.add(new AudioFloatFormatConverter());
 //		list.add(new Mp3LameFormatConversionProvider());
 		return list;
@@ -394,7 +391,7 @@ public class AudioSystem {
 	 *         empty List is returned.
 	 */
 	private static List<AudioFileReader> getAudioFileReaders() {
-		List<AudioFileReader> list = new ArrayList<AudioFileReader>();
+		List<AudioFileReader> list = new ArrayList<>();
 		list.add(new WaveFloatFileReader());
 		list.add(new WaveExtensibleFileReader());
 //		list.add(new WAVReader());
