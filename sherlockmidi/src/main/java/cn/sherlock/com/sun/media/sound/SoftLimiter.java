@@ -43,7 +43,7 @@ public class SoftLimiter {
     SoftAudioBuffer bufferRout;
     float controlrate;
 
-    public void init(float samplerate, float controlrate) {
+    public void init(float controlrate) {
         this.controlrate = controlrate;
     }
 

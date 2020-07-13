@@ -205,7 +205,7 @@ public class SoftReverb {
     private float samplerate;    
     private boolean light = true;
 
-    public void init(float samplerate, float controlrate) {
+    public void init(float samplerate) {
         this.samplerate = samplerate;
 
         double freqscale = ((double) samplerate) / 44100.0;

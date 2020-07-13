@@ -332,9 +332,9 @@ public class SoftMainMixer {
 
         float samplerate = synth.getFormat().getSampleRate();
         float controlrate = synth.getControlRate();
-        reverb.init(samplerate, controlrate);
+        reverb.init(samplerate);
         chorus.init(samplerate, controlrate);
-        agc.init(samplerate, controlrate);
+        agc.init(controlrate);
 
         reverb.setLightMode(synth.reverb_light);
         
