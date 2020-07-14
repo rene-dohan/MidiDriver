@@ -12,9 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import cn.sherlock.com.sun.media.sound.AudioFloatFormatConverter;
-import cn.sherlock.com.sun.media.sound.WaveExtensibleFileReader;
-import cn.sherlock.com.sun.media.sound.WaveFloatFileReader;
 import cn.sherlock.javax.sound.sampled.spi.AudioFileReader;
 import cn.sherlock.javax.sound.sampled.spi.FormatConversionProvider;
 import cn.sherlock.media.SourceDataLineImpl;
@@ -187,53 +184,6 @@ public class AudioSystem {
 	}
 
 	/**
-	 * Obtains the audio file format of the provided input stream. The stream
-	 * must point to valid audio file data. The implementation of this method
-	 * may require multiple parsers to examine the stream to determine whether
-	 * they support it. These parsers must be able to mark the stream, read
-	 * enough data to determine whether they support the stream, and, if not,
-	 * reset the stream's read pointer to its original position. If the input
-	 * stream does not support these operations, this method may fail with an
-	 * <code>IOException</code>.
-	 * 
-	 * @param stream
-	 *            the input stream from which file format information should be
-	 *            extracted
-	 * @return an <code>AudioFileFormat</code> object describing the stream's
-	 *         audio file format
-	 * @throws UnsupportedAudioFileException
-	 *             if the stream does not point to valid audio file data
-	 *             recognized by the system
-	 * @throws IOException
-	 *             if an input/output exception occurs
-	 * @see InputStream#markSupported
-	 * @see InputStream#mark
-	 */
-	public static AudioFileFormat getAudioFileFormat(InputStream stream)
-			throws UnsupportedAudioFileException, IOException {
-
-		List<AudioFileReader> providers = getAudioFileReaders();
-		AudioFileFormat format = null;
-
-		for (int i = 0; i < providers.size(); i++) {
-			AudioFileReader reader = providers.get(i);
-			try {
-				format = reader.getAudioFileFormat(stream); // throws
-															// IOException
-				break;
-			} catch (UnsupportedAudioFileException ignored) {
-			}
-		}
-
-		if (format == null) {
-			throw new UnsupportedAudioFileException(
-					"file is not a supported file type");
-		} else {
-			return format;
-		}
-	}
-
-	/**
 	 * Obtains an audio input stream from the provided input stream. The stream
 	 * must point to valid audio file data. The implementation of this method
 	 * may require multiple parsers to examine the stream to determine whether
@@ -374,10 +324,7 @@ public class AudioSystem {
 	 *         on the system, an array of length 0 is returned.
 	 */
 	private static List<FormatConversionProvider> getFormatConversionProviders() {
-		List<FormatConversionProvider> list = new ArrayList<>();
-		list.add(new AudioFloatFormatConverter());
-//		list.add(new Mp3LameFormatConversionProvider());
-		return list;
+		return new ArrayList<>();
 	}
 	
 
@@ -391,11 +338,6 @@ public class AudioSystem {
 	 *         empty List is returned.
 	 */
 	private static List<AudioFileReader> getAudioFileReaders() {
-		List<AudioFileReader> list = new ArrayList<>();
-		list.add(new WaveFloatFileReader());
-		list.add(new WaveExtensibleFileReader());
-//		list.add(new WAVReader());
-//		list.add(new AUReader());
-		return list;
+		return new ArrayList<>();
 	}
 }

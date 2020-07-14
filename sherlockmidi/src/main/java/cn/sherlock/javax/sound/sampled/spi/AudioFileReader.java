@@ -10,7 +10,6 @@ package cn.sherlock.javax.sound.sampled.spi;
 import java.io.InputStream;
 import java.io.IOException;
 
-import cn.sherlock.javax.sound.sampled.AudioFileFormat;
 import cn.sherlock.javax.sound.sampled.AudioInputStream;
 import cn.sherlock.javax.sound.sampled.UnsupportedAudioFileException;
 
@@ -23,26 +22,6 @@ import cn.sherlock.javax.sound.sampled.UnsupportedAudioFileException;
  * @since 1.3
  */
 public abstract class AudioFileReader {
-
-    /**
-     * Obtains the audio file format of the input stream provided.  The stream must
-     * point to valid audio file data.  In general, audio file readers may
-     * need to read some data from the stream before determining whether they
-     * support it.  These parsers must
-     * be able to mark the stream, read enough data to determine whether they
-     * support the stream, and, if not, reset the stream's read pointer to its original
-     * position.  If the input stream does not support this, this method may fail
-     * with an <code>IOException</code>.
-     * @param stream the input stream from which file format information should be
-     * extracted
-     * @return an <code>AudioFileFormat</code> object describing the audio file format
-     * @throws UnsupportedAudioFileException if the stream does not point to valid audio
-     * file data recognized by the system
-     * @throws IOException if an I/O exception occurs
-     * @see InputStream#markSupported
-     * @see InputStream#mark
-     */
-    public abstract AudioFileFormat getAudioFileFormat(InputStream stream) throws UnsupportedAudioFileException, IOException;
 
     /**
      * Obtains an audio input stream from the input stream provided.  The stream must

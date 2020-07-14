@@ -107,10 +107,6 @@ public class RIFFReader extends InputStream {
         return riff_type;
     }
 
-    public long getSize() {
-        return ckSize;
-    }
-
     public int read() throws IOException {
         if (avail == 0)
             return -1;

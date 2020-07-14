@@ -43,15 +43,6 @@ package cn.sherlock.javax.sound.sampled;
 
 public class UnsupportedAudioFileException extends Exception {
 
-    /**
-     * Constructs a <code>UnsupportedAudioFileException</code> that has
-     * <code>null</code> as its error detail message.
-     */
-    public UnsupportedAudioFileException() {
-
-        super();
-    }
-
 
     /**
      * Constructs a <code>UnsupportedAudioFileException</code> that has

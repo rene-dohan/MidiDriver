@@ -5,9 +5,6 @@ package cn.sherlock.javax.sound.sampled;
  *
  */
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * <code>AudioFormat</code> is the class that specifies a particular arrangement of data in a sound stream.
  * By examining the information stored in the audio format, you can discover how to interpret the bits in the
@@ -16,7 +13,7 @@ import java.util.Map;
  * Every data line has an audio format associated with its data stream. The audio format of a source (playback) data line indicates
  * what kind of data the data line expects to receive for output.  For a target (capture) data line, the audio format specifies the kind
  * of the data that can be read from the line.
- * Sound files also have audio formats, of course.  The <code>{@link AudioFileFormat}</code>
+ * Sound files also have audio formats, of course.  The AudioFormat
  * class encapsulates an <code>AudioFormat</code> in addition to other,
  * file-specific information.  Similarly, an <code>{@link AudioInputStream}</code> has an
  * <code>AudioFormat</code>.
@@ -96,7 +93,6 @@ import java.util.Map;
  * @author Kara Kytle
  * @author Florian Bomers
  * @see AudioInputStream#getFormat
- * @see AudioFileFormat
  * @see cn.sherlock.javax.sound.sampled.spi.FormatConversionProvider
  * @since 1.3
  */
@@ -141,10 +137,6 @@ public class AudioFormat {
     protected boolean bigEndian;
 
 
-    /** The set of properties */
-    private HashMap<String, Object> properties;
-
-
     /**
      * Constructs an <code>AudioFormat</code> with the given parameters.
      * The encoding specifies the convention used to represent the data.
@@ -170,37 +162,6 @@ public class AudioFormat {
         this.frameSize = frameSize;
         this.frameRate = frameRate;
         this.bigEndian = bigEndian;
-        this.properties = null;
-    }
-
-
-    /**
-     * Constructs an <code>AudioFormat</code> with the given parameters.
-     * The encoding specifies the convention used to represent the data.
-     * The other parameters are further explained in the {@link AudioFormat
-     * class description}.
-     * @param encoding         the audio encoding technique
-     * @param sampleRate       the number of samples per second
-     * @param sampleSizeInBits the number of bits in each sample
-     * @param channels         the number of channels (1 for mono, 2 for
-     *                         stereo, and so on)
-     * @param frameSize        the number of bytes in each frame
-     * @param frameRate        the number of frames per second
-     * @param bigEndian        indicates whether the data for a single sample
-     *                         is stored in big-endian byte order
-     *                         (<code>false</code> means little-endian)
-     * @param properties       a <code>Map&lt;String,Object&gt;</code> object
-     *                         containing format properties
-     *
-     * @since 1.5
-     */
-    public AudioFormat(Encoding encoding, float sampleRate,
-                       int sampleSizeInBits, int channels,
-                       int frameSize, float frameRate,
-                       boolean bigEndian, Map<String, Object> properties) {
-        this(encoding, sampleRate, sampleSizeInBits, channels,
-             frameSize, frameRate, bigEndian);
-        this.properties = new HashMap<>(properties);
     }
 
 
@@ -357,29 +318,6 @@ public class AudioFormat {
     public boolean isBigEndian() {
 
         return bigEndian;
-    }
-
-
-    /**
-     * Obtain the property value specified by the key.
-     * The concept of properties is further explained in
-     * the {@link AudioFileFormat class description}.
-     *
-     * <p>If the specified property is not defined for a
-     * particular file format, this method returns
-     * <code>null</code>.
-     *
-     * @param key the key of the desired property
-     * @return the value of the property with the specified key,
-     *         or <code>null</code> if the property does not exist.
-     *
-     * @since 1.5
-     */
-    public Object getProperty(String key) {
-        if (properties == null) {
-            return null;
-        }
-        return properties.get(key);
     }
 
 

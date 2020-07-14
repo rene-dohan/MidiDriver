@@ -1015,21 +1015,21 @@ public abstract class AudioFloatConverter {
     public abstract float[] toFloatArray(byte[] in_buff, int in_offset,
             float[] out_buff, int out_offset, int out_len);
 
-    public float[] toFloatArray(byte[] in_buff, float[] out_buff,
-            int out_offset, int out_len) {
-        return toFloatArray(in_buff, 0, out_buff, out_offset, out_len);
+    public void toFloatArray(byte[] in_buff, float[] out_buff,
+                             int out_offset, int out_len) {
+        toFloatArray(in_buff, 0, out_buff, out_offset, out_len);
     }
 
     public abstract byte[] toByteArray(float[] in_buff, int in_offset,
             int in_len, byte[] out_buff, int out_offset);
 
-    public byte[] toByteArray(float[] in_buff, int in_len, byte[] out_buff,
-            int out_offset) {
-        return toByteArray(in_buff, 0, in_len, out_buff, out_offset);
+    public void toByteArray(float[] in_buff, int in_len, byte[] out_buff,
+                            int out_offset) {
+        toByteArray(in_buff, 0, in_len, out_buff, out_offset);
     }
 
-    public byte[] toByteArray(float[] in_buff, int in_len, byte[] out_buff) {
-        return toByteArray(in_buff, 0, in_len, out_buff, 0);
+    public void toByteArray(float[] in_buff, int in_len, byte[] out_buff) {
+        toByteArray(in_buff, 0, in_len, out_buff, 0);
     }
 
 }
