@@ -39,7 +39,6 @@ public class RIFFReader extends InputStream {
     private RIFFReader root;
     private String fourcc;
     private String riff_type = null;
-    private long ckSize;
     private InputStream stream;
     private long avail;
     private RIFFReader lastiterator = null;
@@ -53,7 +52,7 @@ public class RIFFReader extends InputStream {
 
         this.stream = stream;
         avail = Integer.MAX_VALUE;
-        ckSize = Integer.MAX_VALUE;
+        long ckSize;
 
         // Check for RIFF null paddings,
         int b;
@@ -75,7 +74,7 @@ public class RIFFReader extends InputStream {
         this.fourcc = new String(fourcc, StandardCharsets.US_ASCII);
         ckSize = readUnsignedInt();
 
-        avail = this.ckSize;
+        avail = ckSize;
 
         if (getFormat().equals("RIFF") || getFormat().equals("LIST")) {
             byte[] format = new byte[4];

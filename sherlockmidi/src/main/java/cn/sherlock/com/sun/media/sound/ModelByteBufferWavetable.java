@@ -56,7 +56,7 @@ public class ModelByteBufferWavetable {
             bigendian = format.isBigEndian();
         }
 
-        public int read(byte[] b, int off, int len) throws IOException {
+        public int read(byte[] b, int off, int len) {
             int avail = available();
             if (avail <= 0)
                 return -1;
@@ -97,11 +97,11 @@ public class ModelByteBufferWavetable {
             return super.skip(n);
         }
 
-        public int read(byte[] b) throws IOException {
+        public int read(byte[] b) {
             return read(b, 0, b.length);
         }
 
-        public int read() throws IOException {
+        public int read() {
             byte[] b = new byte[1];
             int ret = read(b, 0, 1);
             if (ret == -1)

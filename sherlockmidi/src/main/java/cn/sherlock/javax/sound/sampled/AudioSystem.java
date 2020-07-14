@@ -124,33 +124,4 @@ public class AudioSystem {
 	 * accept or return this value, as documented.
 	 */
 	public static final int NOT_SPECIFIED = -1;
-
-	/**
-	 * Obtains an audio input stream of the indicated format, by converting the
-	 * provided audio input stream.
-	 * 
-	 * @param targetFormat
-	 *            the desired audio format after conversion
-	 * @param sourceStream
-	 *            the stream to be converted
-	 * @return an audio input stream of the indicated format
-	 * @throws IllegalArgumentException
-	 *             if the conversion is not supported #see
-	 *             #getTargetEncodings(AudioFormat)
-	 */
-	public static AudioInputStream getAudioInputStream(AudioFormat targetFormat, AudioInputStream sourceStream) {
-
-		if (sourceStream.getFormat().matches(targetFormat)) {
-			return sourceStream;
-		}
-
-		// we ran out of options...
-		throw new IllegalArgumentException("Unsupported conversion: " + targetFormat + " from " + sourceStream.getFormat());
-	}
-
-
-	// $$fb 2002-04-12: fix for 4662082: behavior of
-	// AudioSystem.getTargetEncodings() methods doesn't match the spec
-
-
 }

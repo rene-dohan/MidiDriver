@@ -116,23 +116,7 @@ public abstract class AudioFloatInputStream {
 
         public DirectAudioFloatInputStream(AudioInputStream stream) {
             converter = AudioFloatConverter.getConverter(stream.getFormat());
-            if (converter == null) {
-                AudioFormat format = stream.getFormat();
-
-                float samplerate = format.getSampleRate();
-                int samplesizeinbits = 16;
-                int framesize = format.getChannels() * (samplesizeinbits / 8);
-
-                AudioFormat newformat = new AudioFormat(
-                        AudioFormat.Encoding.PCM_SIGNED, samplerate,
-                        samplesizeinbits, format.getChannels(), framesize,
-                        samplerate, false);
-
-                AudioSystem.getAudioInputStream(newformat, stream);
-                converter = AudioFloatConverter.getConverter(stream.getFormat());
-            }
-            framesize_pc = stream.getFormat().getFrameSize()
-                    / stream.getFormat().getChannels();
+            framesize_pc = stream.getFormat().getFrameSize() / stream.getFormat().getChannels();
             this.stream = stream;
         }
 
