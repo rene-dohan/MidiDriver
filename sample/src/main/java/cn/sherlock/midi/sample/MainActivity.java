@@ -7,6 +7,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import cn.sherlock.com.sun.media.sound.SF2Instrument;
 import cn.sherlock.com.sun.media.sound.SF2Soundbank;
@@ -25,17 +26,22 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		try {
-			soundbank = new SF2Soundbank(getAssets().open("gm.sf2"));
-			synth = new SoftSynthesizer();
-			channel = synth.getChannels()[0];
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					InputStream soundbankStream = getAssets().open("gm.sf2");
+					soundbank = new SF2Soundbank(soundbankStream);
+					synth = new SoftSynthesizer();
+					channel = synth.getChannels()[0];
 
-			synth.open();
-			changeInstrument(1); // Piano is program 1
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-
+					synth.open();
+					changeInstrument(1); // Piano is program 1
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+		}).start();
 		this.findViewById(R.id.piano).setOnTouchListener(new View.OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
