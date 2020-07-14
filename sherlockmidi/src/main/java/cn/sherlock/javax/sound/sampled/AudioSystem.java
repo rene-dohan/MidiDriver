@@ -6,7 +6,6 @@ package cn.sherlock.javax.sound.sampled;
  *
  */
 
-import java.io.IOException;
 import java.io.InputStream;
 
 import cn.sherlock.media.SourceDataLineImpl;
@@ -56,7 +55,6 @@ import cn.sherlock.media.SourceDataLineImpl;
  * <tr>
  * <td><code>javax.sound.sampled.SourceDataLine</code></td>
  * <td>{@link SourceDataLineImpl}</td>
- * <td>{@link #getLine}, {@link #getSourceDataLine}</td>
  * </tr>
  * <tr>
  * <td><code>javax.sound.sampled.TargetDataLine</code></td>
@@ -126,51 +124,6 @@ public class AudioSystem {
 	 * accept or return this value, as documented.
 	 */
 	public static final int NOT_SPECIFIED = -1;
-
-	/**
-	 * Obtains a source data line that can be used for playing back audio data
-	 * in the format specified by the <code>AudioFormat</code> object. The
-	 * returned line will be provided by the default system mixer, or, if not
-	 * possible, by any other mixer installed in the system that supports a
-	 * matching <code>SourceDataLine</code> object.
-	 *
-	 * <p>
-	 * The returned line should be opened with the
-	 * <code>open(AudioFormat)</code> or <code>open(AudioFormat, int)</code>
-	 * method.
-	 *
-	 * <p>
-	 * This is a high-level method that uses <code>getMixer</code> and
-	 * <code>getLine</code> internally.
-	 *
-	 * <p>
-	 * The returned <code>SourceDataLine</code>'s default audio format will be
-	 * initialized with <code>format</code>.
-	 *
-	 * <p>
-	 * If the system property <code>javax.sound.sampled.SourceDataLine</code> is
-	 * defined or it is defined in the file &quot;sound.properties&quot;, it is
-	 * used to retrieve the default source data line. For details, refer to the
-	 * {@link AudioSystem class description}.
-	 *
-	 * @return the desired <code>SourceDataLine</code> object
-	 *
-	 * @throws SecurityException
-	 *             if a matching source data line is not available due to
-	 *             security restrictions
-	 * @throws IllegalArgumentException
-	 *             if the system does not support at least one source data line
-	 *             supporting the specified audio format through any installed
-	 *             mixer
-	 *
-	 * @see #getSourceDataLine(AudioFormat, Mixer.Info)
-	 * @since 1.5
-	 */
-	public static SourceDataLineImpl getSourceDataLine() {
-		// DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
-		// return (SourceDataLine) AudioSystem.getLine(info);
-		return new SourceDataLineImpl();
-	}
 
 	/**
 	 * Obtains an audio input stream of the indicated format, by converting the

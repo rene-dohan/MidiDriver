@@ -93,7 +93,6 @@ package cn.sherlock.javax.sound.sampled;
  * @author Kara Kytle
  * @author Florian Bomers
  * @see AudioInputStream#getFormat
- * @see cn.sherlock.javax.sound.sampled.spi.FormatConversionProvider
  * @since 1.3
  */
 public class AudioFormat {
@@ -459,7 +458,6 @@ public class AudioFormat {
      * are equal.
      *
      * @see AudioFormat
-     * @see cn.sherlock.javax.sound.sampled.spi.FormatConversionProvider
      *
      * @author Kara Kytle
      * @since 1.3

@@ -29,7 +29,6 @@ import java.io.InputStream;
 
 import cn.sherlock.javax.sound.sampled.AudioFormat;
 import cn.sherlock.javax.sound.sampled.AudioInputStream;
-import cn.sherlock.javax.sound.sampled.AudioSystem;
 import cn.sherlock.javax.sound.sampled.AudioFormat.Encoding;
 
 /**
