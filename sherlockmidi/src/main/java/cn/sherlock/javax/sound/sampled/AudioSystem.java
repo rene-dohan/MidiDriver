@@ -8,12 +8,7 @@ package cn.sherlock.javax.sound.sampled;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
 
-import cn.sherlock.javax.sound.sampled.spi.AudioFileReader;
-import cn.sherlock.javax.sound.sampled.spi.FormatConversionProvider;
 import cn.sherlock.media.SourceDataLineImpl;
 
 /* $fb TODO:
@@ -133,12 +128,6 @@ public class AudioSystem {
 	public static final int NOT_SPECIFIED = -1;
 
 	/**
-	 * Private no-args constructor for ensuring against instantiation.
-	 */
-	private AudioSystem() {
-	}
-
-	/**
 	 * Obtains a source data line that can be used for playing back audio data
 	 * in the format specified by the <code>AudioFormat</code> object. The
 	 * returned line will be provided by the default system mixer, or, if not
@@ -184,53 +173,6 @@ public class AudioSystem {
 	}
 
 	/**
-	 * Obtains an audio input stream from the provided input stream. The stream
-	 * must point to valid audio file data. The implementation of this method
-	 * may require multiple parsers to examine the stream to determine whether
-	 * they support it. These parsers must be able to mark the stream, read
-	 * enough data to determine whether they support the stream, and, if not,
-	 * reset the stream's read pointer to its original position. If the input
-	 * stream does not support these operation, this method may fail with an
-	 * <code>IOException</code>.
-	 * 
-	 * @param stream
-	 *            the input stream from which the <code>AudioInputStream</code>
-	 *            should be constructed
-	 * @return an <code>AudioInputStream</code> object based on the audio file
-	 *         data contained in the input stream.
-	 * @throws UnsupportedAudioFileException
-	 *             if the stream does not point to valid audio file data
-	 *             recognized by the system
-	 * @throws IOException
-	 *             if an I/O exception occurs
-	 * @see InputStream#markSupported
-	 * @see InputStream#mark
-	 */
-	public static AudioInputStream getAudioInputStream(InputStream stream)
-			throws UnsupportedAudioFileException, IOException {
-
-		List<AudioFileReader> providers = getAudioFileReaders();
-		AudioInputStream audioStream = null;
-
-		for (int i = 0; i < providers.size(); i++) {
-			AudioFileReader reader = providers.get(i);
-			try {
-				audioStream = reader.getAudioInputStream(stream); // throws
-																	// IOException
-				break;
-			} catch (UnsupportedAudioFileException ignored) {
-			}
-		}
-
-		if (audioStream == null) {
-			throw new UnsupportedAudioFileException(
-					"could not get audio input stream from input stream");
-		} else {
-			return audioStream;
-		}
-	}
-
-	/**
 	 * Obtains an audio input stream of the indicated format, by converting the
 	 * provided audio input stream.
 	 * 
@@ -242,30 +184,15 @@ public class AudioSystem {
 	 * @throws IllegalArgumentException
 	 *             if the conversion is not supported #see
 	 *             #getTargetEncodings(AudioFormat)
-	 * @see #getTargetFormats(AudioFormat.Encoding, AudioFormat)
-	 * @see #isConversionSupported(AudioFormat, AudioFormat)
-	 * @see #getAudioInputStream(AudioFormat.Encoding, AudioInputStream)
 	 */
-	public static AudioInputStream getAudioInputStream(
-			AudioFormat targetFormat, AudioInputStream sourceStream) {
+	public static AudioInputStream getAudioInputStream(AudioFormat targetFormat, AudioInputStream sourceStream) {
 
 		if (sourceStream.getFormat().matches(targetFormat)) {
 			return sourceStream;
 		}
 
-		List<FormatConversionProvider> codecs = getFormatConversionProviders();
-
-		for (int i = 0; i < codecs.size(); i++) {
-			FormatConversionProvider codec = codecs.get(i);
-			if (codec.isConversionSupported(targetFormat,
-					sourceStream.getFormat())) {
-				return codec.getAudioInputStream(targetFormat, sourceStream);
-			}
-		}
-
 		// we ran out of options...
-		throw new IllegalArgumentException("Unsupported conversion: "
-				+ targetFormat + " from " + sourceStream.getFormat());
+		throw new IllegalArgumentException("Unsupported conversion: " + targetFormat + " from " + sourceStream.getFormat());
 	}
 
 
@@ -273,71 +200,4 @@ public class AudioSystem {
 	// AudioSystem.getTargetEncodings() methods doesn't match the spec
 
 
-	/**
-     * Obtains the formats that have a particular encoding and that the system can
-     * obtain from a stream of the specified format using the set of
-     * installed format converters.
-     * @param targetEncoding the desired encoding after conversion
-     * @param sourceFormat the audio format before conversion
-     * @return array of formats.  If no formats of the specified
-     * encoding are supported, an array of length 0 is returned.
-     */
-    public static AudioFormat[] getTargetFormats(AudioFormat.Encoding targetEncoding, AudioFormat sourceFormat) {
-
-        List<FormatConversionProvider> codecs = getFormatConversionProviders();
-        Vector formats = new Vector();
-
-        int size = 0;
-        int index = 0;
-        AudioFormat[] fmts;
-
-        // gather from all the codecs
-
-        for(int i=0; i<codecs.size(); i++ ) {
-            FormatConversionProvider codec = codecs.get(i);
-            fmts = codec.getTargetFormats(targetEncoding, sourceFormat);
-            size += fmts.length;
-            formats.addElement( fmts );
-        }
-
-        // now build a new array
-
-        AudioFormat[] fmts2 = new AudioFormat[size];
-        for(int i=0; i<formats.size(); i++ ) {
-            fmts = (AudioFormat [])(formats.get(i));
-			for (AudioFormat fmt : fmts) {
-				fmts2[index++] = fmt;
-			}
-        }
-        return fmts2;
-    }
-	
-
-	/**
-	 * Obtains the set of format converters (codecs, transcoders, etc.) that are
-	 * currently installed on the system.
-	 * 
-	 * @return an array of
-	 *         {@link FormatConversionProvider
-	 *         FormatConversionProvider} objects representing the available
-	 *         format converters. If no format converters readers are available
-	 *         on the system, an array of length 0 is returned.
-	 */
-	private static List<FormatConversionProvider> getFormatConversionProviders() {
-		return new ArrayList<>();
-	}
-	
-
-	/**
-	 * Obtains the set of audio file readers that are currently installed on the
-	 * system.
-	 * 
-	 * @return a List of {@link AudioFileReader
-	 *         AudioFileReader} objects representing the installed audio file
-	 *         readers. If no audio file readers are available on the system, an
-	 *         empty List is returned.
-	 */
-	private static List<AudioFileReader> getAudioFileReaders() {
-		return new ArrayList<>();
-	}
 }

@@ -176,15 +176,8 @@ public class ModelByteBufferWavetable {
         if (buffer == null)
             return null;
         if (format == null) {
-            InputStream is = buffer.getInputStream();
-            AudioInputStream ais;
-            try {
-                ais = AudioSystem.getAudioInputStream(is);
-            } catch (Exception e) {
-                //e.printStackTrace();
-                return null;
-            }
-            return AudioFloatInputStream.getInputStream(ais);
+            buffer.getInputStream();
+            return null;
         }
         if (buffer.array() == null) {
             return AudioFloatInputStream.getInputStream(new AudioInputStream(
