@@ -42,15 +42,6 @@ public class ModelPerformer {
     private int velFrom = 0;
     private int velTo = 127;
     private int exclusiveClass = 0;
-    private String name = null;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public List<ModelConnectionBlock> getConnectionBlocks() {
         return connectionBlocks;

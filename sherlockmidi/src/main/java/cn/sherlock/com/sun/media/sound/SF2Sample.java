@@ -63,10 +63,6 @@ public class SF2Sample {
     }
     */
 
-    public String getName() {
-        return name;
-    }
-
     public String toString() {
         return "Sample: " + name;
     }

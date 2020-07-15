@@ -415,8 +415,7 @@ public class SF2Soundbank {
             while (siter.hasNext()) {
                 SF2InstrumentRegion split = siter.next();
                 if (split.generators.get(SF2LayerRegion.GENERATOR_INSTRUMENT) != null) {
-                    int instrumentid = split.generators.get(
-                            SF2InstrumentRegion.GENERATOR_INSTRUMENT);
+                    int instrumentid = split.generators.get(SF2Region.GENERATOR_INSTRUMENT);
                     split.generators.remove(SF2LayerRegion.GENERATOR_INSTRUMENT);
                     split.layer = layers.get(instrumentid);
                 } else {

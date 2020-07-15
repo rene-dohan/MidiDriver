@@ -25,10 +25,7 @@
 package cn.sherlock.com.sun.media.sound;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import jp.kshoji.javax.sound.midi.MidiChannel;
@@ -116,11 +113,6 @@ public class SoftChannel implements MidiChannel {
     protected SoftInstrument current_instrument = null;
     protected ModelStandardIndexedDirector current_director = null;
 
-    // Controller Destination Settings
-    protected int cds_control_number = -1;
-    protected ModelConnectionBlock[] cds_control_connections = null;
-    protected ModelConnectionBlock[] cds_channelpressure_connections = null;
-    protected ModelConnectionBlock[] cds_polypressure_connections = null;
     protected boolean sustain = false;
     protected boolean[][] keybasedcontroller_active = null;
     protected double[][] keybasedcontroller_value = null;
@@ -468,7 +460,6 @@ public class SoftChannel implements MidiChannel {
                 if (current_instrument == null)
                     return;
                 current_director = current_instrument.getDirector(this);
-                applyInstrumentCustomization();
             }
             prevVoiceID = synthesizer.voiceIDCounter++;
             firstVoice = true;
@@ -559,7 +550,6 @@ public class SoftChannel implements MidiChannel {
                 if (current_instrument == null)
                     return;
                 current_director = current_instrument.getDirector(this);
-                applyInstrumentCustomization();
 
             }
             prevVoiceID = synthesizer.voiceIDCounter++;
@@ -655,92 +645,6 @@ public class SoftChannel implements MidiChannel {
         synchronized (control_mutex) {
             return channelpressure;
         }
-    }
-
-    protected void applyInstrumentCustomization() {
-        if (cds_control_connections == null
-                && cds_channelpressure_connections == null
-                && cds_polypressure_connections == null) {
-            return;
-        }
-
-        SF2Instrument src_instrument = current_instrument.getSourceInstrument();
-        ModelPerformer[] performers = src_instrument.getPerformers();
-        ModelPerformer[] new_performers = new ModelPerformer[performers.length];
-        for (int i = 0; i < new_performers.length; i++) {
-            ModelPerformer performer = performers[i];
-            ModelPerformer new_performer = new ModelPerformer();
-            new_performer.setName(performer.getName());
-            new_performer.setExclusiveClass(performer.getExclusiveClass());
-            new_performer.setKeyFrom(performer.getKeyFrom());
-            new_performer.setKeyTo(performer.getKeyTo());
-            new_performer.setVelFrom(performer.getVelFrom());
-            new_performer.setVelTo(performer.getVelTo());
-            new_performer.getOscillators().addAll(performer.getOscillators());
-            new_performer.getConnectionBlocks().addAll(performer.getConnectionBlocks());
-            new_performers[i] = new_performer;
-
-            List<ModelConnectionBlock> connblocks = new_performer.getConnectionBlocks();
-
-            if (cds_control_connections != null) {
-                String cc = Integer.toString(cds_control_number);
-                Iterator<ModelConnectionBlock> iter = connblocks.iterator();
-                while (iter.hasNext()) {
-                    ModelConnectionBlock conn = iter.next();
-                    ModelSource[] sources = conn.getSources();
-                    if (sources != null) {
-                        for (ModelSource src : sources) {
-                            if ("midi_cc".equals(src.getIdentifier().getObject()) && cc.equals(src.getIdentifier().getVariable())) {
-                                iter.remove();
-                                break;
-                            }
-                        }
-                    }
-                }
-                connblocks.addAll(Arrays.asList(cds_control_connections));
-            }
-
-            if (cds_polypressure_connections != null) {
-                Iterator<ModelConnectionBlock> iter = connblocks.iterator();
-                while (iter.hasNext()) {
-                    ModelConnectionBlock conn = iter.next();
-                    ModelSource[] sources = conn.getSources();
-                    if (sources != null) {
-                        for (ModelSource src : sources) {
-                            if ("midi".equals(src.getIdentifier().getObject()) && "poly_pressure".equals(src.getIdentifier().getVariable())) {
-                                iter.remove();
-                                break;
-                            }
-                        }
-                    }
-                }
-                Collections.addAll(connblocks, cds_polypressure_connections);
-            }
-
-
-            if (cds_channelpressure_connections != null) {
-                Iterator<ModelConnectionBlock> iter = connblocks.iterator();
-                while (iter.hasNext()) {
-                    ModelConnectionBlock conn = iter.next();
-                    ModelSource[] sources = conn.getSources();
-                    if (sources != null) {
-                        for (ModelSource source : sources) {
-                            ModelIdentifier srcid = source.getIdentifier();
-                            if ("midi".equals(srcid.getObject()) && "channel_pressure".equals(srcid.getVariable())) {
-                                iter.remove();
-                                break;
-                            }
-                        }
-                    }
-
-                }
-                connblocks.addAll(Arrays.asList(cds_channelpressure_connections));
-            }
-
-        }
-
-        current_instrument = new SoftInstrument(src_instrument, new_performers);
-
     }
 
     public void controlChangePerNote(int noteNumber, int controller, int value) {

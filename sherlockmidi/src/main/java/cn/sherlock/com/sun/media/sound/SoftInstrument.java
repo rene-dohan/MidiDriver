@@ -40,11 +40,6 @@ public class SoftInstrument {
         initPerformers(ins.getPerformers());
     }
 
-    public SoftInstrument(SF2Instrument ins, ModelPerformer[] overrideperformers) {
-        this.ins = ins;
-        initPerformers(overrideperformers);
-    }
-
     private void initPerformers(ModelPerformer[] modelperformers) {
         this.modelperformers = modelperformers;
         performers = new SoftPerformer[modelperformers.length];
@@ -54,10 +49,6 @@ public class SoftInstrument {
 
     public ModelStandardIndexedDirector getDirector(SoftChannel player) {
         return ins.getDirector(modelperformers, player);
-    }
-
-    public SF2Instrument getSourceInstrument() {
-        return ins;
     }
 
     public SoftPerformer[] getPerformers() {

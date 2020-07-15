@@ -79,10 +79,6 @@ public class SF2Instrument {
             SF2Layer layer = presetzone.getLayer();
             for (SF2LayerRegion layerzone : layer.getRegions()) {
                 ModelPerformer performer = new ModelPerformer();
-                if (layerzone.getSample() != null)
-                    performer.setName(layerzone.getSample().getName());
-                else
-                    performer.setName(layer.getName());
 
                 performers[pi++] = performer;
 
