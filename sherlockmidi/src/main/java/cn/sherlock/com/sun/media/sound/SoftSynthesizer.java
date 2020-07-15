@@ -155,7 +155,6 @@ public class SoftSynthesizer {
     // 1: DLS Voice Allocation
     protected int voice_allocation_mode = 0;
 
-    protected boolean load_default_soundbank = false;
     protected boolean reverb_light = true;
     protected boolean reverb_on = true;
     protected boolean chorus_on = true;
@@ -171,9 +170,7 @@ public class SoftSynthesizer {
     // 2: GM Level 2
     private int gmmode = 0;
 
-    private int deviceid = 0;
-
-    private AudioFormat format = new AudioFormat(44100, 16, 2, true, false);
+    private AudioFormat format;
 
     private SourceDataLineImpl sourceDataLine = null;
 
@@ -184,8 +181,7 @@ public class SoftSynthesizer {
 
     private boolean open = false;
 
-    private String resamplerType = "linear";
-    private SoftAbstractResampler resampler = new SoftLinearResampler();
+    private SoftAbstractResampler resampler;
 
     private int number_of_midi_channels = 16;
     private int maxpoly = 64;
@@ -253,58 +249,19 @@ public class SoftSynthesizer {
     }
 
     private void processPropertyInfo() {
-        AudioSynthesizerPropertyInfo[] items = getPropertyInfo();
+        this.resampler = new SoftLinearResampler2();
 
-        String resamplerType = (String)items[0].value;
-        if (resamplerType.equalsIgnoreCase("point"))
-        {
-            this.resampler = new SoftPointResampler();
-            this.resamplerType = "point";
-        }
-        else if (resamplerType.equalsIgnoreCase("linear"))
-        {
-            this.resampler = new SoftLinearResampler2();
-            this.resamplerType = "linear";
-        }
-        else if (resamplerType.equalsIgnoreCase("linear1"))
-        {
-            this.resampler = new SoftLinearResampler();
-            this.resamplerType = "linear1";
-        }
-        else if (resamplerType.equalsIgnoreCase("linear2"))
-        {
-            this.resampler = new SoftLinearResampler2();
-            this.resamplerType = "linear2";
-        }
-        else if (resamplerType.equalsIgnoreCase("cubic"))
-        {
-            this.resampler = new SoftCubicResampler();
-            this.resamplerType = "cubic";
-        }
-        else if (resamplerType.equalsIgnoreCase("lanczos"))
-        {
-            this.resampler = new SoftLanczosResampler();
-            this.resamplerType = "lanczos";
-        }
-        else if (resamplerType.equalsIgnoreCase("sinc"))
-        {
-            this.resampler = new SoftSincResampler();
-            this.resamplerType = "sinc";
-        }
-
-        setFormat((AudioFormat)items[2].value);
-        controlrate = (Float)items[1].value;
-        latency = (Long)items[3].value;
-        deviceid = (Integer)items[4].value;
-        maxpoly = (Integer)items[5].value;
-        reverb_on = (Boolean)items[6].value;
-        chorus_on = (Boolean)items[7].value;
-        agc_on = (Boolean)items[8].value;
-        largemode = (Boolean)items[9].value;
-        number_of_midi_channels = (Integer)items[10].value;
-        jitter_correction = (Boolean)items[11].value;
-        reverb_light = (Boolean)items[12].value;
-        load_default_soundbank = (Boolean)items[13].value;
+        setFormat(new AudioFormat(44100, 16, 2, true, false));
+        controlrate = 147f;
+        latency = 120000L;
+        maxpoly = 64;
+        reverb_on = true;
+        chorus_on = true;
+        agc_on = true;
+        largemode = false;
+        number_of_midi_channels = 16;
+        jitter_correction = true;
+        reverb_light = true;
     }
 
     private String patchToString(Patch patch) {
@@ -465,66 +422,6 @@ public class SoftSynthesizer {
                 channel.allSoundOff();
             }
         }
-    }
-
-    private AudioSynthesizerPropertyInfo[] getPropertyInfo() {
-        List<AudioSynthesizerPropertyInfo> list = new ArrayList<>();
-
-        AudioSynthesizerPropertyInfo item;
-
-        // If info != null or synthesizer is closed
-        //   we return how the synthesizer will be set on next open
-        // If info == null and synthesizer is open
-        //   we return current synthesizer properties.
-        boolean o = open;
-
-        item = new AudioSynthesizerPropertyInfo(o?resamplerType:"linear");
-        list.add(item);
-
-        item = new AudioSynthesizerPropertyInfo(o?controlrate:147f);
-        list.add(item);
-
-        item = new AudioSynthesizerPropertyInfo(
-                o?format:new AudioFormat(44100, 16, 2, true, false));
-        list.add(item);
-
-        item = new AudioSynthesizerPropertyInfo(o?latency:120000L);
-        list.add(item);
-
-        item = new AudioSynthesizerPropertyInfo(o?deviceid:0);
-        list.add(item);
-
-        item = new AudioSynthesizerPropertyInfo(o?maxpoly:64);
-        list.add(item);
-
-        item = new AudioSynthesizerPropertyInfo(!o || reverb_on);
-        list.add(item);
-
-        item = new AudioSynthesizerPropertyInfo(!o || chorus_on);
-        list.add(item);
-
-        item = new AudioSynthesizerPropertyInfo(!o || agc_on);
-        list.add(item);
-
-        item = new AudioSynthesizerPropertyInfo(o && largemode);
-        list.add(item);
-
-        item = new AudioSynthesizerPropertyInfo(o?channels.length:16);
-        list.add(item);
-
-        item = new AudioSynthesizerPropertyInfo(!o || jitter_correction);
-        list.add(item);
-
-        item = new AudioSynthesizerPropertyInfo(!o || reverb_light);
-        list.add(item);
-
-        item = new AudioSynthesizerPropertyInfo(!o || load_default_soundbank);
-        list.add(item);
-
-        AudioSynthesizerPropertyInfo[] items;
-        items = list.toArray(new AudioSynthesizerPropertyInfo[0]);
-
-        return items;
     }
 
     public void open() {
