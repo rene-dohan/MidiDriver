@@ -33,7 +33,6 @@ import cn.sherlock.javax.sound.sampled.AudioFormat;
  */
 public class SF2Sample {
 
-    protected String name = "";
     protected long startLoop = 0;
     protected long endLoop = 0;
     protected long sampleRate = 44100;

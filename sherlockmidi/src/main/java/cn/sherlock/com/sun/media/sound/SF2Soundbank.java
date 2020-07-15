@@ -173,7 +173,7 @@ public class SF2Soundbank {
                     int count = chunk.available() / 38;
                     for (int i = 0; i < count; i++) {
                         SF2Instrument preset = new SF2Instrument();
-                        preset.name = chunk.readString(20);
+                        chunk.readString(20);
                         preset.preset = chunk.readUnsignedShort();
                         preset.bank = chunk.readUnsignedShort();
                         presets_bagNdx.add(chunk.readUnsignedShort());
@@ -357,7 +357,7 @@ public class SF2Soundbank {
                     int count = chunk.available() / 46;
                     for (int i = 0; i < count; i++) {
                         SF2Sample sample = new SF2Sample();
-                        sample.name = chunk.readString(20);
+                        chunk.readString(20);
                         long start = chunk.readUnsignedInt();
                         long end = chunk.readUnsignedInt();
                         sample.data = sampleData.subbuffer(start * 2, end * 2, true);

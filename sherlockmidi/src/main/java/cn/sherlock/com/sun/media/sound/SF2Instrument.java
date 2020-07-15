@@ -38,7 +38,6 @@ import jp.kshoji.javax.sound.midi.Patch;
  */
 public class SF2Instrument {
 
-    protected String name = "";
     protected int preset = 0;
     protected int bank = 0;
     protected List<SF2InstrumentRegion> regions = new ArrayList<>();

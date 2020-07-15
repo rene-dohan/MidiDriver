@@ -92,8 +92,7 @@ public class SoftLinearResampler2 {
             streampos = 0;
             stream_eof = false;
             pitchcorrection = osc.getPitchcorrection();
-            samplerateconv
-                    = stream.getFormat().getSampleRate() / outputsamplerate;
+            samplerateconv = stream.getFormat().getSampleRate() / outputsamplerate;
             looplen = osc.getLoopLength();
             loopstart = osc.getLoopStart();
             sector_loopstart = (int) (loopstart / sector_size);
