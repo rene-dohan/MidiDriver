@@ -28,16 +28,10 @@ package cn.sherlock.com.sun.media.sound;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-import java.util.StringTokenizer;
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
 
 import cn.sherlock.javax.sound.sampled.AudioFormat;
 import cn.sherlock.javax.sound.sampled.AudioInputStream;
@@ -473,30 +467,6 @@ public class SoftSynthesizer {
         }
     }
 
-    private Properties getStoredProperties() {
-        return AccessController
-                .doPrivileged(new PrivilegedAction<Properties>() {
-                    public Properties run() {
-                        Properties p = new Properties();
-                        String notePath = "/com/sun/media/sound/softsynthesizer";
-                        try {
-                            Preferences prefroot = Preferences.userRoot();
-                            if (prefroot.nodeExists(notePath)) {
-                                Preferences prefs = prefroot.node(notePath);
-                                String[] prefs_keys = prefs.keys();
-                                for (String prefs_key : prefs_keys) {
-                                    String val = prefs.get(prefs_key, null);
-                                    if (val != null)
-                                        p.setProperty(prefs_key, val);
-                                }
-                            }
-                        } catch (BackingStoreException | SecurityException ignored) {
-                        }
-                        return p;
-                    }
-                });
-    }
-
     private AudioSynthesizerPropertyInfo[] getPropertyInfo() {
         List<AudioSynthesizerPropertyInfo> list = new ArrayList<>();
 
@@ -508,115 +478,51 @@ public class SoftSynthesizer {
         //   we return current synthesizer properties.
         boolean o = open;
 
-        item = new AudioSynthesizerPropertyInfo("interpolation", o?resamplerType:"linear");
+        item = new AudioSynthesizerPropertyInfo(o?resamplerType:"linear");
         list.add(item);
 
-        item = new AudioSynthesizerPropertyInfo("control rate", o?controlrate:147f);
+        item = new AudioSynthesizerPropertyInfo(o?controlrate:147f);
         list.add(item);
 
-        item = new AudioSynthesizerPropertyInfo("format",
+        item = new AudioSynthesizerPropertyInfo(
                 o?format:new AudioFormat(44100, 16, 2, true, false));
         list.add(item);
 
-        item = new AudioSynthesizerPropertyInfo("latency", o?latency:120000L);
+        item = new AudioSynthesizerPropertyInfo(o?latency:120000L);
         list.add(item);
 
-        item = new AudioSynthesizerPropertyInfo("device id", o?deviceid:0);
+        item = new AudioSynthesizerPropertyInfo(o?deviceid:0);
         list.add(item);
 
-        item = new AudioSynthesizerPropertyInfo("max polyphony", o?maxpoly:64);
+        item = new AudioSynthesizerPropertyInfo(o?maxpoly:64);
         list.add(item);
 
-        item = new AudioSynthesizerPropertyInfo("reverb", !o || reverb_on);
+        item = new AudioSynthesizerPropertyInfo(!o || reverb_on);
         list.add(item);
 
-        item = new AudioSynthesizerPropertyInfo("chorus", !o || chorus_on);
+        item = new AudioSynthesizerPropertyInfo(!o || chorus_on);
         list.add(item);
 
-        item = new AudioSynthesizerPropertyInfo("auto gain control", !o || agc_on);
+        item = new AudioSynthesizerPropertyInfo(!o || agc_on);
         list.add(item);
 
-        item = new AudioSynthesizerPropertyInfo("large mode", o && largemode);
+        item = new AudioSynthesizerPropertyInfo(o && largemode);
         list.add(item);
 
-        item = new AudioSynthesizerPropertyInfo("midi channels", o?channels.length:16);
+        item = new AudioSynthesizerPropertyInfo(o?channels.length:16);
         list.add(item);
 
-        item = new AudioSynthesizerPropertyInfo("jitter correction", !o || jitter_correction);
+        item = new AudioSynthesizerPropertyInfo(!o || jitter_correction);
         list.add(item);
 
-        item = new AudioSynthesizerPropertyInfo("light reverb", !o || reverb_light);
+        item = new AudioSynthesizerPropertyInfo(!o || reverb_light);
         list.add(item);
 
-        item = new AudioSynthesizerPropertyInfo("load default soundbank", !o || load_default_soundbank);
+        item = new AudioSynthesizerPropertyInfo(!o || load_default_soundbank);
         list.add(item);
 
         AudioSynthesizerPropertyInfo[] items;
         items = list.toArray(new AudioSynthesizerPropertyInfo[0]);
-
-        Properties storedProperties = getStoredProperties();
-
-        for (AudioSynthesizerPropertyInfo item2 : items) {
-            String v = storedProperties.getProperty(item2.name);
-            if (v != null) {
-                Class c = (item2.valueClass);
-                if (c.isInstance(v))
-                    item2.value = v;
-                else {
-                    if (c == Boolean.class) {
-                        if (v.equalsIgnoreCase("true"))
-                            item2.value = Boolean.TRUE;
-                        if (v.equalsIgnoreCase("false"))
-                            item2.value = Boolean.FALSE;
-                    } else if (c == AudioFormat.class) {
-                        int channels = 2;
-                        boolean signed = true;
-                        boolean bigendian = false;
-                        int bits = 16;
-                        float sampleRate = 44100f;
-                        try {
-                            StringTokenizer st = new StringTokenizer(v, ", ");
-                            String prevToken = "";
-                            while (st.hasMoreTokens()) {
-                                String token = st.nextToken().toLowerCase();
-                                if (token.equals("mono"))
-                                    channels = 1;
-                                if (token.startsWith("channel"))
-                                    channels = Integer.parseInt(prevToken);
-                                if (token.contains("unsigned"))
-                                    signed = false;
-                                if (token.equals("big-endian"))
-                                    bigendian = true;
-                                if (token.equals("bit"))
-                                    bits = Integer.parseInt(prevToken);
-                                if (token.equals("hz"))
-                                    sampleRate = Float.parseFloat(prevToken);
-                                prevToken = token;
-                            }
-                            item2.value = new AudioFormat(sampleRate, bits,
-                                    channels, signed, bigendian);
-                        } catch (NumberFormatException ignored) {
-                        }
-
-                    } else
-                        try {
-                            if (c == Byte.class)
-                                item2.value = Byte.valueOf(v);
-                            else if (c == Short.class)
-                                item2.value = Short.valueOf(v);
-                            else if (c == Integer.class)
-                                item2.value = Integer.valueOf(v);
-                            else if (c == Long.class)
-                                item2.value = Long.valueOf(v);
-                            else if (c == Float.class)
-                                item2.value = Float.valueOf(v);
-                            else if (c == Double.class)
-                                item2.value = Double.valueOf(v);
-                        } catch (NumberFormatException ignored) {
-                        }
-                }
-            }
-        }
 
         return items;
     }

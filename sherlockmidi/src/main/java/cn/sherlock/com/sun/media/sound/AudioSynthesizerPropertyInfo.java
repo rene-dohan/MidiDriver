@@ -36,34 +36,19 @@ public class AudioSynthesizerPropertyInfo {
      * name and value. The <code>description</code> and <code>choices</code>
      * are intialized by <code>null</code> values.
      *
-     * @param name the name of the property
      * @param value the current value or class used for values.
      *
      */
-    public AudioSynthesizerPropertyInfo(String name, Object value) {
-        this.name = name;
-        if (value instanceof Class)
-            valueClass = (Class)value;
-        else
-        {
+    public AudioSynthesizerPropertyInfo(Object value) {
+        if (!(value instanceof Class)) {
             this.value = value;
-            if (value != null)
-                valueClass = value.getClass();
         }
     }
-    /**
-     * The name of the property.
-     */
-    public String name;
+
     /**
      * The <code>value</code> field specifies the current value of
      * the property.
      */
     public Object value = null;
-    /**
-     * The <code>valueClass</code> field specifies class
-     * used in <code>value</code> field.
-     */
-    public Class valueClass = null;
 
 }
