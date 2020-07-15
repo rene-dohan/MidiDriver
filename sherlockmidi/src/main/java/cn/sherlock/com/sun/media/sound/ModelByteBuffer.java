@@ -38,7 +38,7 @@ import java.util.Collection;
  */
 public class ModelByteBuffer {
 
-    private ModelByteBuffer root = this;
+    private ModelByteBuffer root;
     private File file;
     private long fileoffset;
     private byte[] buffer;
@@ -133,8 +133,7 @@ public class ModelByteBuffer {
         }
     }
 
-    private ModelByteBuffer(ModelByteBuffer parent,
-            long beginIndex, long endIndex, boolean independent) {
+    private ModelByteBuffer(ModelByteBuffer parent, long beginIndex, long endIndex, boolean independent) {
         this.root = parent.root;
         this.offset = 0;
         long parent_len = parent.len;
@@ -163,6 +162,7 @@ public class ModelByteBuffer {
     }
 
     public ModelByteBuffer(byte[] buffer) {
+        root = this;
         this.buffer = buffer;
         this.offset = 0;
         this.len = buffer.length;

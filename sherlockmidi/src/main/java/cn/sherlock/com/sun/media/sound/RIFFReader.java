@@ -38,10 +38,10 @@ public class RIFFReader extends InputStream {
 
     private RIFFReader root;
     private String fourcc;
-    private String riff_type = null;
+    private String riff_type;
     private InputStream stream;
     private long avail;
-    private RIFFReader lastiterator = null;
+    private RIFFReader lastiterator;
 
     public RIFFReader(InputStream stream) throws IOException {
 

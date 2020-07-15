@@ -44,25 +44,26 @@ import jp.kshoji.javax.sound.midi.Patch;
 public class SF2Soundbank {
 
     // The Sample Data loaded from the SoundFont
-    private ModelByteBuffer sampleData = null;
-    private ModelByteBuffer sampleData24 = null;
-    private List<SF2Instrument> instruments = new ArrayList<>();
-    private List<SF2Layer> layers = new ArrayList<>();
-    private List<SF2Sample> samples = new ArrayList<>();
+    private ModelByteBuffer sampleData;
+    private ModelByteBuffer sampleData24;
+    private List<SF2Instrument> instruments;
+    private List<SF2Layer> layers;
+    private List<SF2Sample> samples;
 
     public SF2Soundbank(InputStream inputstream) throws IOException {
+        instruments = new ArrayList<>();
+        layers = new ArrayList<>();
+        samples = new ArrayList<>();
         readSoundbank(inputstream);
     }
 
     private void readSoundbank(InputStream inputstream) throws IOException {
         RIFFReader riff = new RIFFReader(inputstream);
         if (!riff.getFormat().equals("RIFF")) {
-            throw new RIFFInvalidFormatException(
-                    "Input stream is not a valid RIFF stream!");
+            throw new RIFFInvalidFormatException("Input stream is not a valid RIFF stream!");
         }
         if (!riff.getType().equals("sfbk")) {
-            throw new RIFFInvalidFormatException(
-                    "Input stream is not a valid SoundFont!");
+            throw new RIFFInvalidFormatException("Input stream is not a valid SoundFont!");
         }
         while (riff.hasNextChunk()) {
             RIFFReader chunk = riff.nextChunk();
