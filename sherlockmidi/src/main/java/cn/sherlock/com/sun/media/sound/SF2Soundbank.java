@@ -60,10 +60,10 @@ public class SF2Soundbank {
     private void readSoundbank(InputStream inputstream) throws IOException {
         RIFFReader riff = new RIFFReader(inputstream);
         if (!riff.getFormat().equals("RIFF")) {
-            throw new RIFFInvalidFormatException("Input stream is not a valid RIFF stream!");
+            throw new IOException("Input stream is not a valid RIFF stream!");
         }
         if (!riff.getType().equals("sfbk")) {
-            throw new RIFFInvalidFormatException("Input stream is not a valid SoundFont!");
+            throw new IOException("Input stream is not a valid SoundFont!");
         }
         while (riff.hasNextChunk()) {
             RIFFReader chunk = riff.nextChunk();
@@ -169,7 +169,7 @@ public class SF2Soundbank {
                 case "phdr": {
                     // Preset Header / Instrument
                     if (chunk.available() % 38 != 0)
-                        throw new RIFFInvalidDataException();
+                        throw new IOException();
                     int count = chunk.available() / 38;
                     for (int i = 0; i < count; i++) {
                         SF2Instrument preset = new SF2Instrument();
@@ -189,7 +189,7 @@ public class SF2Soundbank {
                 case "pbag": {
                     // Preset Zones / Instruments splits
                     if (chunk.available() % 4 != 0)
-                        throw new RIFFInvalidDataException();
+                        throw new IOException();
                     int count = chunk.available() / 4;
 
                     // Skip first record
@@ -207,7 +207,7 @@ public class SF2Soundbank {
                     // Offset should be 0 (but just case)
                     for (int i = 0; i < offset; i++) {
                         if (count == 0)
-                            throw new RIFFInvalidDataException();
+                            throw new IOException();
                         int gencount = chunk.readUnsignedShort();
                         int modcount = chunk.readUnsignedShort();
                         while (presets_splits_gen.size() < gencount)
@@ -223,7 +223,7 @@ public class SF2Soundbank {
                         SF2Instrument preset = presets.get(i);
                         for (int ii = 0; ii < zone_count; ii++) {
                             if (count == 0)
-                                throw new RIFFInvalidDataException();
+                                throw new IOException();
                             int gencount = chunk.readUnsignedShort();
                             int modcount = chunk.readUnsignedShort();
                             SF2InstrumentRegion split = new SF2InstrumentRegion();
@@ -264,7 +264,7 @@ public class SF2Soundbank {
                 case "inst": {
                     // Instrument Header / Layers
                     if (chunk.available() % 22 != 0)
-                        throw new RIFFInvalidDataException();
+                        throw new IOException();
                     int count = chunk.available() / 22;
                     for (int i = 0; i < count; i++) {
                         SF2Layer layer = new SF2Layer();
@@ -278,7 +278,7 @@ public class SF2Soundbank {
                 case "ibag": {
                     // Instrument Zones / Layer splits
                     if (chunk.available() % 4 != 0)
-                        throw new RIFFInvalidDataException();
+                        throw new IOException();
                     int count = chunk.available() / 4;
 
                     // Skip first record
@@ -296,7 +296,7 @@ public class SF2Soundbank {
                     // Offset should be 0 (but just case)
                     for (int i = 0; i < offset; i++) {
                         if (count == 0)
-                            throw new RIFFInvalidDataException();
+                            throw new IOException();
                         int gencount = chunk.readUnsignedShort();
                         int modcount = chunk.readUnsignedShort();
                         while (instruments_splits_gen.size() < gencount)
@@ -311,7 +311,7 @@ public class SF2Soundbank {
                         SF2Layer layer = layers.get(i);
                         for (int ii = 0; ii < zone_count; ii++) {
                             if (count == 0)
-                                throw new RIFFInvalidDataException();
+                                throw new IOException();
                             int gencount = chunk.readUnsignedShort();
                             int modcount = chunk.readUnsignedShort();
                             SF2LayerRegion split = new SF2LayerRegion();
@@ -353,7 +353,7 @@ public class SF2Soundbank {
                 case "shdr": {
                     // Sample Headers
                     if (chunk.available() % 46 != 0)
-                        throw new RIFFInvalidDataException();
+                        throw new IOException();
                     int count = chunk.available() / 46;
                     for (int i = 0; i < count; i++) {
                         SF2Sample sample = new SF2Sample();
