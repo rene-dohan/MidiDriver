@@ -54,14 +54,6 @@ public class SF2Instrument {
         return regions;
     }
 
-    public String toString() {
-        if (bank == 128)
-            return "Drumkit: " + name + " preset #" + preset;
-        else
-            return "Instrument: " + name + " bank #" + bank
-                    + " preset #" + preset;
-    }
-
     public ModelStandardIndexedDirector getDirector(ModelPerformer[] performers, SoftChannel player) {
         return new ModelStandardIndexedDirector(performers, player);
     }

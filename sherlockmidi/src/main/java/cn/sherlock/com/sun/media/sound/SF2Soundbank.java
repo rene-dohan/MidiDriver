@@ -268,7 +268,7 @@ public class SF2Soundbank {
                     int count = chunk.available() / 22;
                     for (int i = 0; i < count; i++) {
                         SF2Layer layer = new SF2Layer();
-                        layer.name = chunk.readString(20);
+                        chunk.readString(20);
                         instruments_bagNdx.add(chunk.readUnsignedShort());
                         if (i != count - 1)
                             this.layers.add(layer);

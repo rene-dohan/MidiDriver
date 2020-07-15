@@ -34,14 +34,9 @@ import java.util.List;
  */
 public class SF2Layer {
 
-    protected String name = "";
     protected List<SF2LayerRegion> regions = new ArrayList<>();
 
     public List<SF2LayerRegion> getRegions() {
         return regions;
-    }
-
-    public String toString() {
-        return "Layer: " + name;
     }
 }

@@ -62,8 +62,4 @@ public class SF2Sample {
         this.sampleLen = length;
     }
     */
-
-    public String toString() {
-        return "Sample: " + name;
-    }
 }
