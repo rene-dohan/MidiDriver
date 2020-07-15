@@ -163,30 +163,21 @@ public class SoftSynthesizer {
     protected SoftChannel[] channels;
     protected SoftChannelProxy[] external_channels = null;
 
-    private boolean largemode = false;
-
     // 0: GM Mode off (default)
     // 1: GM Level 1
     // 2: GM Level 2
     private int gmmode = 0;
 
-    private AudioFormat format;
+    private AudioFormat format = new AudioFormat(44100, 16, 2, true, false);
 
     private SourceDataLineImpl sourceDataLine = null;
 
     private SoftAudioPusher pusher = null;
     private AudioInputStream pusher_stream = null;
 
-    private float controlrate = 147f;
-
     private boolean open = false;
 
-    private SoftAbstractResampler resampler;
-
-    private int number_of_midi_channels = 16;
-    private int maxpoly = 64;
-    private long latency = 200000; // 200 msec
-    private boolean jitter_correction = false;
+    private SoftLinearResampler2 resampler = new SoftLinearResampler2();
 
     private SoftMainMixer mainmixer;
     private SoftVoice[] voices;
@@ -213,8 +204,6 @@ public class SoftSynthesizer {
     }
 
     private boolean loadSamples(List<SF2Instrument> instruments) {
-        if (largemode)
-            return true;
         List<ModelByteBuffer> buffers = new ArrayList<>();
         for (SF2Instrument instrument : instruments)
             getBuffers(instrument, buffers);
@@ -246,22 +235,6 @@ public class SoftSynthesizer {
         }
 
         return true;
-    }
-
-    private void processPropertyInfo() {
-        this.resampler = new SoftLinearResampler2();
-
-        setFormat(new AudioFormat(44100, 16, 2, true, false));
-        controlrate = 147f;
-        latency = 120000L;
-        maxpoly = 64;
-        reverb_on = true;
-        chorus_on = true;
-        agc_on = true;
-        largemode = false;
-        number_of_midi_channels = 16;
-        jitter_correction = true;
-        reverb_light = true;
     }
 
     private String patchToString(Patch patch) {
@@ -353,7 +326,7 @@ public class SoftSynthesizer {
     }
 
     protected float getControlRate() {
-        return controlrate;
+        return 147f;
     }
 
     protected SoftVoice[] getVoices() {
@@ -436,7 +409,7 @@ public class SoftSynthesizer {
 
                 SourceDataLineImpl line = testline == null ? new SourceDataLineImpl() : testline;
 
-                double latency = this.latency;
+                double latency = 120000L;
 
                 if (!line.isOpen()) {
                     int bufferSize = getFormat().getFrameSize()
@@ -470,12 +443,10 @@ public class SoftSynthesizer {
                 if (buffersize < 3 * controlbuffersize)
                     buffersize = 3 * controlbuffersize;
 
-                if (jitter_correction) {
-                    ais = new SoftJitterCorrector(ais, buffersize,
-                            controlbuffersize);
-                    if(weakstream != null)
-                        weakstream.jitter_stream = ais;
-                }
+                ais = new SoftJitterCorrector(ais, buffersize,
+                        controlbuffersize);
+                if(weakstream != null)
+                    weakstream.jitter_stream = ais;
                 pusher = new SoftAudioPusher(line, ais, controlbuffersize);
                 pusher_stream = ais;
                 pusher.start();
@@ -501,19 +472,19 @@ public class SoftSynthesizer {
             gmmode = 0;
             voice_allocation_mode = 0;
 
-            processPropertyInfo();
-
             open = true;
 
             if (targetFormat != null)
                 setFormat(targetFormat);
 
+            int maxpoly = 64;
             voices = new SoftVoice[maxpoly];
             for (int i = 0; i < maxpoly; i++)
                 voices[i] = new SoftVoice(this);
 
             mainmixer = new SoftMainMixer(this);
 
+            int number_of_midi_channels = 16;
             channels = new SoftChannel[number_of_midi_channels];
             for (int i = 0; i < channels.length; i++)
                 channels[i] = new SoftChannel(this, i);
