@@ -191,10 +191,10 @@ public class SoftSynthesizer {
             if (performer.getOscillators() != null) {
                 for (ModelByteBufferWavetable osc : performer.getOscillators()) {
                     if (osc instanceof ModelByteBufferWavetable) {
-                        ModelByteBuffer buff = ((ModelByteBufferWavetable)osc).getBuffer();
+                        ModelByteBuffer buff = osc.getBuffer();
                         if (buff != null)
                             buffers.add(buff);
-                        buff = ((ModelByteBufferWavetable)osc).get8BitExtensionBuffer();
+                        buff = osc.get8BitExtensionBuffer();
                         if (buff != null)
                             buffers.add(buff);
                     }
@@ -242,16 +242,6 @@ public class SoftSynthesizer {
             return "p." + patch.getProgram() + "." + patch.getBank();
         else
             return patch.getProgram() + "." + patch.getBank();
-    }
-
-    private void setFormat(AudioFormat format) {
-        if (format.getChannels() > 2) {
-            throw new IllegalArgumentException(
-                    "Only mono and stereo audio supported.");
-        }
-        if (AudioFloatConverter.getConverter(format) == null)
-            throw new IllegalArgumentException("Audio format not supported.");
-        this.format = format;
     }
 
     protected SoftMainMixer getMainMixer() {
@@ -402,7 +392,7 @@ public class SoftSynthesizer {
             if (open) return;
             try {
 
-                AudioInputStream ais = openStream(getFormat());
+                AudioInputStream ais = openStream();
 
                 weakstream = new WeakAudioStream(ais);
                 ais = weakstream.getAudioInputStream();
@@ -464,7 +454,7 @@ public class SoftSynthesizer {
         }
     }
 
-    private AudioInputStream openStream(AudioFormat targetFormat) {
+    private AudioInputStream openStream() {
 
         synchronized (control_mutex) {
             if (open) throw new RuntimeException("Synthesizer is already open");
@@ -473,9 +463,6 @@ public class SoftSynthesizer {
             voice_allocation_mode = 0;
 
             open = true;
-
-            if (targetFormat != null)
-                setFormat(targetFormat);
 
             int maxpoly = 64;
             voices = new SoftVoice[maxpoly];

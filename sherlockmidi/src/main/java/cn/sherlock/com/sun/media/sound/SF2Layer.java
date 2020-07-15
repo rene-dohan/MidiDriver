@@ -35,7 +35,6 @@ import java.util.List;
 public class SF2Layer {
 
     protected String name = "";
-    protected SF2GlobalRegion globalregion = null;
     protected List<SF2LayerRegion> regions = new ArrayList<>();
 
     public String getName() {
@@ -44,14 +43,6 @@ public class SF2Layer {
 
     public List<SF2LayerRegion> getRegions() {
         return regions;
-    }
-
-    public SF2GlobalRegion getGlobalRegion() {
-        return globalregion;
-    }
-
-    public void setGlobalZone(SF2GlobalRegion zone) {
-        globalregion = zone;
     }
 
     public String toString() {

@@ -41,7 +41,6 @@ public class SF2Instrument {
     protected String name = "";
     protected int preset = 0;
     protected int bank = 0;
-    protected SF2GlobalRegion globalregion = null;
     protected List<SF2InstrumentRegion> regions = new ArrayList<>();
 
     public Patch getPatch() {
@@ -53,10 +52,6 @@ public class SF2Instrument {
 
     public List<SF2InstrumentRegion> getRegions() {
         return regions;
-    }
-
-    public void setGlobalZone(SF2GlobalRegion zone) {
-        globalregion = zone;
     }
 
     public String toString() {
@@ -78,14 +73,10 @@ public class SF2Instrument {
         ModelPerformer[] performers = new ModelPerformer[performercount];
         int pi = 0;
 
-        SF2GlobalRegion presetglobal = globalregion;
         for (SF2InstrumentRegion presetzone : regions) {
             Map<Integer, Short> pgenerators = new HashMap<>(presetzone.getGenerators());
-            if (presetglobal != null)
-                pgenerators.putAll(presetglobal.getGenerators());
 
             SF2Layer layer = presetzone.getLayer();
-            SF2GlobalRegion layerglobal = layer.getGlobalRegion();
             for (SF2LayerRegion layerzone : layer.getRegions()) {
                 ModelPerformer performer = new ModelPerformer();
                 if (layerzone.getSample() != null)
@@ -208,10 +199,7 @@ public class SF2Instrument {
                 if (buff24 != null)
                     osc.set8BitExtensionBuffer(buff24);
 
-                Map<Integer, Short> generators = new HashMap<>();
-                if (layerglobal != null)
-                    generators.putAll(layerglobal.getGenerators());
-                generators.putAll(layerzone.getGenerators());
+                Map<Integer, Short> generators = new HashMap<>(layerzone.getGenerators());
                 for (Map.Entry<Integer, Short> gen : pgenerators.entrySet()) {
                     short val;
                     if (!generators.containsKey(gen.getKey()))
@@ -572,19 +560,9 @@ public class SF2Instrument {
                         50, new ModelDestination(
                             ModelDestination.DESTINATION_PITCH)));
 
-                if (layer.getGlobalRegion() != null) {
-                    for (SF2Modulator modulator
-                            : layer.getGlobalRegion().getModulators()) {
-                        convertModulator(performer, modulator);
-                    }
-                }
                 for (SF2Modulator modulator : layerzone.getModulators())
                     convertModulator(performer, modulator);
 
-                if (presetglobal != null) {
-                    for (SF2Modulator modulator : presetglobal.getModulators())
-                        convertModulator(performer, modulator);
-                }
                 for (SF2Modulator modulator : presetzone.getModulators())
                     convertModulator(performer, modulator);
 
