@@ -108,45 +108,39 @@ public class SF2Soundbank {
         while (riff.hasNextChunk()) {
             RIFFReader chunk = riff.nextChunk();
             if (chunk.getFormat().equals("smpl")) {
-                {
-                    byte[] sampleData = new byte[chunk.available()];
+                byte[] sampleData = new byte[chunk.available()];
 
-                    int read = 0;
-                    int avail = chunk.available();
-                    while (read != avail) {
-                        if (avail - read > 65536) {
-                            chunk.readFully(sampleData, read, 65536);
-                            read += 65536;
-                        } else {
-                            chunk.readFully(sampleData, read, avail - read);
-                            read = avail;
-                        }
-
+                int read = 0;
+                int avail = chunk.available();
+                while (read != avail) {
+                    if (avail - read > 65536) {
+                        chunk.readFully(sampleData, read, 65536);
+                        read += 65536;
+                    } else {
+                        chunk.readFully(sampleData, read, avail - read);
+                        read = avail;
                     }
-                    this.sampleData = new ModelByteBuffer(sampleData);
-                    //chunk.read(sampleData);
+
                 }
+                this.sampleData = new ModelByteBuffer(sampleData);
             }
             if (chunk.getFormat().equals("sm24")) {
-                {
-                    byte[] sampleData24 = new byte[chunk.available()];
-                    //chunk.read(sampleData24);
+                byte[] sampleData24 = new byte[chunk.available()];
+                //chunk.read(sampleData24);
 
-                    int read = 0;
-                    int avail = chunk.available();
-                    while (read != avail) {
-                        if (avail - read > 65536) {
-                            chunk.readFully(sampleData24, read, 65536);
-                            read += 65536;
-                        } else {
-                            chunk.readFully(sampleData24, read, avail - read);
-                            read = avail;
-                        }
-
+                int read = 0;
+                int avail = chunk.available();
+                while (read != avail) {
+                    if (avail - read > 65536) {
+                        chunk.readFully(sampleData24, read, 65536);
+                        read += 65536;
+                    } else {
+                        chunk.readFully(sampleData24, read, avail - read);
+                        read = avail;
                     }
-                    this.sampleData24 = new ModelByteBuffer(sampleData24);
-                }
 
+                }
+                this.sampleData24 = new ModelByteBuffer(sampleData24);
             }
         }
     }
@@ -194,12 +188,8 @@ public class SF2Soundbank {
 
                     // Skip first record
                     {
-                        int gencount = chunk.readUnsignedShort();
-                        int modcount = chunk.readUnsignedShort();
-                        while (presets_splits_gen.size() < gencount)
-                            presets_splits_gen.add(null);
-                        while (presets_splits_mod.size() < modcount)
-                            presets_splits_mod.add(null);
+                        chunk.readUnsignedShort();
+                        chunk.readUnsignedShort();
                         count--;
                     }
 
@@ -208,12 +198,8 @@ public class SF2Soundbank {
                     for (int i = 0; i < offset; i++) {
                         if (count == 0)
                             throw new IOException();
-                        int gencount = chunk.readUnsignedShort();
-                        int modcount = chunk.readUnsignedShort();
-                        while (presets_splits_gen.size() < gencount)
-                            presets_splits_gen.add(null);
-                        while (presets_splits_mod.size() < modcount)
-                            presets_splits_mod.add(null);
+                        chunk.readUnsignedShort();
+                        chunk.readUnsignedShort();
                         count--;
                     }
 
@@ -279,12 +265,8 @@ public class SF2Soundbank {
 
                     // Skip first record
                     {
-                        int gencount = chunk.readUnsignedShort();
-                        int modcount = chunk.readUnsignedShort();
-                        while (instruments_splits_gen.size() < gencount)
-                            instruments_splits_gen.add(null);
-                        while (instruments_splits_mod.size() < modcount)
-                            instruments_splits_mod.add(null);
+                        chunk.readUnsignedShort();
+                        chunk.readUnsignedShort();
                         count--;
                     }
 
@@ -293,12 +275,8 @@ public class SF2Soundbank {
                     for (int i = 0; i < offset; i++) {
                         if (count == 0)
                             throw new IOException();
-                        int gencount = chunk.readUnsignedShort();
-                        int modcount = chunk.readUnsignedShort();
-                        while (instruments_splits_gen.size() < gencount)
-                            instruments_splits_gen.add(null);
-                        while (instruments_splits_mod.size() < modcount)
-                            instruments_splits_mod.add(null);
+                        chunk.readUnsignedShort();
+                        chunk.readUnsignedShort();
                         count--;
                     }
 
