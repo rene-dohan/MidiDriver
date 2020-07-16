@@ -240,15 +240,11 @@ public class SF2Soundbank {
                 case "pmod":
                     // Preset Modulators / Split Modulators
                     for (int i = 0; i < presets_splits_mod.size(); i++) {
-                        SF2Modulator modulator = new SF2Modulator();
-                        modulator.sourceOperator = chunk.readUnsignedShort();
-                        modulator.destinationOperator = chunk.readUnsignedShort();
-                        modulator.amount = chunk.readShort();
-                        modulator.amountSourceOperator = chunk.readUnsignedShort();
-                        modulator.transportOperator = chunk.readUnsignedShort();
-                        SF2InstrumentRegion split = presets_splits_mod.get(i);
-                        if (split != null)
-                            split.modulators.add(modulator);
+                        chunk.readUnsignedShort();
+                        chunk.readUnsignedShort();
+                        chunk.readShort();
+                        chunk.readUnsignedShort();
+                        chunk.readUnsignedShort();
                     }
                     break;
                 case "pgen":
@@ -329,15 +325,11 @@ public class SF2Soundbank {
                 case "imod":
                     // Instrument Modulators / Split Modulators
                     for (int i = 0; i < instruments_splits_mod.size(); i++) {
-                        SF2Modulator modulator = new SF2Modulator();
-                        modulator.sourceOperator = chunk.readUnsignedShort();
-                        modulator.destinationOperator = chunk.readUnsignedShort();
-                        modulator.amount = chunk.readShort();
-                        modulator.amountSourceOperator = chunk.readUnsignedShort();
-                        modulator.transportOperator = chunk.readUnsignedShort();
-                        SF2LayerRegion split = instruments_splits_gen.get(i);
-                        if (split != null)
-                            split.modulators.add(modulator);
+                        chunk.readUnsignedShort();
+                        chunk.readUnsignedShort();
+                        chunk.readShort();
+                        chunk.readUnsignedShort();
+                        chunk.readUnsignedShort();
                     }
                     break;
                 case "igen":

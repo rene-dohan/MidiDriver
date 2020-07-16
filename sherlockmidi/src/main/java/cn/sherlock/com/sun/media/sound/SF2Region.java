@@ -89,7 +89,6 @@ public class SF2Region {
     public final static int GENERATOR_EXCLUSIVECLASS = 57;
     public final static int GENERATOR_OVERRIDINGROOTKEY = 58;
     protected Map<Integer, Short> generators = new HashMap<>();
-    protected List<SF2Modulator> modulators = new ArrayList<>();
 
     public Map<Integer, Short> getGenerators() {
         return generators;
@@ -140,7 +139,4 @@ public class SF2Region {
         return 0xFFFF & getShort(generator);
     }
 
-    public List<SF2Modulator> getModulators() {
-        return modulators;
-    }
 }

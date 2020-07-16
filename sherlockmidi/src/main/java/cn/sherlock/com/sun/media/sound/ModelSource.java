@@ -42,14 +42,6 @@ public class ModelSource {
             new ModelIdentifier("lfo", null, 0);
     public static final ModelIdentifier SOURCE_LFO2 =
             new ModelIdentifier("lfo", null, 1);
-    public static final ModelIdentifier SOURCE_MIDI_PITCH =
-            new ModelIdentifier("midi", "pitch", 0);            // (0..16383)
-    public static final ModelIdentifier SOURCE_MIDI_CHANNEL_PRESSURE =
-            new ModelIdentifier("midi", "channel_pressure", 0); // (0..127)
-//    public static final ModelIdentifier SOURCE_MIDI_MONO_PRESSURE =
-//            new ModelIdentifier("midi","mono_pressure",0);    // (0..127)
-    public static final ModelIdentifier SOURCE_MIDI_POLY_PRESSURE =
-            new ModelIdentifier("midi", "poly_pressure", 0);    // (0..127)
     private ModelIdentifier source;
     private ModelTransform transform;
 
