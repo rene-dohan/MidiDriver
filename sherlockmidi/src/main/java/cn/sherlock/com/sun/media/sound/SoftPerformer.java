@@ -340,9 +340,6 @@ public class SoftPerformer {
             case "midi_rpn":
                 processMidiRpnSource(src, ix);
                 break;
-            case "midi_nrpn":
-                processMidiNrpnSource(src, ix);
-                break;
             case "midi":
                 processMidiSource(src, ix);
                 break;
@@ -351,6 +348,7 @@ public class SoftPerformer {
                 break;
             case "osc":
             case "mixer":
+            case "midi_nrpn":
                 return;
             default:
                 ctrl_connections_list.add(ix);
@@ -429,22 +427,6 @@ public class SoftPerformer {
             System.arraycopy(olda, 0, newa, 0, olda.length);
             newa[newa.length - 1] = ix;
             midi_rpn_connections.put(c, newa);
-        }
-    }
-
-    private void processMidiNrpnSource(ModelSource src, int ix) {
-        String v = src.getIdentifier().getVariable();
-        if (v == null)
-            return;
-        int c = Integer.parseInt(v);
-        if (midi_nrpn_connections.get(c) == null)
-            midi_nrpn_connections.put(c, new int[]{ix});
-        else {
-            int[] olda = midi_nrpn_connections.get(c);
-            int[] newa = new int[olda.length + 1];
-            System.arraycopy(olda, 0, newa, 0, olda.length);
-            newa[newa.length - 1] = ix;
-            midi_nrpn_connections.put(c, newa);
         }
     }
 
