@@ -39,14 +39,9 @@ public class SF2Sample {
     protected int originalPitch = 60;
     protected byte pitchCorrection = 0;
     protected ModelByteBuffer data;
-    protected ModelByteBuffer data24;
 
     public ModelByteBuffer getDataBuffer() {
         return data;
-    }
-
-    public ModelByteBuffer getData24Buffer() {
-        return data24;
     }
 
     public AudioFormat getFormat() {

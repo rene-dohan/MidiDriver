@@ -61,6 +61,7 @@ public class SF2Instrument {
         int performercount = 0;
         for (SF2InstrumentRegion presetzone : regions)
             performercount += presetzone.getLayer().getRegions().size();
+
         ModelPerformer[] performers = new ModelPerformer[performercount];
         int pi = 0;
 
@@ -151,15 +152,10 @@ public class SF2Instrument {
                 }
                 float pitchcorrection = (-rootkey * 100) + sample.pitchCorrection;
                 ModelByteBuffer buff = sample.getDataBuffer();
-                ModelByteBuffer buff24 = sample.getData24Buffer();
 
                 if (startAddrsOffset != 0 || endAddrsOffset != 0) {
                     buff = buff.subbuffer(startAddrsOffset * 2,
                             buff.capacity() + endAddrsOffset * 2);
-                    if (buff24 != null) {
-                        buff24 = buff24.subbuffer(startAddrsOffset,
-                                buff24.capacity() + endAddrsOffset);
-                    }
 
                     /*
                     if (startAddrsOffset < 0)
@@ -183,8 +179,6 @@ public class SF2Instrument {
 
                 ModelByteBufferWavetable osc = new ModelByteBufferWavetable(
                         buff, sample.getFormat(), pitchcorrection);
-                if (buff24 != null)
-                    osc.set8BitExtensionBuffer(buff24);
 
                 Map<Integer, Short> generators = new HashMap<>(layerzone.getGenerators());
                 for (Map.Entry<Integer, Short> gen : pgenerators.entrySet()) {

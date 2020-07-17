@@ -37,11 +37,8 @@ public class SoftInstrument {
 
     public SoftInstrument(SF2Instrument ins) {
         this.ins = ins;
-        initPerformers(ins.getPerformers());
-    }
 
-    private void initPerformers(ModelPerformer[] modelperformers) {
-        this.modelperformers = modelperformers;
+        modelperformers = ins.getPerformers();
         performers = new SoftPerformer[modelperformers.length];
         for (int i = 0; i < modelperformers.length; i++)
             performers[i] = new SoftPerformer(modelperformers[i]);

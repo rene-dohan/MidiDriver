@@ -45,7 +45,6 @@ public class SF2Soundbank {
 
     // The Sample Data loaded from the SoundFont
     private ModelByteBuffer sampleData;
-    private ModelByteBuffer sampleData24;
     private List<SF2Instrument> instruments;
     private List<SF2Layer> layers;
     private List<SF2Sample> samples;
@@ -107,7 +106,7 @@ public class SF2Soundbank {
     private void readSdtaChunk(RIFFReader riff) throws IOException {
         while (riff.hasNextChunk()) {
             RIFFReader chunk = riff.nextChunk();
-            if (chunk.getFormat().equals("smpl")) {
+            if (chunk.getFormat().equals("smpl")) { // always true
                 byte[] sampleData = new byte[chunk.available()];
 
                 int read = 0;
@@ -123,24 +122,6 @@ public class SF2Soundbank {
 
                 }
                 this.sampleData = new ModelByteBuffer(sampleData);
-            }
-            if (chunk.getFormat().equals("sm24")) {
-                byte[] sampleData24 = new byte[chunk.available()];
-                //chunk.read(sampleData24);
-
-                int read = 0;
-                int avail = chunk.available();
-                while (read != avail) {
-                    if (avail - read > 65536) {
-                        chunk.readFully(sampleData24, read, 65536);
-                        read += 65536;
-                    } else {
-                        chunk.readFully(sampleData24, read, avail - read);
-                        read = avail;
-                    }
-
-                }
-                this.sampleData24 = new ModelByteBuffer(sampleData24);
             }
         }
     }
@@ -331,8 +312,6 @@ public class SF2Soundbank {
                         long start = chunk.readUnsignedInt();
                         long end = chunk.readUnsignedInt();
                         sample.data = sampleData.subbuffer(start * 2, end * 2, true);
-                        if (sampleData24 != null)
-                            sample.data24 = sampleData24.subbuffer(start, end, true);
                     /*
                     sample.data = new ModelByteBuffer(sampleData, (int)(start*2),
                             (int)((end - start)*2));

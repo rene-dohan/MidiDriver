@@ -60,7 +60,6 @@ public class SoftMainMixer {
     private SoftSynthesizer synth;
     private float samplerate;
     private int nrofchannels;
-    private SoftVoice[] voicestatus;
     private SoftAudioBuffer[] buffers;
     private SoftReverb reverb;
     private SoftChorus chorus;
@@ -140,6 +139,7 @@ public class SoftMainMixer {
         // perform control logic
         synchronized (control_mutex) {
 
+            SoftVoice[] voicestatus = synth.getVoices();
             long msec_pos = (long)(sample_pos * (1000000.0 / samplerate));
 
             if (active_sensing_on) {
@@ -175,6 +175,7 @@ public class SoftMainMixer {
 
         }
 
+        SoftVoice[] voicestatus = synth.getVoices();
         for (SoftVoice softVoice : voicestatus)
             if (softVoice.active)
                 softVoice.processAudioLogic(buffers);
@@ -324,7 +325,6 @@ public class SoftMainMixer {
         for (int i = 0; i < buffers.length; i++) {
             buffers[i] = new SoftAudioBuffer(buffersize, synth.getFormat());
         }
-        voicestatus = synth.getVoices();
 
         reverb = new SoftReverb();
         chorus = new SoftChorus();

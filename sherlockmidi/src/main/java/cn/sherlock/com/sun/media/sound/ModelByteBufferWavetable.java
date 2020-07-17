@@ -144,10 +144,6 @@ public class ModelByteBufferWavetable {
         this.pitchcorrection = pitchcorrection;
     }
 
-    public void set8BitExtensionBuffer(ModelByteBuffer buffer) {
-        buffer8 = buffer;
-    }
-
     public ModelByteBuffer get8BitExtensionBuffer() {
         return buffer8;
     }

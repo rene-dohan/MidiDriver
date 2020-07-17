@@ -99,7 +99,4 @@ public class ModelDestination {
         return transform;
     }
 
-    public void setTransform(ModelTransform transform) {
-        this.transform = transform;
-    }
 }

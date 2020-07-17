@@ -317,8 +317,7 @@ public class SoftPerformer {
             sb.append("[");
             ModelSource[] srcs = conn.getSources();
             for (ModelSource src : srcs) {
-                sb.append(src.getIdentifier());
-                sb.append(";");
+                sb.append(src.getIdentifier()).append(";");
             }
             sb.append("]");
         }
@@ -693,25 +692,5 @@ public class SoftPerformer {
 
         oscillators = new ModelByteBufferWavetable[performer.getOscillators().size()];
         performer.getOscillators().toArray(oscillators);
-
-        for (ModelConnectionBlock conn : connections) {
-            if (conn.getDestination() != null) {
-                if (isUnnecessaryTransform()) {
-                    conn.getDestination().setTransform(null);
-                }
-            }
-            if (conn.getSources() != null) {
-                for (ModelSource src : conn.getSources()) {
-                    if (isUnnecessaryTransform()) {
-                        src.setTransform(null);
-                    }
-                }
-            }
-        }
-
-    }
-
-    private static boolean isUnnecessaryTransform() {
-        return false;
     }
 }
