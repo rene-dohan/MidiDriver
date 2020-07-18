@@ -149,15 +149,13 @@ public class SF2Instrument {
                     SF2Sample sample = layerzone.getSample();
                     int rootkey = sample.originalPitch;
                     if (layerzone.getShort(SF2Region.GENERATOR_OVERRIDINGROOTKEY) != -1) {
-                        rootkey = layerzone.getShort(
-                                SF2Region.GENERATOR_OVERRIDINGROOTKEY);
+                        rootkey = layerzone.getShort(SF2Region.GENERATOR_OVERRIDINGROOTKEY);
                     }
                     float pitchcorrection = (-rootkey * 100) + sample.pitchCorrection;
                     ModelByteBuffer buff = sample.getDataBuffer();
 
                     if (startAddrsOffset != 0 || endAddrsOffset != 0) {
-                        buff = buff.subbuffer(startAddrsOffset * 2,
-                                buff.capacity() + endAddrsOffset * 2);
+                        buff = buff.subbuffer(startAddrsOffset * 2, buff.capacity() + endAddrsOffset * 2);
 
                     /*
                     if (startAddrsOffset < 0)
