@@ -6,6 +6,8 @@ package cn.sherlock.javax.sound.sampled;
  *
  */
 
+import android.support.annotation.NonNull;
+
 import java.io.InputStream;
 import java.io.IOException;
 
@@ -24,8 +26,7 @@ import java.io.IOException;
  * <code>AudioInputStream</code> objects.
  * For example, the methods let you:
  * <ul>
- * <li> obtain an
- * audio input stream from an external audio file, stream, or URL
+ * <li> obtain an audio input stream from an external audio file, stream, or URL
  * <li> write an external file from an audio input stream
  * <li> convert an audio input stream to a different audio format
  * </ul>
@@ -35,7 +36,6 @@ import java.io.IOException;
  * @author Florian Bomers
  *
  * @see AudioSystem
- * @see Clip#open(AudioInputStream) Clip.open(AudioInputStream)
  * @since 1.3
  */
 public class AudioInputStream extends InputStream {
@@ -208,8 +208,8 @@ public class AudioInputStream extends InputStream {
      * @see #read()
      * @see #available
      */
-    public int read(byte[] b) throws IOException {
-        return read(b,0,b.length);
+    public int read(@NonNull byte[] b) throws IOException {
+        return read(b,0, b.length);
     }
 
 
@@ -233,7 +233,7 @@ public class AudioInputStream extends InputStream {
      * @see #skip
      * @see #available
      */
-    public int read(byte[] b, int off, int len) throws IOException {
+    public int read(@NonNull byte[] b, int off, int len) throws IOException {
 
         // make sure we don't read fractions of a frame.
         if( (len%frameSize) != 0 ) {

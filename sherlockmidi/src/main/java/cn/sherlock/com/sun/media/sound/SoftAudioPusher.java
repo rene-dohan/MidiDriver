@@ -42,8 +42,7 @@ public class SoftAudioPusher implements Runnable {
     private AudioInputStream ais;
     private byte[] buffer;
 
-    public SoftAudioPusher(SourceDataLineImpl sourceDataLine, AudioInputStream ais,
-            int workbuffersizer) {
+    public SoftAudioPusher(SourceDataLineImpl sourceDataLine, AudioInputStream ais, int workbuffersizer) {
         this.ais = ais;
         this.buffer = new byte[workbuffersizer];
         this.sourceDataLine = sourceDataLine;
@@ -71,10 +70,6 @@ public class SoftAudioPusher implements Runnable {
     }
 
     public void run() {
-        byte[] buffer = SoftAudioPusher.this.buffer;
-        AudioInputStream ais = SoftAudioPusher.this.ais;
-        SourceDataLineImpl sourceDataLine = SoftAudioPusher.this.sourceDataLine;
-
         try {
             while (active) {
                 // Read from audio source

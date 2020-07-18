@@ -32,20 +32,19 @@ package cn.sherlock.com.sun.media.sound;
 public class SoftInstrument {
 
     private SoftPerformer[] performers;
-    private ModelPerformer[] modelperformers;
     private SF2Instrument ins;
 
     public SoftInstrument(SF2Instrument ins) {
         this.ins = ins;
 
-        modelperformers = ins.getPerformers();
+        ModelPerformer[] modelperformers = ins.getPerformers();
         performers = new SoftPerformer[modelperformers.length];
         for (int i = 0; i < modelperformers.length; i++)
             performers[i] = new SoftPerformer(modelperformers[i]);
     }
 
     public ModelStandardIndexedDirector getDirector(SoftChannel player) {
-        return ins.getDirector(modelperformers, player);
+        return ins.getDirector(player);
     }
 
     public SoftPerformer[] getPerformers() {

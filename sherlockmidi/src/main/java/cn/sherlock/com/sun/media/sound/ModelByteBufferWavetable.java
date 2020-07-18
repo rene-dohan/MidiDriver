@@ -137,8 +137,7 @@ public class ModelByteBufferWavetable {
     private float pitchcorrection;
     private int loopType = LOOP_TYPE_OFF;
 
-    public ModelByteBufferWavetable(ModelByteBuffer buffer, AudioFormat format,
-            float pitchcorrection) {
+    public ModelByteBufferWavetable(ModelByteBuffer buffer, AudioFormat format, float pitchcorrection) {
         this.format = format;
         this.buffer = buffer;
         this.pitchcorrection = pitchcorrection;

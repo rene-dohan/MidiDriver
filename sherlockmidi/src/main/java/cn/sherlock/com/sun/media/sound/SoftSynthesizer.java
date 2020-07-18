@@ -25,6 +25,8 @@
 
 package cn.sherlock.com.sun.media.sound;
 
+import android.support.annotation.NonNull;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
@@ -79,7 +81,7 @@ public class SoftSynthesizer {
             return b[0] & 0xFF;
         }
 
-        public int read(byte[] b, int off, int len) throws IOException {
+        public int read(@NonNull byte[] b, int off, int len) throws IOException {
             AudioInputStream local_stream = stream;
             if(local_stream != null)
                 return local_stream.read(b, off, len);
@@ -185,19 +187,16 @@ public class SoftSynthesizer {
     private Map<String, SoftTuning> tunings = new HashMap<>();
     private Map<String, SoftInstrument> inslist = new HashMap<>();
 
-    private void getBuffers(SF2Instrument instrument,
-                            List<ModelByteBuffer> buffers) {
+    private void getBuffers(SF2Instrument instrument, List<ModelByteBuffer> buffers) {
         for (ModelPerformer performer : instrument.getPerformers()) {
             if (performer.getOscillators() != null) {
                 for (ModelByteBufferWavetable osc : performer.getOscillators()) {
-                    if (osc instanceof ModelByteBufferWavetable) {
-                        ModelByteBuffer buff = osc.getBuffer();
-                        if (buff != null)
-                            buffers.add(buff);
-                        buff = osc.get8BitExtensionBuffer();
-                        if (buff != null)
-                            buffers.add(buff);
-                    }
+                    ModelByteBuffer buff = osc.getBuffer();
+                    if (buff != null)
+                        buffers.add(buff);
+                    buff = osc.get8BitExtensionBuffer();
+                    if (buff != null)
+                        buffers.add(buff);
                 }
             }
         }
@@ -433,8 +432,7 @@ public class SoftSynthesizer {
                 if (buffersize < 3 * controlbuffersize)
                     buffersize = 3 * controlbuffersize;
 
-                ais = new SoftJitterCorrector(ais, buffersize,
-                        controlbuffersize);
+                ais = new SoftJitterCorrector(ais, buffersize, controlbuffersize);
                 if(weakstream != null)
                     weakstream.jitter_stream = ais;
                 pusher = new SoftAudioPusher(line, ais, controlbuffersize);

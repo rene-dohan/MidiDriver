@@ -24,6 +24,8 @@
  */
 package cn.sherlock.com.sun.media.sound;
 
+import android.support.annotation.NonNull;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.TreeMap;
@@ -363,8 +365,7 @@ public class SoftMainMixer {
         InputStream in = new InputStream() {
 
             private SoftAudioBuffer[] buffers = SoftMainMixer.this.buffers;
-            private int nrofchannels
-                    = SoftMainMixer.this.synth.getFormat().getChannels();
+            private int nrofchannels = SoftMainMixer.this.synth.getFormat().getChannels();
             private int buffersize = buffers[0].getSize();
             private byte[] bbuffer = new byte[buffersize
                     * (SoftMainMixer.this.synth.getFormat()
@@ -386,7 +387,7 @@ public class SoftMainMixer {
                 bbuffer_pos = 0;
             }
 
-            public int read(byte[] b, int off, int len) {
+            public int read(@NonNull byte[] b, int off, int len) {
                 int bbuffer_len = bbuffer.length;
                 int offlen = off + len;
                 int orgoff = off;

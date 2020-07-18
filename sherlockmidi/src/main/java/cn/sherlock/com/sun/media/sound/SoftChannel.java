@@ -99,7 +99,6 @@ public class SoftChannel implements MidiChannel {
     private int bank;
     private int program;
     private SoftSynthesizer synthesizer;
-    private SoftMainMixer mainmixer;
     private int[] polypressure = new int[128];
     private int channelpressure = 0;
     private int[] controller = new int[128];
@@ -198,7 +197,6 @@ public class SoftChannel implements MidiChannel {
     public SoftChannel(SoftSynthesizer synth, int channel) {
         this.channel = channel;
         this.synthesizer = synth;
-        this.mainmixer = synth.getMainMixer();
         control_mutex = synth.control_mutex;
         resetAllControllers(true);
     }
@@ -415,7 +413,7 @@ public class SoftChannel implements MidiChannel {
                 sustain = true;
             }
 
-            mainmixer.activity();
+            synthesizer.getMainMixer().activity();
 
             if (mono) {
                 if (portamento) {
@@ -525,7 +523,7 @@ public class SoftChannel implements MidiChannel {
                 }
             }
 
-            mainmixer.activity();
+            synthesizer.getMainMixer().activity();
             SoftVoice[] voices = synthesizer.getVoices();
             for (SoftVoice voice : voices) {
                 if (voice.on && voice.channel == channel
@@ -548,10 +546,8 @@ public class SoftChannel implements MidiChannel {
             // Try play back note-off triggered voices,
 
             if (current_instrument == null) {
-                current_instrument
-                        = synthesizer.findInstrument(program, bank, channel);
-                if (current_instrument == null)
-                    return;
+                current_instrument = synthesizer.findInstrument(program, bank, channel);
+                if (current_instrument == null) return;
                 current_director = current_instrument.getDirector(this);
 
             }
@@ -615,7 +611,7 @@ public class SoftChannel implements MidiChannel {
         pressure = restrict7Bit(pressure);
 
         synchronized (control_mutex) {
-            mainmixer.activity();
+            synthesizer.getMainMixer().activity();
             co_midi[noteNumber].get(0, "poly_pressure")[0] = pressure*(1.0/128.0);
             polypressure[noteNumber] = pressure;
             SoftVoice[] voices = synthesizer.getVoices();
@@ -635,7 +631,7 @@ public class SoftChannel implements MidiChannel {
     public void setChannelPressure(int pressure) {
         pressure = restrict7Bit(pressure);
         synchronized (control_mutex) {
-            mainmixer.activity();
+            synthesizer.getMainMixer().activity();
             co_midi_channel_pressure[0] = pressure * (1.0 / 128.0);
             channelpressure = pressure;
             SoftVoice[] voices = synthesizer.getVoices();
@@ -918,7 +914,7 @@ public class SoftChannel implements MidiChannel {
         bank = restrict14Bit(bank);
         program = restrict7Bit(program);
         synchronized (control_mutex) {
-            mainmixer.activity();
+            synthesizer.getMainMixer().activity();
             if(this.bank != bank || this.program != program)
             {
                 this.bank = bank;
@@ -937,7 +933,7 @@ public class SoftChannel implements MidiChannel {
     public void setPitchBend(int bend) {
         bend = restrict14Bit(bend);
         synchronized (control_mutex) {
-            mainmixer.activity();
+            synthesizer.getMainMixer().activity();
             co_midi_pitch[0] = bend * (1.0 / 16384.0);
             pitchbend = bend;
             SoftVoice[] voices = synthesizer.getVoices();
@@ -1056,7 +1052,7 @@ public class SoftChannel implements MidiChannel {
 
     public void resetAllControllers(boolean allControls) {
         synchronized (control_mutex) {
-            mainmixer.activity();
+            synthesizer.getMainMixer().activity();
 
             for (int i = 0; i < 128; i++) {
                 setPolyPressure(i, 0);

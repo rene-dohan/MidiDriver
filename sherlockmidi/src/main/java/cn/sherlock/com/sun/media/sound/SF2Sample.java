@@ -35,17 +35,17 @@ public class SF2Sample {
 
     protected long startLoop = 0;
     protected long endLoop = 0;
-    protected long sampleRate = 44100;
     protected int originalPitch = 60;
     protected byte pitchCorrection = 0;
     protected ModelByteBuffer data;
+    private AudioFormat format = new AudioFormat(22050, 16, 1, true, false);
 
     public ModelByteBuffer getDataBuffer() {
         return data;
     }
 
     public AudioFormat getFormat() {
-        return new AudioFormat(sampleRate, 16, 1, true, false);
+        return format;
     }
 
     /*

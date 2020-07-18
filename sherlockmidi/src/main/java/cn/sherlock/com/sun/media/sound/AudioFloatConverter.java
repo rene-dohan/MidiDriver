@@ -946,53 +946,6 @@ public abstract class AudioFloatConverter {
                             .getSampleSizeInBits() + 7) / 8) - 4);
                 }
             }
-        } else if (format.getEncoding().equals(Encoding.PCM_UNSIGNED)) {
-            if (format.isBigEndian()) {
-                if (format.getSampleSizeInBits() <= 8) {
-                    conv = new AudioFloatConversion8U();
-                } else if (format.getSampleSizeInBits() > 8 &&
-                        format.getSampleSizeInBits() <= 16) {
-                    conv = new AudioFloatConversion16UB();
-                } else if (format.getSampleSizeInBits() > 16 &&
-                        format.getSampleSizeInBits() <= 24) {
-                    conv = new AudioFloatConversion24UB();
-                } else if (format.getSampleSizeInBits() > 24 &&
-                        format.getSampleSizeInBits() <= 32) {
-                    conv = new AudioFloatConversion32UB();
-                } else if (format.getSampleSizeInBits() > 32) {
-                    conv = new AudioFloatConversion32xUB(((
-                            format.getSampleSizeInBits() + 7) / 8) - 4);
-                }
-            } else {
-                if (format.getSampleSizeInBits() <= 8) {
-                    conv = new AudioFloatConversion8U();
-                } else if (format.getSampleSizeInBits() > 8 &&
-                        format.getSampleSizeInBits() <= 16) {
-                    conv = new AudioFloatConversion16UL();
-                } else if (format.getSampleSizeInBits() > 16 &&
-                        format.getSampleSizeInBits() <= 24) {
-                    conv = new AudioFloatConversion24UL();
-                } else if (format.getSampleSizeInBits() > 24 &&
-                        format.getSampleSizeInBits() <= 32) {
-                    conv = new AudioFloatConversion32UL();
-                } else if (format.getSampleSizeInBits() > 32) {
-                    conv = new AudioFloatConversion32xUL(((
-                            format.getSampleSizeInBits() + 7) / 8) - 4);
-                }
-            }
-        } else if (format.getEncoding().equals(PCM_FLOAT)) {
-            if (format.getSampleSizeInBits() == 32) {
-                if (format.isBigEndian())
-                    conv = new AudioFloatConversion32B();
-                else
-                    conv = new AudioFloatConversion32L();
-            } else if (format.getSampleSizeInBits() == 64) {
-                if (format.isBigEndian()) 
-                    conv = new AudioFloatConversion64B();
-                else 
-                    conv = new AudioFloatConversion64L();                
-            }
-
         }
 
         if ((format.getEncoding().equals(Encoding.PCM_SIGNED) || 

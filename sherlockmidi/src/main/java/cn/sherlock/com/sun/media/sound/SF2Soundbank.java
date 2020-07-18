@@ -325,7 +325,7 @@ public class SF2Soundbank {
                             sample.startLoop = -1;
                         if (sample.endLoop < 0)
                             sample.endLoop = -1;
-                        sample.sampleRate = chunk.readUnsignedInt();
+                        chunk.readUnsignedInt();
                         sample.originalPitch = chunk.readUnsignedByte();
                         sample.pitchCorrection = chunk.readByte();
                         chunk.readUnsignedShort();
