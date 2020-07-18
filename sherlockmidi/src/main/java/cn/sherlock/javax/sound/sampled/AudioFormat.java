@@ -97,14 +97,6 @@ package cn.sherlock.javax.sound.sampled;
  */
 public class AudioFormat {
 
-    // INSTANCE VARIABLES
-
-
-    /**
-     * The audio encoding technique used by this format.
-     */
-    protected Encoding encoding;
-
     /**
      * The number of samples played or recorded per second, for sounds that have this format.
      */
@@ -130,78 +122,22 @@ public class AudioFormat {
      */
     protected float frameRate;
 
-    /**
-     * Indicates whether the audio data is stored in big-endian or little-endian order.
-     */
-    protected boolean bigEndian;
-
-
-    /**
-     * Constructs an <code>AudioFormat</code> with the given parameters.
-     * The encoding specifies the convention used to represent the data.
-     * The other parameters are further explained in the {@link AudioFormat
-     * class description}.
-     * @param encoding                  the audio encoding technique
-     * @param sampleRate                the number of samples per second
-     * @param sampleSizeInBits  the number of bits in each sample
-     * @param channels                  the number of channels (1 for mono, 2 for stereo, and so on)
-     * @param frameSize                 the number of bytes in each frame
-     * @param frameRate                 the number of frames per second
-     * @param bigEndian                 indicates whether the data for a single sample
-     *                                                  is stored in big-endian byte order (<code>false</code>
-     *                                                  means little-endian)
-     */
-    public AudioFormat(Encoding encoding, float sampleRate, int sampleSizeInBits,
-                       int channels, int frameSize, float frameRate, boolean bigEndian) {
-
-        this.encoding = encoding;
-        this.sampleRate = sampleRate;
-        this.sampleSizeInBits = sampleSizeInBits;
-        this.channels = channels;
-        this.frameSize = frameSize;
-        this.frameRate = frameRate;
-        this.bigEndian = bigEndian;
-    }
-
 
     /**
      * Constructs an <code>AudioFormat</code> with a linear PCM encoding and
      * the given parameters.  The frame size is set to the number of bytes
      * required to contain one sample from each channel, and the frame rate
      * is set to the sample rate.
-     *
      * @param sampleRate                the number of samples per second
      * @param sampleSizeInBits  the number of bits in each sample
      * @param channels                  the number of channels (1 for mono, 2 for stereo, and so on)
-     * @param signed                    indicates whether the data is signed or unsigned
-     * @param bigEndian                 indicates whether the data for a single sample
-     *                                                  is stored in big-endian byte order (<code>false</code>
-     *                                                  means little-endian)
      */
-    public AudioFormat(float sampleRate, int sampleSizeInBits,
-                       int channels, boolean signed, boolean bigEndian) {
-
-        this((signed ? Encoding.PCM_SIGNED : Encoding.PCM_UNSIGNED),
-             sampleRate,
-             sampleSizeInBits,
-             channels,
-             (channels == AudioSystem.NOT_SPECIFIED || sampleSizeInBits == AudioSystem.NOT_SPECIFIED)?
-             AudioSystem.NOT_SPECIFIED:
-             ((sampleSizeInBits + 7) / 8) * channels,
-             sampleRate,
-             bigEndian);
-    }
-
-    /**
-     * Obtains the type of encoding for sounds in this format.
-     *
-     * @return the encoding type
-     * @see Encoding#PCM_SIGNED
-     * @see Encoding#PCM_UNSIGNED
-     */
-    public Encoding getEncoding() {
-
-        return encoding;
+    public AudioFormat(float sampleRate, int sampleSizeInBits, int channels) {
+        this.sampleRate = sampleRate;
+        this.sampleSizeInBits = sampleSizeInBits;
+        this.channels = channels;
+        this.frameSize = ((sampleSizeInBits + 7) / 8) * channels;
+        this.frameRate = sampleRate;
     }
 
     /**
@@ -222,7 +158,6 @@ public class AudioFormat {
      * @see AudioSystem#NOT_SPECIFIED
      */
     public float getSampleRate() {
-
         return sampleRate;
     }
 
@@ -244,7 +179,6 @@ public class AudioFormat {
      * @see AudioSystem#NOT_SPECIFIED
      */
     public int getSampleSizeInBits() {
-
         return sampleSizeInBits;
     }
 
@@ -262,7 +196,6 @@ public class AudioFormat {
      * @see AudioSystem#NOT_SPECIFIED
      */
     public int getChannels() {
-
         return channels;
     }
 
@@ -282,7 +215,6 @@ public class AudioFormat {
      * @see AudioSystem#NOT_SPECIFIED
      */
     public int getFrameSize() {
-
         return frameSize;
     }
 
@@ -302,125 +234,8 @@ public class AudioFormat {
      * @see AudioSystem#NOT_SPECIFIED
      */
     public float getFrameRate() {
-
         return frameRate;
     }
 
 
-    /**
-     * Indicates whether the audio data is stored in big-endian or little-endian
-     * byte order.  If the sample size is not more than one byte, the return value is
-     * irrelevant.
-     * @return <code>true</code> if the data is stored in big-endian byte order,
-     * <code>false</code> if little-endian
-     */
-    public boolean isBigEndian() {
-
-        return bigEndian;
-    }
-
-    /**
-     * The <code>Encoding</code> class  names the  specific type of data representation
-     * used for an audio stream.   The encoding includes aspects of the
-     * sound format other than the number of channels, sample rate, sample size,
-     * frame rate, frame size, and byte order.
-     * <p>
-     * One ubiquitous type of audio encoding is pulse-code modulation (PCM),
-     * which is simply a linear (proportional) representation of the sound
-     * waveform.  With PCM, the number stored in each sample is proportional
-     * to the instantaneous amplitude of the sound pressure at that point in
-     * time.  The numbers may be signed or unsigned integers or floats.
-     * Besides PCM, other encodings include mu-law and a-law, which are nonlinear
-     * mappings of the sound amplitude that are often used for recording speech.
-     * <p>
-     * You can use a predefined encoding by referring to one of the static
-     * objects created by this class, such as PCM_SIGNED or
-     * PCM_UNSIGNED.  Service providers can create new encodings, such as
-     * compressed audio formats, and make
-     * these available through the <code>{@link AudioSystem}</code> class.
-     * <p>
-     * The <code>Encoding</code> class is static, so that all
-     * <code>AudioFormat</code> objects that have the same encoding will refer
-     * to the same object (rather than different instances of the same class).
-     * This allows matches to be made by checking that two format's encodings
-     * are equal.
-     *
-     * @see AudioFormat
-     *
-     * @author Kara Kytle
-     * @since 1.3
-     */
-    public static class Encoding {
-
-
-        // ENCODING DEFINES
-
-        /**
-         * Specifies signed, linear PCM data.
-         */
-        public static final Encoding PCM_SIGNED = new Encoding("PCM_SIGNED");
-
-        /**
-         * Specifies unsigned, linear PCM data.
-         */
-        public static final Encoding PCM_UNSIGNED = new Encoding("PCM_UNSIGNED");
-
-
-        // INSTANCE VARIABLES
-
-        /**
-         * Encoding name.
-         */
-        private String name;
-
-
-        // CONSTRUCTOR
-
-        /**
-         * Constructs a new encoding.
-         * @param name  the name of the new type of encoding
-         */
-        public Encoding(String name) {
-            this.name = name;
-        }
-
-
-        // METHODS
-
-        /**
-         * Finalizes the equals method
-         */
-        public final boolean equals(Object obj) {
-            if (toString() == null) {
-                return (obj != null) && (obj.toString() == null);
-            }
-            if (obj instanceof Encoding) {
-                return toString().equals(obj.toString());
-            }
-            return false;
-        }
-
-        /**
-         * Finalizes the hashCode method
-         */
-        public final int hashCode() {
-            if (toString() == null) {
-                return 0;
-            }
-            return toString().hashCode();
-        }
-
-        /**
-         * Provides the <code>String</code> representation of the encoding.  This <code>String</code> is
-         * the same name that was passed to the constructor.  For the predefined encodings, the name
-         * is similar to the encoding's variable (field) name.  For example, <code>PCM_SIGNED.toString()</code> returns
-         * the name "pcm_signed".
-         *
-         * @return the encoding name
-         */
-        public final String toString() {
-            return name;
-        }
-
-    } // class Encoding
 }

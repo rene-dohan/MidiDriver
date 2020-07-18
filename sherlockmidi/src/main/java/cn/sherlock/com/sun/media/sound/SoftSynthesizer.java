@@ -170,7 +170,7 @@ public class SoftSynthesizer {
     // 2: GM Level 2
     private int gmmode = 0;
 
-    private AudioFormat format = new AudioFormat(44100, 16, 2, true, false);
+    private AudioFormat format = new AudioFormat(44100, 16, 2);
 
     private SourceDataLineImpl sourceDataLine = null;
 

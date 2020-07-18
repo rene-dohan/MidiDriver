@@ -29,7 +29,6 @@ import java.io.InputStream;
 
 import cn.sherlock.javax.sound.sampled.AudioFormat;
 import cn.sherlock.javax.sound.sampled.AudioInputStream;
-import cn.sherlock.javax.sound.sampled.AudioFormat.Encoding;
 
 /**
  * Wavetable oscillator for pre-loaded data.
@@ -41,93 +40,6 @@ public class ModelByteBufferWavetable {
     public static final int LOOP_TYPE_OFF = 0;
     public static final int LOOP_TYPE_FORWARD = 1;
     public static final int LOOP_TYPE_RELEASE = 2;
-
-    private class Buffer8PlusInputStream extends InputStream {
-
-        private boolean bigendian;
-        private int framesize_pc;
-        int pos = 0;
-        int pos2 = 0;
-        int markpos = 0;
-        int markpos2 = 0;
-
-        public Buffer8PlusInputStream() {
-            framesize_pc = format.getFrameSize() / format.getChannels();
-            bigendian = format.isBigEndian();
-        }
-
-        public int read(byte[] b, int off, int len) {
-            int avail = available();
-            if (avail <= 0)
-                return -1;
-            if (len > avail)
-                len = avail;
-            byte[] buff1 = buffer.array();
-            byte[] buff2 = buffer8.array();
-            pos += buffer.arrayOffset();
-            pos2 += buffer8.arrayOffset();
-            if (bigendian) {
-                for (int i = 0; i < len; i += (framesize_pc + 1)) {
-                    System.arraycopy(buff1, pos, b, i, framesize_pc);
-                    System.arraycopy(buff2, pos2, b, i + framesize_pc, 1);
-                    pos += framesize_pc;
-                    pos2 += 1;
-                }
-            } else {
-                for (int i = 0; i < len; i += (framesize_pc + 1)) {
-                    System.arraycopy(buff2, pos2, b, i, 1);
-                    System.arraycopy(buff1, pos, b, i + 1, framesize_pc);
-                    pos += framesize_pc;
-                    pos2 += 1;
-                }
-            }
-            pos -= buffer.arrayOffset();
-            pos2 -= buffer8.arrayOffset();
-            return len;
-        }
-
-        public long skip(long n) throws IOException {
-            int avail = available();
-            if (avail <= 0)
-                return -1;
-            if (n > avail)
-                n = avail;
-            pos += (n / (framesize_pc + 1)) * (framesize_pc);
-            pos2 += n / (framesize_pc + 1);
-            return super.skip(n);
-        }
-
-        public int read(byte[] b) {
-            return read(b, 0, b.length);
-        }
-
-        public int read() {
-            byte[] b = new byte[1];
-            int ret = read(b, 0, 1);
-            if (ret == -1)
-                return -1;
-            return 0;
-        }
-
-        public boolean markSupported() {
-            return true;
-        }
-
-        public int available() {
-            return (int)buffer.capacity() + (int)buffer8.capacity() - pos - pos2;
-        }
-
-        public synchronized void mark(int readlimit) {
-            markpos = pos;
-            markpos2 = pos2;
-        }
-
-        public synchronized void reset() {
-            pos = markpos;
-            pos2 = markpos2;
-
-        }
-    }
 
     private float loopStart = -1;
     private float loopLength = -1;
@@ -177,24 +89,6 @@ public class ModelByteBufferWavetable {
             return AudioFloatInputStream.getInputStream(new AudioInputStream(
                     buffer.getInputStream(), format, 
                     buffer.capacity() / format.getFrameSize()));
-        }
-        if (buffer8 != null) {
-            if (format.getEncoding().equals(Encoding.PCM_SIGNED)
-                    || format.getEncoding().equals(Encoding.PCM_UNSIGNED)) {
-                InputStream is = new Buffer8PlusInputStream();
-                AudioFormat format2 = new AudioFormat(
-                        format.getEncoding(),
-                        format.getSampleRate(),
-                        format.getSampleSizeInBits() + 8,
-                        format.getChannels(),
-                        format.getFrameSize() + format.getChannels(),
-                        format.getFrameRate(),
-                        format.isBigEndian());
-
-                AudioInputStream ais = new AudioInputStream(is, format2,
-                        buffer.capacity() / format.getFrameSize());
-                return AudioFloatInputStream.getInputStream(ais);
-            }
         }
         return AudioFloatInputStream.getInputStream(format, buffer.array(),
                 (int)buffer.arrayOffset(), (int)buffer.capacity());

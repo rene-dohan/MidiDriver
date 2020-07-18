@@ -24,13 +24,10 @@
  */
 package cn.sherlock.com.sun.media.sound;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 import cn.sherlock.javax.sound.sampled.AudioFormat;
 import cn.sherlock.javax.sound.sampled.AudioInputStream;
-import cn.sherlock.javax.sound.sampled.AudioSystem;
 
 /**
  * This class is used to create AudioFloatInputStream from AudioInputStream and
@@ -106,8 +103,7 @@ public abstract class AudioFloatInputStream {
         }
     }
 
-    private static class DirectAudioFloatInputStream
-            extends AudioFloatInputStream {
+    private static class DirectAudioFloatInputStream extends AudioFloatInputStream {
 
         private AudioInputStream stream;
         private AudioFloatConverter converter;
@@ -154,24 +150,14 @@ public abstract class AudioFloatInputStream {
         }
     }
 
-    public static AudioFloatInputStream getInputStream(
-            AudioInputStream stream) {
+    public static AudioFloatInputStream getInputStream(AudioInputStream stream) {
         return new DirectAudioFloatInputStream(stream);
     }
 
-    public static AudioFloatInputStream getInputStream(AudioFormat format,
-            byte[] buffer, int offset, int len) {
-        AudioFloatConverter converter = AudioFloatConverter
-                .getConverter(format);
-        if (converter != null)
-            return new BytaArrayAudioFloatInputStream(converter, buffer,
-                    offset, len);
+    public static AudioFloatInputStream getInputStream(AudioFormat format, byte[] buffer, int offset, int len) {
+        AudioFloatConverter converter = AudioFloatConverter.getConverter(format);
+        return new BytaArrayAudioFloatInputStream(converter, buffer, offset, len);
 
-        InputStream stream = new ByteArrayInputStream(buffer, offset, len);
-        long aLen = format.getFrameSize() == AudioSystem.NOT_SPECIFIED
-                ? AudioSystem.NOT_SPECIFIED : len / format.getFrameSize();
-        AudioInputStream astream = new AudioInputStream(stream, format, aLen);
-        return getInputStream(astream);
     }
 
     public abstract AudioFormat getFormat();
