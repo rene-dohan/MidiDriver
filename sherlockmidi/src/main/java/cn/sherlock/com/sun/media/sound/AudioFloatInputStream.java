@@ -24,10 +24,7 @@
  */
 package cn.sherlock.com.sun.media.sound;
 
-import java.io.IOException;
-
 import cn.sherlock.javax.sound.sampled.AudioFormat;
-import cn.sherlock.javax.sound.sampled.AudioInputStream;
 
 /**
  * This class is used to create AudioFloatInputStream from AudioInputStream and
@@ -35,140 +32,63 @@ import cn.sherlock.javax.sound.sampled.AudioInputStream;
  *
  * @author Karl Helgason
  */
-public abstract class AudioFloatInputStream {
+public class AudioFloatInputStream {
 
-    private static class BytaArrayAudioFloatInputStream extends AudioFloatInputStream {
+    private int pos = 0;
+    private int markpos = 0;
+    private AudioFloatConverter converter;
+    private byte[] buffer;
+    private int buffer_offset;
+    private int buffer_len;
+    private int framesize_pc;
 
-        private int pos = 0;
-        private int markpos = 0;
-        private AudioFloatConverter converter;
-        private AudioFormat format;
-        private byte[] buffer;
-        private int buffer_offset;
-        private int buffer_len;
-        private int framesize_pc;
-
-        public BytaArrayAudioFloatInputStream(AudioFloatConverter converter,
-                byte[] buffer, int offset, int len) {
-            this.converter = converter;
-            this.format = converter.getFormat();
-            this.buffer = buffer;
-            this.buffer_offset = offset;
-            framesize_pc = format.getFrameSize() / format.getChannels();
-            this.buffer_len = len / framesize_pc;
-
-        }
-
-        public AudioFormat getFormat() {
-            return format;
-        }
-
-        public int read(float[] b, int off, int len) {
-            if (b == null)
-                throw new NullPointerException();
-            if (off < 0 || len < 0 || len > b.length - off)
-                throw new IndexOutOfBoundsException();
-            if (pos >= buffer_len)
-                return -1;
-            if (len == 0)
-                return 0;
-            if (pos + len > buffer_len)
-                len = buffer_len - pos;
-            converter.toFloatArray(buffer, buffer_offset + pos * framesize_pc,
-                    b, off, len);
-            pos += len;
-            return len;
-        }
-
-        public long skip(long len) {
-            if (pos >= buffer_len)
-                return -1;
-            if (len <= 0)
-                return 0;
-            if (pos + len > buffer_len)
-                len = buffer_len - pos;
-            pos += len;
-            return len;
-        }
-
-        public void close() {
-        }
-
-        public void mark(int readlimit) {
-            markpos = pos;
-        }
-
-        public void reset() {
-            pos = markpos;
-        }
+    public AudioFloatInputStream(AudioFormat format, byte[] buffer, int offset, int len) {
+        this.converter = AudioFloatConverter.getConverter(format);
+        this.buffer = buffer;
+        this.buffer_offset = offset;
+        framesize_pc = format.getFrameSize() / format.getChannels();
+        this.buffer_len = len / framesize_pc;
     }
 
-    private static class DirectAudioFloatInputStream extends AudioFloatInputStream {
-
-        private AudioInputStream stream;
-        private AudioFloatConverter converter;
-        private int framesize_pc; // framesize / channels
-        private byte[] buffer;
-
-        public DirectAudioFloatInputStream(AudioInputStream stream) {
-            converter = AudioFloatConverter.getConverter(stream.getFormat());
-            framesize_pc = stream.getFormat().getFrameSize() / stream.getFormat().getChannels();
-            this.stream = stream;
-        }
-
-        public AudioFormat getFormat() {
-            return stream.getFormat();
-        }
-
-        public int read(float[] b, int off, int len) throws IOException {
-            int b_len = len * framesize_pc;
-            if (buffer == null || buffer.length < b_len)
-                buffer = new byte[b_len];
-            int ret = stream.read(buffer, 0, b_len);
-            if (ret == -1)
-                return -1;
-            converter.toFloatArray(buffer, b, off, ret / framesize_pc);
-            return ret / framesize_pc;
-        }
-
-        public long skip(long len) throws IOException {
-            long b_len = len * framesize_pc;
-            long ret = stream.skip(b_len);
-            return ret / framesize_pc;
-        }
-
-        public void close() throws IOException {
-            stream.close();
-        }
-
-        public void mark(int readlimit) {
-            stream.mark(readlimit * framesize_pc);
-        }
-
-        public void reset() throws IOException {
-            stream.reset();
-        }
+    public AudioFormat getFormat() {
+        return converter.getFormat();
     }
 
-    public static AudioFloatInputStream getInputStream(AudioInputStream stream) {
-        return new DirectAudioFloatInputStream(stream);
+    public int read(float[] b, int off, int len) {
+        if (b == null)
+            throw new NullPointerException();
+        if (off < 0 || len < 0 || len > b.length - off)
+            throw new IndexOutOfBoundsException();
+        if (pos >= buffer_len)
+            return -1;
+        if (len == 0)
+            return 0;
+        if (pos + len > buffer_len)
+            len = buffer_len - pos;
+        converter.toFloatArray(buffer, buffer_offset + pos * framesize_pc, b, off, len);
+        pos += len;
+        return len;
     }
 
-    public static AudioFloatInputStream getInputStream(AudioFormat format, byte[] buffer, int offset, int len) {
-        AudioFloatConverter converter = AudioFloatConverter.getConverter(format);
-        return new BytaArrayAudioFloatInputStream(converter, buffer, offset, len);
-
+    public long skip(long len) {
+        if (pos >= buffer_len)
+            return -1;
+        if (len <= 0)
+            return 0;
+        if (pos + len > buffer_len)
+            len = buffer_len - pos;
+        pos += len;
+        return len;
     }
 
-    public abstract AudioFormat getFormat();
+    public void close() {
+    }
 
-    public abstract int read(float[] b, int off, int len) throws IOException;
+    public void mark() {
+        markpos = pos;
+    }
 
-    public abstract long skip(long len) throws IOException;
-
-    public abstract void close() throws IOException;
-
-    public abstract void mark(int readlimit);
-
-    public abstract void reset() throws IOException;
+    public void reset() {
+        pos = markpos;
+    }
 }

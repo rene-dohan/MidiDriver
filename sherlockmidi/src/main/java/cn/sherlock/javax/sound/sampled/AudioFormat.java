@@ -52,8 +52,7 @@ package cn.sherlock.javax.sound.sampled;
  * to and from the service providers. Therefore, properties
  * are ignored in the matches#AudioFormat method.
  * However, methods which rely on the installed service
- * providers, like {@link AudioSystem#isConversionSupported
- * (AudioFormat, AudioFormat) isConversionSupported} may consider
+ * providers, like may consider
  * properties, depending on the respective service provider
  * implementation.
  *
@@ -97,6 +96,11 @@ package cn.sherlock.javax.sound.sampled;
  */
 public class AudioFormat {
 
+    public static final int UNSPECIFIED_FRAME_SIZE = -1;
+
+    public static final AudioFormat MONO_FORMAT = new AudioFormat(22050, 16, 1);
+    public static final AudioFormat STEREO_FORMAT = new AudioFormat(44100, 16, 2);
+
     /**
      * The number of samples played or recorded per second, for sounds that have this format.
      */
@@ -132,7 +136,7 @@ public class AudioFormat {
      * @param sampleSizeInBits  the number of bits in each sample
      * @param channels                  the number of channels (1 for mono, 2 for stereo, and so on)
      */
-    public AudioFormat(float sampleRate, int sampleSizeInBits, int channels) {
+    private AudioFormat(float sampleRate, int sampleSizeInBits, int channels) {
         this.sampleRate = sampleRate;
         this.sampleSizeInBits = sampleSizeInBits;
         this.channels = channels;
@@ -144,9 +148,7 @@ public class AudioFormat {
      * Obtains the sample rate.
      * For compressed formats, the return value is the sample rate of the uncompressed
      * audio data.
-     * When this AudioFormat is used for queries (e.g. {@link
-     * AudioSystem#isConversionSupported(AudioFormat, AudioFormat)
-     * AudioSystem.isConversionSupported}) or capabilities (e.g. {@link
+     * When this AudioFormat is used for queries or capabilities (e.g. {@link
      * DataLine.Info#getFormats() DataLine.Info.getFormats}), a sample rate of
      * <code>AudioSystem.NOT_SPECIFIED</code> means that any sample rate is
      * acceptable. <code>AudioSystem.NOT_SPECIFIED</code> is also returned when
@@ -155,7 +157,6 @@ public class AudioFormat {
      * or <code>AudioSystem.NOT_SPECIFIED</code>
      *
      * @see #getFrameRate()
-     * @see AudioSystem#NOT_SPECIFIED
      */
     public float getSampleRate() {
         return sampleRate;
@@ -165,9 +166,7 @@ public class AudioFormat {
      * Obtains the size of a sample.
      * For compressed formats, the return value is the sample size of the
      * uncompressed audio data.
-     * When this AudioFormat is used for queries (e.g. {@link
-     * AudioSystem#isConversionSupported(AudioFormat, AudioFormat)
-     * AudioSystem.isConversionSupported}) or capabilities (e.g. {@link
+     * When this AudioFormat is used for queries or capabilities (e.g. {@link
      * DataLine.Info#getFormats() DataLine.Info.getFormats}), a sample size of
      * <code>AudioSystem.NOT_SPECIFIED</code> means that any sample size is
      * acceptable. <code>AudioSystem.NOT_SPECIFIED</code> is also returned when
@@ -176,7 +175,6 @@ public class AudioFormat {
      * or <code>AudioSystem.NOT_SPECIFIED</code>
      *
      * @see #getFrameSize()
-     * @see AudioSystem#NOT_SPECIFIED
      */
     public int getSampleSizeInBits() {
         return sampleSizeInBits;
@@ -184,16 +182,12 @@ public class AudioFormat {
 
     /**
      * Obtains the number of channels.
-     * When this AudioFormat is used for queries (e.g. {@link
-     * AudioSystem#isConversionSupported(AudioFormat, AudioFormat)
+     * When this AudioFormat is used for queries
      * AudioSystem.isConversionSupported}) or capabilities (e.g. {@link
      * DataLine.Info#getFormats() DataLine.Info.getFormats}), a return value of
      * <code>AudioSystem.NOT_SPECIFIED</code> means that any (positive) number of channels is
      * acceptable.
-     * @return The number of channels (1 for mono, 2 for stereo, etc.),
-     * or <code>AudioSystem.NOT_SPECIFIED</code>
-     *
-     * @see AudioSystem#NOT_SPECIFIED
+     * @return The number of channels (1 for mono, 2 for stereo, etc.)
      */
     public int getChannels() {
         return channels;
@@ -201,9 +195,7 @@ public class AudioFormat {
 
     /**
      * Obtains the frame size in bytes.
-     * When this AudioFormat is used for queries (e.g. {@link
-     * AudioSystem#isConversionSupported(AudioFormat, AudioFormat)
-     * AudioSystem.isConversionSupported}) or capabilities (e.g. {@link
+     * When this AudioFormat is used for queries or capabilities (e.g. {@link
      * DataLine.Info#getFormats() DataLine.Info.getFormats}), a frame size of
      * <code>AudioSystem.NOT_SPECIFIED</code> means that any frame size is
      * acceptable. <code>AudioSystem.NOT_SPECIFIED</code> is also returned when
@@ -212,7 +204,6 @@ public class AudioFormat {
      * or <code>AudioSystem.NOT_SPECIFIED</code>
      *
      * @see #getSampleSizeInBits()
-     * @see AudioSystem#NOT_SPECIFIED
      */
     public int getFrameSize() {
         return frameSize;
@@ -220,10 +211,7 @@ public class AudioFormat {
 
     /**
      * Obtains the frame rate in frames per second.
-     * When this AudioFormat is used for queries (e.g. {@link
-     * AudioSystem#isConversionSupported(AudioFormat, AudioFormat)
-     * AudioSystem.isConversionSupported}) or capabilities (e.g. {@link
-     * DataLine.Info#getFormats() DataLine.Info.getFormats}), a frame rate of
+     * When this AudioFormat is used for queries or capabilities, a frame rate of
      * <code>AudioSystem.NOT_SPECIFIED</code> means that any frame rate is
      * acceptable. <code>AudioSystem.NOT_SPECIFIED</code> is also returned when
      * the frame rate is not defined for this audio format.
@@ -231,7 +219,6 @@ public class AudioFormat {
      * or <code>AudioSystem.NOT_SPECIFIED</code>
      *
      * @see #getSampleRate()
-     * @see AudioSystem#NOT_SPECIFIED
      */
     public float getFrameRate() {
         return frameRate;

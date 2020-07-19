@@ -38,7 +38,7 @@ public class SF2Sample {
     protected int originalPitch = 60;
     protected byte pitchCorrection = 0;
     protected ModelByteBuffer data;
-    private AudioFormat format = new AudioFormat(22050, 16, 1);
+    private AudioFormat format = AudioFormat.MONO_FORMAT;
 
     public ModelByteBuffer getDataBuffer() {
         return data;

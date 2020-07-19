@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import cn.sherlock.javax.sound.sampled.AudioFormat;
-import cn.sherlock.javax.sound.sampled.AudioInputStream;
 
 /**
  * Wavetable oscillator for pre-loaded data.
@@ -85,13 +84,7 @@ public class ModelByteBufferWavetable {
             buffer.getInputStream();
             return null;
         }
-        if (buffer.array() == null) {
-            return AudioFloatInputStream.getInputStream(new AudioInputStream(
-                    buffer.getInputStream(), format, 
-                    buffer.capacity() / format.getFrameSize()));
-        }
-        return AudioFloatInputStream.getInputStream(format, buffer.array(),
-                (int)buffer.arrayOffset(), (int)buffer.capacity());
+        return new AudioFloatInputStream(format, buffer.array(), (int)buffer.arrayOffset(), (int)buffer.capacity());
     }
 
     public int getChannels() {

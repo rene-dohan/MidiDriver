@@ -30,8 +30,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.TreeMap;
 
+import cn.sherlock.javax.sound.sampled.AudioFormat;
 import cn.sherlock.javax.sound.sampled.AudioInputStream;
-import cn.sherlock.javax.sound.sampled.AudioSystem;
 
 /**
  * Software synthesizer main audio mixer.
@@ -314,10 +314,10 @@ public class SoftMainMixer {
         co_master_coarse_tuning[0] = 0.5;
         co_master_fine_tuning[0] = 0.5;
 
-        samplerate = synth.getFormat().getSampleRate();
-        nrofchannels = synth.getFormat().getChannels();
+        samplerate = AudioFormat.STEREO_FORMAT.getSampleRate();
+        nrofchannels = AudioFormat.STEREO_FORMAT.getChannels();
 
-        int buffersize = (int) (synth.getFormat().getSampleRate()
+        int buffersize = (int) (AudioFormat.STEREO_FORMAT.getSampleRate()
                                 / synth.getControlRate());
         
         buffer_len = buffersize;
@@ -325,14 +325,14 @@ public class SoftMainMixer {
         control_mutex = synth.control_mutex;
         buffers = new SoftAudioBuffer[14];
         for (int i = 0; i < buffers.length; i++) {
-            buffers[i] = new SoftAudioBuffer(buffersize, synth.getFormat());
+            buffers[i] = new SoftAudioBuffer(buffersize, AudioFormat.STEREO_FORMAT);
         }
 
         reverb = new SoftReverb();
         chorus = new SoftChorus();
         agc = new SoftLimiter();
 
-        float samplerate = synth.getFormat().getSampleRate();
+        float samplerate = AudioFormat.STEREO_FORMAT.getSampleRate();
         float controlrate = synth.getControlRate();
         reverb.init(samplerate);
         chorus.init(samplerate, controlrate);
@@ -365,11 +365,10 @@ public class SoftMainMixer {
         InputStream in = new InputStream() {
 
             private SoftAudioBuffer[] buffers = SoftMainMixer.this.buffers;
-            private int nrofchannels = SoftMainMixer.this.synth.getFormat().getChannels();
+            private int nrofchannels = AudioFormat.STEREO_FORMAT.getChannels();
             private int buffersize = buffers[0].getSize();
             private byte[] bbuffer = new byte[buffersize
-                    * (SoftMainMixer.this.synth.getFormat()
-                        .getSampleSizeInBits() / 8)
+                    * (AudioFormat.STEREO_FORMAT.getSampleSizeInBits() / 8)
                     * nrofchannels];
             private int bbuffer_pos = 0;
             private byte[] single = new byte[1];
@@ -423,7 +422,7 @@ public class SoftMainMixer {
             }
         };
 
-        ais = new AudioInputStream(in, synth.getFormat(), AudioSystem.NOT_SPECIFIED);
+        ais = new AudioInputStream(in, AudioFormat.STEREO_FORMAT, AudioFormat.UNSPECIFIED_FRAME_SIZE);
 
     }
 

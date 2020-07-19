@@ -35,7 +35,6 @@ import java.io.IOException;
  * @author Kara Kytle
  * @author Florian Bomers
  *
- * @see AudioSystem
  * @since 1.3
  */
 public class AudioInputStream extends InputStream {
@@ -112,7 +111,7 @@ public class AudioInputStream extends InputStream {
 
         // any frameSize that is not well-defined will
         // cause that this stream will be read in bytes
-        if( this.frameSize == AudioSystem.NOT_SPECIFIED || frameSize <= 0) {
+        if( this.frameSize == AudioFormat.UNSPECIFIED_FRAME_SIZE || frameSize <= 0) {
             this.frameSize = 1;
         }
 
@@ -243,8 +242,8 @@ public class AudioInputStream extends InputStream {
             }
         }
 
-        if( frameLength != AudioSystem.NOT_SPECIFIED ) {
-            if( framePos >= frameLength ) {
+        if (frameLength != AudioFormat.UNSPECIFIED_FRAME_SIZE) {
+            if (framePos >= frameLength) {
                 return -1;
             } else {
 
@@ -311,7 +310,7 @@ public class AudioInputStream extends InputStream {
             n -= (n%frameSize);
         }
 
-        if( frameLength != AudioSystem.NOT_SPECIFIED ) {
+        if (frameLength != AudioFormat.UNSPECIFIED_FRAME_SIZE) {
             // don't skip more than our set length in frames.
             if( (n/frameSize) > (frameLength-framePos) ) {
                 n = (frameLength-framePos) * frameSize;
@@ -350,7 +349,7 @@ public class AudioInputStream extends InputStream {
         int temp = stream.available();
 
         // don't return greater than our set length in frames
-        if( (frameLength != AudioSystem.NOT_SPECIFIED) && ( (temp/frameSize) > (frameLength-framePos)) ) {
+        if( (frameLength != AudioFormat.UNSPECIFIED_FRAME_SIZE) && ( (temp/frameSize) > (frameLength-framePos)) ) {
             return (int) (frameLength-framePos) * frameSize;
         } else {
             return temp;

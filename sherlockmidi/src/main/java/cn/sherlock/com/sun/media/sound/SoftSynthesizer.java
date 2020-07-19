@@ -37,7 +37,6 @@ import java.util.Map;
 
 import cn.sherlock.javax.sound.sampled.AudioFormat;
 import cn.sherlock.javax.sound.sampled.AudioInputStream;
-import cn.sherlock.javax.sound.sampled.AudioSystem;
 import cn.sherlock.media.SourceDataLineImpl;
 import jp.kshoji.javax.sound.midi.MidiChannel;
 import jp.kshoji.javax.sound.midi.Patch;
@@ -134,7 +133,7 @@ public class SoftSynthesizer {
 
         public AudioInputStream getAudioInputStream()
         {
-            return new AudioInputStream(this, stream.getFormat(), AudioSystem.NOT_SPECIFIED);
+            return new AudioInputStream(this, stream.getFormat(), AudioFormat.UNSPECIFIED_FRAME_SIZE);
         }
 
         public void close() throws IOException
@@ -169,8 +168,6 @@ public class SoftSynthesizer {
     // 1: GM Level 1
     // 2: GM Level 2
     private int gmmode = 0;
-
-    private AudioFormat format = new AudioFormat(44100, 16, 2);
 
     private SourceDataLineImpl sourceDataLine = null;
 
@@ -332,12 +329,6 @@ public class SoftSynthesizer {
         return tuning;
     }
 
-    public AudioFormat getFormat() {
-        synchronized (control_mutex) {
-            return format;
-        }
-    }
-
     public MidiChannel[] getChannels() {
 
         synchronized (control_mutex) {
@@ -401,11 +392,11 @@ public class SoftSynthesizer {
                 double latency = 120000L;
 
                 if (!line.isOpen()) {
-                    int bufferSize = getFormat().getFrameSize()
-                            * (int)(getFormat().getFrameRate() * (latency/1000000f));
+                    int bufferSize = AudioFormat.STEREO_FORMAT.getFrameSize()
+                            * (int)(AudioFormat.STEREO_FORMAT.getFrameRate() * (latency/1000000f));
                     // can throw LineUnavailableException,
                     // IllegalArgumentException, SecurityException
-                    line.open(getFormat(), bufferSize);
+                    line.open(AudioFormat.STEREO_FORMAT, bufferSize);
 
                     // Remember that we opened that line
                     // so we can close again in SoftSynthesizer.close()

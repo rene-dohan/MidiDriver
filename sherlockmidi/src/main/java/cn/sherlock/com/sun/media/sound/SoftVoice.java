@@ -29,6 +29,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import cn.sherlock.javax.sound.sampled.AudioFormat;
+
 /**
  * Software synthesizer voice class.
  *
@@ -190,9 +192,9 @@ public class SoftVoice {
 
     public SoftVoice(SoftSynthesizer synth) {
         synthesizer = synth;
-        filter_left = new SoftFilter(synth.getFormat().getSampleRate());
-        filter_right = new SoftFilter(synth.getFormat().getSampleRate());
-        nrofchannels = synth.getFormat().getChannels();
+        filter_left = new SoftFilter(AudioFormat.STEREO_FORMAT.getSampleRate());
+        filter_right = new SoftFilter(AudioFormat.STEREO_FORMAT.getSampleRate());
+        nrofchannels = AudioFormat.STEREO_FORMAT.getChannels();
     }
 
     private int getValueKC(ModelIdentifier id) {
@@ -582,7 +584,7 @@ public class SoftVoice {
             osc_stream_off_transmitted = false;
 
             try {
-                resampler.open(osc, synthesizer.getFormat().getSampleRate());
+                resampler.open(osc, AudioFormat.STEREO_FORMAT.getSampleRate());
                 osc_stream = resampler;
             } catch (IOException e) {
                 //e.printStackTrace();

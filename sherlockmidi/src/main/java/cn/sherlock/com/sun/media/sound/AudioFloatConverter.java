@@ -34,7 +34,14 @@ import cn.sherlock.javax.sound.sampled.AudioFormat;
  */
 public class AudioFloatConverter {
 
+    public static final AudioFloatConverter MONO_CONVERTER = new AudioFloatConverter(AudioFormat.MONO_FORMAT);
+    public static final AudioFloatConverter STEREO_CONVERTER = new AudioFloatConverter(AudioFormat.STEREO_FORMAT);
+
     private AudioFormat format;
+
+    public AudioFloatConverter(AudioFormat format) {
+        this.format = format;
+    }
 
     /***************************************************************************
      * 
@@ -65,17 +72,11 @@ public class AudioFloatConverter {
     }
 
     public static AudioFloatConverter getConverter(AudioFormat format) {
-        AudioFloatConverter conv = new AudioFloatConverter();
-        conv.format = format;
-        return conv;
+        return format == AudioFormat.MONO_FORMAT ? MONO_CONVERTER : STEREO_CONVERTER;
     }
 
     public AudioFormat getFormat() {
         return format;
-    }
-
-    public void toFloatArray(byte[] in_buff, float[] out_buff, int out_offset, int out_len) {
-        toFloatArray(in_buff, 0, out_buff, out_offset, out_len);
     }
 
     public void toByteArray(float[] in_buff, int in_len, byte[] out_buff, int out_offset) {

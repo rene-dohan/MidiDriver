@@ -52,7 +52,6 @@ public class SoftLinearResampler2 {
         int sector_size = 400;
         int sector_loopstart = -1;
         boolean markset = false;
-        int marklimit = 0;
         int streampos = 0;
         int nrofchannels = 2;
         boolean noteOff_flag = false;
@@ -107,7 +106,6 @@ public class SoftLinearResampler2 {
 
             if (loopmode != 0) {
                 markset = false;
-                marklimit = nrofchannels * (int) (looplen + pad2 + 1);
             } else
                 markset = true;
             // loopmode = 0;
@@ -180,7 +178,7 @@ public class SoftLinearResampler2 {
             while (ix[0] >= sector_size + pad) {
                 if (!markset) {
                     if (sector_pos + 1 == sector_loopstart) {
-                        stream.mark(marklimit);
+                        stream.mark();
                         markset = true;
                     }
                 }
