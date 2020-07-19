@@ -25,11 +25,7 @@
 
 package cn.sherlock.com.sun.media.sound;
 
-import android.support.annotation.NonNull;
-
 import java.io.IOException;
-import java.io.InputStream;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,99 +43,6 @@ import jp.kshoji.javax.sound.midi.Patch;
  * @author Karl Helgason
  */
 public class SoftSynthesizer {
-
-    protected static class WeakAudioStream extends InputStream
-    {
-        private volatile AudioInputStream stream;
-        public SoftAudioPusher pusher = null;
-        public AudioInputStream jitter_stream = null;
-        public SourceDataLineImpl sourceDataLine = null;
-        public volatile long silent_samples = 0;
-        private int framesize;
-        private WeakReference<AudioInputStream> weak_stream_link;
-        private AudioFloatConverter converter;
-        private float[] silentbuffer = null;
-        private int samplesize;
-
-        public void setInputStream(AudioInputStream stream)
-        {
-            this.stream = stream;
-        }
-
-        public int available() throws IOException {
-            AudioInputStream local_stream = stream;
-            if(local_stream != null)
-                return local_stream.available();
-            return 0;
-        }
-
-        public int read() throws IOException {
-            byte[] b = new byte[1];
-            if (read(b) == -1)
-                return -1;
-            return b[0] & 0xFF;
-        }
-
-        public int read(@NonNull byte[] b, int off, int len) throws IOException {
-            AudioInputStream local_stream = stream;
-            if(local_stream != null)
-                return local_stream.read(b, off, len);
-            else
-            {
-                int flen = len / samplesize;
-                if(silentbuffer == null || silentbuffer.length < flen)
-                    silentbuffer = new float[flen];
-                converter.toByteArray(silentbuffer, flen, b, off);
-
-                silent_samples += (len / framesize);
-
-                if(pusher != null)
-                    if(weak_stream_link.get() == null)
-                    {
-                        Runnable runnable = new Runnable()
-                        {
-                            SoftAudioPusher _pusher = pusher;
-                            AudioInputStream _jitter_stream = jitter_stream;
-                            SourceDataLineImpl _sourceDataLine = sourceDataLine;
-                            public void run()
-                            {
-                                _pusher.stop();
-                                if(_jitter_stream != null)
-                                    try {
-                                        _jitter_stream.close();
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                if(_sourceDataLine != null)
-                                    _sourceDataLine.close();
-                            }
-                        };
-                        pusher = null;
-                        jitter_stream = null;
-                        sourceDataLine = null;
-                        new Thread(runnable).start();
-                    }
-                return len;
-            }
-        }
-
-        public WeakAudioStream(AudioInputStream stream) {
-            this.stream = stream;
-            weak_stream_link = new WeakReference<>(stream);
-            converter = AudioFloatConverter.getConverter(stream.getFormat());
-            samplesize = stream.getFormat().getFrameSize() / stream.getFormat().getChannels();
-            framesize = stream.getFormat().getFrameSize();
-        }
-
-        public void close() throws IOException
-        {
-            AudioInputStream astream  = weak_stream_link.get();
-            if(astream != null)
-                astream.close();
-        }
-    }
-
-    protected WeakAudioStream weakstream;
 
     protected final Object control_mutex = this;
 
@@ -346,8 +249,6 @@ public class SoftSynthesizer {
 
                 AudioInputStream ais = openStream();
 
-                weakstream = new WeakAudioStream(ais);
-
                 sourceDataLine = new SourceDataLineImpl();
 
                 double latency = 120000L;
@@ -377,13 +278,9 @@ public class SoftSynthesizer {
                     buffersize = 3 * controlbuffersize;
 
                 ais = new SoftJitterCorrector(ais, buffersize, controlbuffersize);
-                weakstream.jitter_stream = ais;
                 pusher = new SoftAudioPusher(sourceDataLine, ais, controlbuffersize);
                 pusher_stream = ais;
                 pusher.start();
-
-                weakstream.pusher = pusher;
-                weakstream.sourceDataLine = sourceDataLine;
 
             } catch (IllegalArgumentException | SecurityException e) {
                 if (open) close();
