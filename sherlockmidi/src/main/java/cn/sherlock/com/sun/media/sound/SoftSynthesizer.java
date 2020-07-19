@@ -131,11 +131,6 @@ public class SoftSynthesizer {
             framesize = stream.getFormat().getFrameSize();
         }
 
-        public AudioInputStream getAudioInputStream()
-        {
-            return new AudioInputStream(this, stream.getFormat(), AudioFormat.UNSPECIFIED_FRAME_SIZE);
-        }
-
         public void close() throws IOException
         {
             AudioInputStream astream  = weak_stream_link.get();
@@ -144,9 +139,7 @@ public class SoftSynthesizer {
         }
     }
 
-    private static SourceDataLineImpl testline = null;
-
-    protected WeakAudioStream weakstream = null;
+    protected WeakAudioStream weakstream;
 
     protected final Object control_mutex = this;
 
@@ -184,40 +177,9 @@ public class SoftSynthesizer {
     private Map<String, SoftTuning> tunings = new HashMap<>();
     private Map<String, SoftInstrument> inslist = new HashMap<>();
 
-    private void getBuffers(SF2Instrument instrument, List<ModelByteBuffer> buffers) {
-        for (ModelPerformer performer : instrument.getPerformers()) {
-            if (performer.getOscillators() != null) {
-                for (ModelByteBufferWavetable osc : performer.getOscillators()) {
-                    ModelByteBuffer buff = osc.getBuffer();
-                    if (buff != null)
-                        buffers.add(buff);
-                    buff = osc.get8BitExtensionBuffer();
-                    if (buff != null)
-                        buffers.add(buff);
-                }
-            }
-        }
-    }
-
-    private boolean loadSamples(List<SF2Instrument> instruments) {
-        List<ModelByteBuffer> buffers = new ArrayList<>();
-        for (SF2Instrument instrument : instruments)
-            getBuffers(instrument, buffers);
-        try {
-            ModelByteBuffer.loadAll(buffers);
-        } catch (IOException e) {
-            return false;
-        }
-        return true;
-    }
-
     private boolean loadInstruments(List<SF2Instrument> instruments) {
-        if (!isOpen())
-            return false;
-        if (!loadSamples(instruments))
-            return false;
-
         synchronized (control_mutex) {
+            if (!open) return false;
             if (channels != null)
                 for (SoftChannel c : channels)
                 {
@@ -385,25 +347,16 @@ public class SoftSynthesizer {
                 AudioInputStream ais = openStream();
 
                 weakstream = new WeakAudioStream(ais);
-                ais = weakstream.getAudioInputStream();
 
-                SourceDataLineImpl line = testline == null ? new SourceDataLineImpl() : testline;
+                sourceDataLine = new SourceDataLineImpl();
 
                 double latency = 120000L;
-
-                if (!line.isOpen()) {
-                    int bufferSize = AudioFormat.STEREO_FORMAT.getFrameSize()
-                            * (int)(AudioFormat.STEREO_FORMAT.getFrameRate() * (latency/1000000f));
-                    // can throw LineUnavailableException,
-                    // IllegalArgumentException, SecurityException
-                    line.open(AudioFormat.STEREO_FORMAT, bufferSize);
-
-                    // Remember that we opened that line
-                    // so we can close again in SoftSynthesizer.close()
-                    sourceDataLine = line;
-                }
-                if (!line.isActive())
-                    line.start();
+                int bufferSize = AudioFormat.STEREO_FORMAT.getFrameSize()
+                        * (int)(AudioFormat.STEREO_FORMAT.getFrameRate() * (latency/1000000f));
+                // can throw LineUnavailableException,
+                // IllegalArgumentException, SecurityException
+                sourceDataLine.open(AudioFormat.STEREO_FORMAT, bufferSize);
+                sourceDataLine.start();
 
                 int controlbuffersize = 512;
                 try {
@@ -417,24 +370,20 @@ public class SoftSynthesizer {
                 //mainmixer.readfully = false;
                 //pusher = new DataPusher(line, ais);
 
-                int buffersize = line.getBufferSize();
+                int buffersize = sourceDataLine.getBufferSize();
                 buffersize -= buffersize % controlbuffersize;
 
                 if (buffersize < 3 * controlbuffersize)
                     buffersize = 3 * controlbuffersize;
 
                 ais = new SoftJitterCorrector(ais, buffersize, controlbuffersize);
-                if(weakstream != null)
-                    weakstream.jitter_stream = ais;
-                pusher = new SoftAudioPusher(line, ais, controlbuffersize);
+                weakstream.jitter_stream = ais;
+                pusher = new SoftAudioPusher(sourceDataLine, ais, controlbuffersize);
                 pusher_stream = ais;
                 pusher.start();
 
-                if(weakstream != null)
-                {
-                    weakstream.pusher = pusher;
-                    weakstream.sourceDataLine = sourceDataLine;
-                }
+                weakstream.pusher = pusher;
+                weakstream.sourceDataLine = sourceDataLine;
 
             } catch (IllegalArgumentException | SecurityException e) {
                 if (open) close();

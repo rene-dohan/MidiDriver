@@ -43,7 +43,6 @@ public class ModelByteBufferWavetable {
     private float loopStart = -1;
     private float loopLength = -1;
     private ModelByteBuffer buffer;
-    private ModelByteBuffer buffer8 = null;
     private AudioFormat format;
     private float pitchcorrection;
     private int loopType = LOOP_TYPE_OFF;
@@ -52,14 +51,6 @@ public class ModelByteBufferWavetable {
         this.format = format;
         this.buffer = buffer;
         this.pitchcorrection = pitchcorrection;
-    }
-
-    public ModelByteBuffer get8BitExtensionBuffer() {
-        return buffer8;
-    }
-
-    public ModelByteBuffer getBuffer() {
-        return buffer;
     }
 
     public AudioFormat getFormat() {

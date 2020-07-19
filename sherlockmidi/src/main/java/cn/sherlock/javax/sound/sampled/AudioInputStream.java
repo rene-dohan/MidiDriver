@@ -66,11 +66,6 @@ public class AudioInputStream extends InputStream {
     protected long framePos;
 
     /**
-     * The position where a mark was set.
-     */
-    private long markpos;
-
-    /**
      * When the underlying stream could only return
      * a non-integral number of frames, store
      * the remainder in a temporary buffer
@@ -81,16 +76,6 @@ public class AudioInputStream extends InputStream {
      * number of valid bytes in the pushBackBuffer
      */
     private int pushBackLen = 0;
-
-    /**
-     * MarkBuffer at mark position
-     */
-    private byte[] markPushBackBuffer = null;
-
-    /**
-     * number of valid bytes in the markPushBackBuffer
-     */
-    private int markPushBackLen = 0;
 
 
     /**
@@ -117,7 +102,6 @@ public class AudioInputStream extends InputStream {
 
         this.stream = stream;
         framePos = 0;
-        markpos = 0;
     }
 
 
@@ -364,67 +348,6 @@ public class AudioInputStream extends InputStream {
      */
     public void close() throws IOException {
         stream.close();
-    }
-
-
-    /**
-     * Marks the current position in this audio input stream.
-     * @param readlimit the maximum number of bytes that can be read before
-     * the mark position becomes invalid.
-     * @see #reset
-     * @see #markSupported
-     */
-
-    public void mark(int readlimit) {
-
-        stream.mark(readlimit);
-        if (markSupported()) {
-            markpos = framePos;
-            // remember the pushback buffer
-            markPushBackLen = pushBackLen;
-            if (markPushBackLen > 0) {
-                if (markPushBackBuffer == null) {
-                    markPushBackBuffer = new byte[frameSize];
-                }
-                System.arraycopy(pushBackBuffer, 0, markPushBackBuffer, 0, markPushBackLen);
-            }
-        }
-    }
-
-
-    /**
-     * Repositions this audio input stream to the position it had at the time its
-     * <code>mark</code> method was last invoked.
-     * @throws IOException if an input or output error occurs.
-     * @see #mark
-     * @see #markSupported
-     */
-    public void reset() throws IOException {
-
-        stream.reset();
-        framePos = markpos;
-        // re-create the pushback buffer
-        pushBackLen = markPushBackLen;
-        if (pushBackLen > 0) {
-            if (pushBackBuffer == null) {
-                pushBackBuffer = new byte[frameSize - 1];
-            }
-            System.arraycopy(markPushBackBuffer, 0, pushBackBuffer, 0, pushBackLen);
-        }
-    }
-
-
-    /**
-     * Tests whether this audio input stream supports the <code>mark</code> and
-     * <code>reset</code> methods.
-     * @return <code>true</code> if this stream supports the <code>mark</code>
-     * and <code>reset</code> methods; <code>false</code> otherwise
-     * @see #mark
-     * @see #reset
-     */
-    public boolean markSupported() {
-
-        return stream.markSupported();
     }
 
 

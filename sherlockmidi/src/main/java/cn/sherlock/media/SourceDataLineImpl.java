@@ -26,21 +26,6 @@ public class SourceDataLineImpl {
 		}
 	}
 
-	public boolean isOpen() {
-		return audioTrack != null;
-	}
-
-	private boolean isRunning() {
-		if (audioTrack != null) {
-			return audioTrack.getPlayState() == AudioTrack.PLAYSTATE_PLAYING;
-		}
-		return false;
-	}
-
-	public boolean isActive() {
-		return isRunning();
-	}
-
 	public int getBufferSize() {
 		if (audioTrack != null) {
 			return bufferSize;

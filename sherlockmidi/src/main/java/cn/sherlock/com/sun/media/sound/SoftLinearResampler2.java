@@ -365,7 +365,7 @@ public class SoftLinearResampler2 {
             return len;
         }
 
-        public void close() throws IOException {
+        public void close() {
             stream.close();
         }
     }

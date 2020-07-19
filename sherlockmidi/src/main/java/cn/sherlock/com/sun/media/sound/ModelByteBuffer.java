@@ -25,11 +25,7 @@
 package cn.sherlock.com.sun.media.sound;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.RandomAccessFile;
-import java.util.Collection;
 
 /**
  * This class is a pointer to a binary array either in memory or on disk.
@@ -39,99 +35,9 @@ import java.util.Collection;
 public class ModelByteBuffer {
 
     private ModelByteBuffer root;
-    private File file;
-    private long fileoffset;
     private byte[] buffer;
     private long offset;
     private final long len;
-
-    private class RandomFileInputStream extends InputStream {
-
-        private RandomAccessFile raf;
-        private long left;
-        private long mark = 0;
-        private long markleft = 0;
-
-        public RandomFileInputStream() throws IOException {
-            raf = new RandomAccessFile(root.file, "r");
-            raf.seek(root.fileoffset + arrayOffset());
-            left = capacity();
-        }
-
-        public int available() {
-            if (left > Integer.MAX_VALUE)
-                return Integer.MAX_VALUE;
-            return (int)left;
-        }
-
-        public synchronized void mark(int readlimit) {
-            try {
-                mark = raf.getFilePointer();
-                markleft = left;
-            } catch (IOException e) {
-                //e.printStackTrace();
-            }
-        }
-
-        public boolean markSupported() {
-            return true;
-        }
-
-        public synchronized void reset() throws IOException {
-            raf.seek(mark);
-            left = markleft;
-        }
-
-        public long skip(long n) throws IOException {
-            if( n < 0)
-                return 0;
-            if (n > left)
-                n = left;
-            long p = raf.getFilePointer();
-            raf.seek(p + n);
-            left -= n;
-            return n;
-        }
-
-        public int read(byte[] b, int off, int len) throws IOException {
-            if (len > left)
-                len = (int)left;
-            if (left == 0)
-                return -1;
-            len = raf.read(b, off, len);
-            if (len == -1)
-                return -1;
-            left -= len;
-            return len;
-        }
-
-        public int read(byte[] b) throws IOException {
-            int len = b.length;
-            if (len > left)
-                len = (int)left;
-            if (left == 0)
-                return -1;
-            len = raf.read(b, 0, len);
-            if (len == -1)
-                return -1;
-            left -= len;
-            return len;
-        }
-
-        public int read() throws IOException {
-            if (left == 0)
-                return -1;
-            int b = raf.read();
-            if (b == -1)
-                return -1;
-            left--;
-            return b;
-        }
-
-        public void close() throws IOException {
-            raf.close();
-        }
-    }
 
     private ModelByteBuffer(ModelByteBuffer parent, long beginIndex, long endIndex, boolean independent) {
         this.root = parent.root;
@@ -151,12 +57,7 @@ public class ModelByteBuffer {
         len = endIndex - beginIndex;
         if (independent) {
             buffer = root.buffer;
-            if (root.file != null) {
-                file = root.file;
-                fileoffset = root.fileoffset + arrayOffset();
-                offset = 0;
-            } else
-                offset = arrayOffset();
+            offset = arrayOffset();
             root = this;
         }
     }
@@ -169,14 +70,6 @@ public class ModelByteBuffer {
     }
 
     public InputStream getInputStream() {
-        if (root.file != null && root.buffer == null) {
-            try {
-                return new RandomFileInputStream();
-            } catch (IOException e) {
-                //e.printStackTrace();
-                return null;
-            }
-        }
         return new ByteArrayInputStream(array(),
                 (int)arrayOffset(), (int)capacity());
     }
@@ -202,50 +95,6 @@ public class ModelByteBuffer {
 
     public long capacity() {
         return len;
-    }
-
-    public static void loadAll(Collection<ModelByteBuffer> col)
-            throws IOException {
-        File selfile = null;
-        RandomAccessFile raf = null;
-        try {
-            for (ModelByteBuffer mbuff : col) {
-                mbuff = mbuff.root;
-                if (mbuff.file == null)
-                    continue;
-                if (mbuff.buffer != null)
-                    continue;
-                if (selfile == null || !selfile.equals(mbuff.file)) {
-                    if (raf != null) {
-                        raf.close();
-                        raf = null;
-                    }
-                    selfile = mbuff.file;
-                    raf = new RandomAccessFile(mbuff.file, "r");
-                }
-                raf.seek(mbuff.fileoffset);
-                byte[] buffer = new byte[(int) mbuff.capacity()];
-
-                int read = 0;
-                int avail = buffer.length;
-                while (read != avail) {
-                    if (avail - read > 65536) {
-                        raf.readFully(buffer, read, 65536);
-                        read += 65536;
-                    } else {
-                        raf.readFully(buffer, read, avail - read);
-                        read = avail;
-                    }
-
-                }
-
-                mbuff.buffer = buffer;
-                mbuff.offset = 0;
-            }
-        } finally {
-            if (raf != null)
-                raf.close();
-        }
     }
 
 }
