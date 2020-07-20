@@ -26,7 +26,6 @@ package cn.sherlock.com.sun.media.sound;
 
 import android.support.annotation.NonNull;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.TreeMap;
 

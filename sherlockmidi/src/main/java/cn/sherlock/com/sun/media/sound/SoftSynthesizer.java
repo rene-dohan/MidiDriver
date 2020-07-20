@@ -264,19 +264,6 @@ public class SoftSynthesizer {
                 } catch (IOException ignored) {
                 }
 
-                // Tell mixer not fill read buffers fully.
-                // This lowers latency, and tells DataPusher
-                // to read in smaller amounts.
-                //mainmixer.readfully = false;
-                //pusher = new DataPusher(line, ais);
-
-                int buffersize = sourceDataLine.getBufferSize();
-                buffersize -= buffersize % controlbuffersize;
-
-                if (buffersize < 3 * controlbuffersize)
-                    buffersize = 3 * controlbuffersize;
-
-                ais = new SoftJitterCorrector(ais, buffersize, controlbuffersize);
                 pusher = new SoftAudioPusher(sourceDataLine, ais, controlbuffersize);
                 pusher_stream = ais;
                 pusher.start();

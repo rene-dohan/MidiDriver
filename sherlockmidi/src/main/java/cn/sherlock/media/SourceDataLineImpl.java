@@ -7,7 +7,6 @@ import cn.sherlock.javax.sound.sampled.AudioFormat;
 public class SourceDataLineImpl {
 
 	private AudioTrack audioTrack;
-	private int bufferSize;
 
 	public SourceDataLineImpl() {
 	}
@@ -26,16 +25,8 @@ public class SourceDataLineImpl {
 		}
 	}
 
-	public int getBufferSize() {
-		if (audioTrack != null) {
-			return bufferSize;
-		}
-		return 0;
-	}
-
 	public void open(AudioFormat format, int bufferSize) {
 		// Get the smallest buffer to minimize latency.
-		this.bufferSize = bufferSize;
 		int sampleRateInHz = (int) format.getSampleRate();
 		// int sampleSizeInBit = format.getSampleSizeInBits();
 		int channelConfig;

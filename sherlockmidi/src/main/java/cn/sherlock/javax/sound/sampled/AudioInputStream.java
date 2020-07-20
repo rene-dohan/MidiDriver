@@ -46,11 +46,6 @@ public class AudioInputStream extends InputStream {
     private InputStream stream;
 
     /**
-     * The format of the audio data contained in the stream.
-     */
-    protected AudioFormat format;
-
-    /**
      * This stream's length, in sample frames.
      */
     protected long frameLength;
@@ -90,7 +85,6 @@ public class AudioInputStream extends InputStream {
 
         super();
 
-        this.format = format;
         this.frameLength = length;
         this.frameSize = format.getFrameSize();
 
@@ -126,24 +120,6 @@ public class AudioInputStream extends InputStream {
 //        framePos = 0;
 //        markpos = 0;
 //    }
-
-
-    /**
-     * Obtains the audio format of the sound data in this audio input stream.
-     * @return an audio format object describing this stream's format
-     */
-    public AudioFormat getFormat() {
-        return format;
-    }
-
-
-    /**
-     * Obtains the length of the stream, expressed in sample frames rather than bytes.
-     * @return the length in sample frames
-     */
-    public long getFrameLength() {
-        return frameLength;
-    }
 
 
     /**

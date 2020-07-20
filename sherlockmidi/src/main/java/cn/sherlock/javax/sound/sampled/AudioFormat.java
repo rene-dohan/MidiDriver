@@ -91,7 +91,6 @@ package cn.sherlock.javax.sound.sampled;
  *
  * @author Kara Kytle
  * @author Florian Bomers
- * @see AudioInputStream#getFormat
  * @since 1.3
  */
 public class AudioFormat {

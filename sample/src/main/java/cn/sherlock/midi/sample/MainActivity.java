@@ -3,6 +3,7 @@ package cn.sherlock.midi.sample;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.view.MotionEventCompat;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -100,6 +101,7 @@ public class MainActivity extends Activity {
 		currentInstrument = soundbank.getInstrument(new Patch(0, program));
 		synth.loadInstrument(currentInstrument);
 		channel.programChange(program);
+		Log.d("NEW INSTRUMENT", "PROGRAM " + program);
 	}
 
 	@Override
