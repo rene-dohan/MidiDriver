@@ -354,24 +354,8 @@ public class SoftMainMixer {
             private SoftAudioBuffer[] buffers = SoftMainMixer.this.buffers;
             private int nrofchannels = AudioFormat.STEREO_FORMAT.getChannels();
             private int buffersize = buffers[0].getSize();
-            private byte[] bbuffer = new byte[buffersize
-                    * (AudioFormat.STEREO_FORMAT.getSampleSizeInBits() / 8)
-                    * nrofchannels];
+            private byte[] bbuffer = new byte[buffersize * (AudioFormat.STEREO_FORMAT.getSampleSizeInBits() / 8) * nrofchannels];
             private int bbuffer_pos = 0;
-            private byte[] single = new byte[1];
-
-            public void fillBuffer() {
-                /*
-                boolean pusher_silent2;
-                synchronized (control_mutex) {
-                    pusher_silent2 = pusher_silent;
-                }
-                if(!pusher_silent2)*/
-                processAudioBuffers(); 
-                for (int i = 0; i < nrofchannels; i++)
-                    buffers[i].get(bbuffer, i);
-                bbuffer_pos = 0;
-            }
 
             public int read(@NonNull byte[] b, int off, int len) {
                 int bbuffer_len = bbuffer.length;
@@ -379,8 +363,12 @@ public class SoftMainMixer {
                 int orgoff = off;
                 byte[] bbuffer = this.bbuffer;
                 while (off < offlen) {
-                    if (available() == 0)
-                        fillBuffer();
+                    if (available() == 0) {
+                        processAudioBuffers();
+                        for (int i = 0; i < nrofchannels; i++)
+                            buffers[i].get(bbuffer, i);
+                        bbuffer_pos = 0;
+                    }
                     else {
                         int bbuffer_pos = this.bbuffer_pos;
                         while (off < offlen && bbuffer_pos < bbuffer_len)
@@ -393,11 +381,8 @@ public class SoftMainMixer {
                 return len;
             }
 
-            public int read() throws IOException {
-                int ret = read(single);
-                if (ret == -1)
-                    return -1;
-                return single[0] & 0xFF;
+            public int read() {
+                throw new RuntimeException("THIS SHOULD NEVER HAPPEN");
             }
 
             public int available() {

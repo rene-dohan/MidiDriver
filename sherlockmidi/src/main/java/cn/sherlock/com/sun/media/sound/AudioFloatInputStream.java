@@ -81,9 +81,6 @@ public class AudioFloatInputStream {
         return len;
     }
 
-    public void close() {
-    }
-
     public void mark() {
         markpos = pos;
     }

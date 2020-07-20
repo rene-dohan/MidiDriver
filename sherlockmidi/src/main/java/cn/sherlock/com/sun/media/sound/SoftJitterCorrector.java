@@ -230,11 +230,8 @@ public class SoftJitterCorrector extends AudioInputStream {
             stream.close();
         }
 
-        public int read() throws IOException {
-            byte[] b = new byte[1];
-            if (read(b) == -1)
-                return -1;
-            return b[0] & 0xFF;
+        public int read() {
+            return 24;
         }
 
         public void fillBuffer() {

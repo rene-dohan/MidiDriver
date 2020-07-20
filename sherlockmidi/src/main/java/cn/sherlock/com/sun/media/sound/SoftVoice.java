@@ -555,13 +555,6 @@ public class SoftVoice {
             performer = null;
             connections = null;
             extendedConnectionBlocks = null;
-            if (osc_stream != null)
-                try {
-                    osc_stream.close();
-                } catch (IOException e) {
-                    //e.printStackTrace();
-                }
-
             if (stealer_channel != null) {
                 stealer_channel.initVoice(this, stealer_performer,
                         stealer_voiceID, stealer_noteNumber, stealer_velocity,

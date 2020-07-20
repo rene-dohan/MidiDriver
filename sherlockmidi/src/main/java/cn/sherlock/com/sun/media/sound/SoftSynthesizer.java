@@ -155,8 +155,7 @@ public class SoftSynthesizer {
         else
             p_plaf = "";
 
-        SoftInstrument current_instrument
-                = inslist.get(p_plaf + program + "." + bank);
+        SoftInstrument current_instrument = inslist.get(p_plaf + program + "." + bank);
         if (current_instrument != null)
             return current_instrument;
         // Instrument not found fallback to MSB:0, LSB:0

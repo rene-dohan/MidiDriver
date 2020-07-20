@@ -41,7 +41,5 @@ public interface SoftResamplerStreamer {
 
     int read(float[][] buffer, int offset, int len) throws IOException;
 
-    void close() throws IOException;
-
     void open(ModelByteBufferWavetable osc, float outputsamplerate) throws IOException;
 }

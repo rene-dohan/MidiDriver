@@ -365,9 +365,6 @@ public class SoftLinearResampler2 {
             return len;
         }
 
-        public void close() {
-            stream.close();
-        }
     }
 
     public SoftResamplerStreamer openStreamer() {
