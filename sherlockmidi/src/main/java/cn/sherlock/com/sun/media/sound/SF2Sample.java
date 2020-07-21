@@ -24,8 +24,6 @@
  */
 package cn.sherlock.com.sun.media.sound;
 
-import cn.sherlock.javax.sound.sampled.AudioFormat;
-
 /**
  * Soundfont sample storage.
  *
@@ -38,22 +36,4 @@ public class SF2Sample {
     protected int originalPitch = 60;
     protected byte pitchCorrection = 0;
     protected ModelByteBuffer data;
-    private AudioFormat format = AudioFormat.MONO_FORMAT;
-
-    public ModelByteBuffer getDataBuffer() {
-        return data;
-    }
-
-    public AudioFormat getFormat() {
-        return format;
-    }
-
-    /*
-    public void setData(File file, int offset, int length) {
-        this.data = null;
-        this.sampleFile = file;
-        this.sampleOffset = offset;
-        this.sampleLen = length;
-    }
-    */
 }

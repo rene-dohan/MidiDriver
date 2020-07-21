@@ -8,9 +8,6 @@ public class SourceDataLineImpl {
 
 	private AudioTrack audioTrack;
 
-	public SourceDataLineImpl() {
-	}
-
 	public void start() {
 		if (audioTrack != null) {
 			audioTrack.play();
@@ -25,7 +22,7 @@ public class SourceDataLineImpl {
 		}
 	}
 
-	public void open(AudioFormat format, int bufferSize) {
+	public SourceDataLineImpl(AudioFormat format, int bufferSize) {
 		// Get the smallest buffer to minimize latency.
 		int sampleRateInHz = (int) format.getSampleRate();
 		// int sampleSizeInBit = format.getSampleSizeInBits();

@@ -143,7 +143,7 @@ public class SoftLinearResampler2 {
                 current_pitch[0] = this.target_pitch;
         }
 
-        public void nextBuffer() throws IOException {
+        public void nextBuffer() {
             if (ix[0] < pad) {
                 if (markset) {
                     // reset to target sector

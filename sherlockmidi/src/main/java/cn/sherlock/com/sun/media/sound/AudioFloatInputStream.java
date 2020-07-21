@@ -70,15 +70,14 @@ public class AudioFloatInputStream {
         return len;
     }
 
-    public long skip(long len) {
+    public void skip(long len) {
         if (pos >= buffer_len)
-            return -1;
+            return;
         if (len <= 0)
-            return 0;
+            return;
         if (pos + len > buffer_len)
             len = buffer_len - pos;
         pos += len;
-        return len;
     }
 
     public void mark() {

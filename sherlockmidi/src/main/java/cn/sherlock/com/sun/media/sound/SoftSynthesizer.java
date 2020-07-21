@@ -25,7 +25,6 @@
 
 package cn.sherlock.com.sun.media.sound;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,6 +42,8 @@ import jp.kshoji.javax.sound.midi.Patch;
  * @author Karl Helgason
  */
 public class SoftSynthesizer {
+
+    public static final int MAX_POLY = 64;
 
     protected final Object control_mutex = this;
 
@@ -246,26 +247,17 @@ public class SoftSynthesizer {
             if (open) return;
             try {
 
-                AudioInputStream ais = openStream();
-
-                sourceDataLine = new SourceDataLineImpl();
+                pusher_stream = openStream();
 
                 double latency = 120000L;
-                int bufferSize = AudioFormat.STEREO_FORMAT.getFrameSize()
-                        * (int)(AudioFormat.STEREO_FORMAT.getFrameRate() * (latency/1000000f));
+                int bufferSize = AudioFormat.STEREO_FORMAT.getFrameSize() * (int)(AudioFormat.STEREO_FORMAT.getFrameRate() * (latency/1000000f));
                 // can throw LineUnavailableException,
                 // IllegalArgumentException, SecurityException
-                sourceDataLine.open(AudioFormat.STEREO_FORMAT, bufferSize);
+
+                sourceDataLine = new SourceDataLineImpl(AudioFormat.STEREO_FORMAT, bufferSize);
                 sourceDataLine.start();
 
-                int controlbuffersize = 512;
-                try {
-                    controlbuffersize = ais.available();
-                } catch (IOException ignored) {
-                }
-
-                pusher = new SoftAudioPusher(sourceDataLine, ais, controlbuffersize);
-                pusher_stream = ais;
+                pusher = new SoftAudioPusher(sourceDataLine,  pusher_stream);
                 pusher.start();
 
             } catch (IllegalArgumentException | SecurityException e) {
@@ -285,9 +277,8 @@ public class SoftSynthesizer {
 
             open = true;
 
-            int maxpoly = 64;
-            voices = new SoftVoice[maxpoly];
-            for (int i = 0; i < maxpoly; i++)
+            voices = new SoftVoice[MAX_POLY];
+            for (int i = 0; i < MAX_POLY; i++)
                 voices[i] = new SoftVoice(this);
 
             mainmixer = new SoftMainMixer(this);
@@ -345,11 +336,7 @@ public class SoftSynthesizer {
             // and current thread.
             pusher_to_be_closed.stop();
 
-            try {
-                pusher_stream_to_be_closed.close();
-            } catch (IOException e) {
-                //e.printStackTrace();
-            }
+            pusher_stream_to_be_closed.close();
         }
 
         synchronized (control_mutex) {

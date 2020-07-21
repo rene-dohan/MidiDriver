@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.sherlock.javax.sound.sampled.AudioFormat;
 import jp.kshoji.javax.sound.midi.Patch;
 
 /**
@@ -62,7 +63,7 @@ public class SF2Instrument {
         if (performers == null) {
             int performercount = 0;
             for (SF2InstrumentRegion presetzone : regions)
-                performercount += presetzone.getLayer().getRegions().size();
+                performercount += presetzone.layer.regions.size();
 
             performers = new ModelPerformer[performercount];
             int pi = 0;
@@ -70,8 +71,7 @@ public class SF2Instrument {
             for (SF2InstrumentRegion presetzone : regions) {
                 Map<Integer, Short> pgenerators = new HashMap<>(presetzone.getGenerators());
 
-                SF2Layer layer = presetzone.getLayer();
-                for (SF2LayerRegion layerzone : layer.getRegions()) {
+                for (SF2LayerRegion layerzone : presetzone.layer.regions) {
                     ModelPerformer performer = new ModelPerformer();
 
                     performers[pi++] = performer;
@@ -146,39 +146,18 @@ public class SF2Instrument {
                     startloopAddrsOffset -= startAddrsOffset;
                     endloopAddrsOffset -= startAddrsOffset;
 
-                    SF2Sample sample = layerzone.getSample();
-                    int rootkey = sample.originalPitch;
+                    int rootkey = layerzone.sample.originalPitch;
                     if (layerzone.getShort(SF2Region.GENERATOR_OVERRIDINGROOTKEY) != -1) {
                         rootkey = layerzone.getShort(SF2Region.GENERATOR_OVERRIDINGROOTKEY);
                     }
-                    float pitchcorrection = (-rootkey * 100) + sample.pitchCorrection;
-                    ModelByteBuffer buff = sample.getDataBuffer();
+                    float pitchcorrection = (-rootkey * 100) + layerzone.sample.pitchCorrection;
+                    ModelByteBuffer buff = layerzone.sample.data;
 
                     if (startAddrsOffset != 0 || endAddrsOffset != 0) {
                         buff = buff.subbuffer(startAddrsOffset * 2, buff.capacity() + endAddrsOffset * 2);
-
-                    /*
-                    if (startAddrsOffset < 0)
-                        startAddrsOffset = 0;
-                    if (endAddrsOffset > (buff.capacity()/2-startAddrsOffset))
-                        startAddrsOffset = (int)buff.capacity()/2-startAddrsOffset;
-                    byte[] data = buff.array();
-                    int off = (int)buff.arrayOffset() + startAddrsOffset*2;
-                    int len = (int)buff.capacity() + endAddrsOffset*2;
-                    if (off+len > data.length)
-                        len = data.length - off;
-                    buff = new ModelByteBuffer(data, off, len);
-                    if(buff24 != null) {
-                        data = buff.array();
-                        off = (int)buff.arrayOffset() + startAddrsOffset;
-                        len = (int)buff.capacity() + endAddrsOffset;
-                        buff24 = new ModelByteBuffer(data, off, len);
-                    }
-                    */
                     }
 
-                    ModelByteBufferWavetable osc = new ModelByteBufferWavetable(
-                            buff, sample.getFormat(), pitchcorrection);
+                    ModelByteBufferWavetable osc = new ModelByteBufferWavetable(buff, AudioFormat.MONO_FORMAT, pitchcorrection);
 
                     Map<Integer, Short> generators = new HashMap<>(layerzone.getGenerators());
                     for (Map.Entry<Integer, Short> gen : pgenerators.entrySet()) {
@@ -200,11 +179,9 @@ public class SF2Instrument {
                     int sampleMode = getGeneratorValue(generators,
                             SF2Region.GENERATOR_SAMPLEMODES);
                     if ((sampleMode == 1) || (sampleMode == 3)) {
-                        if (sample.startLoop >= 0 && sample.endLoop > 0) {
-                            osc.setLoopStart((int) (sample.startLoop
-                                    + startloopAddrsOffset));
-                            osc.setLoopLength((int) (sample.endLoop - sample.startLoop
-                                    + endloopAddrsOffset - startloopAddrsOffset));
+                        if (layerzone.sample.startLoop >= 0 && layerzone.sample.endLoop > 0) {
+                            osc.setLoopStart((int) (layerzone.sample.startLoop + startloopAddrsOffset));
+                            osc.setLoopLength((int) (layerzone.sample.endLoop - layerzone.sample.startLoop + endloopAddrsOffset - startloopAddrsOffset));
                             if (sampleMode == 1)
                                 osc.setLoopType(ModelByteBufferWavetable.LOOP_TYPE_FORWARD);
                             if (sampleMode == 3)

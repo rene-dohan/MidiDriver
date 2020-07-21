@@ -24,8 +24,6 @@
  */
 package cn.sherlock.com.sun.media.sound;
 
-import java.io.IOException;
-
 import cn.sherlock.javax.sound.sampled.AudioInputStream;
 import cn.sherlock.media.SourceDataLineImpl;
 
@@ -42,9 +40,9 @@ public class SoftAudioPusher implements Runnable {
     private AudioInputStream ais;
     private byte[] buffer;
 
-    public SoftAudioPusher(SourceDataLineImpl sourceDataLine, AudioInputStream ais, int workbuffersizer) {
+    public SoftAudioPusher(SourceDataLineImpl sourceDataLine, AudioInputStream ais) {
         this.ais = ais;
-        this.buffer = new byte[workbuffersizer];
+        this.buffer = new byte[ais.available()];
         this.sourceDataLine = sourceDataLine;
     }
 
@@ -70,18 +68,12 @@ public class SoftAudioPusher implements Runnable {
     }
 
     public void run() {
-        try {
-            while (active) {
-                // Read from audio source
-                int count = ais.read(buffer);
-                if(count < 0) break;
-                // Write byte buffer to source output
-                sourceDataLine.write(buffer, 0, count);
-            }
-        } catch (IOException e) {
-            active = false;
-            //e.printStackTrace();
+        while (active) {
+            // Read from audio source
+            int count = ais.read(buffer, 0, buffer.length);
+            if(count < 0) break;
+            // Write byte buffer to source output
+            sourceDataLine.write(buffer, 0, count);
         }
-
     }
 }

@@ -49,7 +49,7 @@ public class AudioFloatConverter {
      * 
      **************************************************************************/
 
-    public float[] toFloatArray(byte[] in_buff, int in_offset, float[] out_buff, int out_offset, int out_len) {
+    public void toFloatArray(byte[] in_buff, int in_offset, float[] out_buff, int out_offset, int out_len) {
         int ix = in_offset;
         int len = out_offset + out_len;
         for (int ox = out_offset; ox < len; ox++) {
@@ -57,10 +57,9 @@ public class AudioFloatConverter {
                        (in_buff[ix++] << 8))) * (1.0f / 32767.0f);
         }
 
-        return out_buff;
     }
 
-    public byte[] toByteArray(float[] in_buff, int in_offset, int in_len, byte[] out_buff, int out_offset) {
+    public void toByteArray(float[] in_buff, int in_offset, int in_len, byte[] out_buff, int out_offset) {
         int ox = out_offset;
         int len = in_offset + in_len;
         for (int ix = in_offset; ix < len; ix++) {
@@ -68,7 +67,6 @@ public class AudioFloatConverter {
             out_buff[ox++] = (byte) x;
             out_buff[ox++] = (byte) (x >>> 8);
         }
-        return out_buff;
     }
 
     public static AudioFloatConverter getConverter(AudioFormat format) {

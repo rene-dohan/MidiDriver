@@ -24,9 +24,6 @@
  */
 package cn.sherlock.com.sun.media.sound;
 
-import android.support.annotation.NonNull;
-
-import java.io.InputStream;
 import java.util.TreeMap;
 
 import cn.sherlock.javax.sound.sampled.AudioFormat;
@@ -61,7 +58,7 @@ public class SoftMainMixer {
     private SoftSynthesizer synth;
     private float samplerate;
     private int nrofchannels;
-    private SoftAudioBuffer[] buffers;
+    private SoftAudioBuffer[] buffers = new SoftAudioBuffer[14];
     private SoftReverb reverb;
     private SoftChorus chorus;
     private SoftLimiter agc;
@@ -303,15 +300,11 @@ public class SoftMainMixer {
         samplerate = AudioFormat.STEREO_FORMAT.getSampleRate();
         nrofchannels = AudioFormat.STEREO_FORMAT.getChannels();
 
-        int buffersize = (int) (AudioFormat.STEREO_FORMAT.getSampleRate()
-                                / synth.getControlRate());
-        
-        buffer_len = buffersize;
+        buffer_len = (int) (AudioFormat.STEREO_FORMAT.getSampleRate() / synth.getControlRate());
 
         control_mutex = synth.control_mutex;
-        buffers = new SoftAudioBuffer[14];
         for (int i = 0; i < buffers.length; i++) {
-            buffers[i] = new SoftAudioBuffer(buffersize, AudioFormat.STEREO_FORMAT);
+            buffers[i] = new SoftAudioBuffer(buffer_len, AudioFormat.STEREO_FORMAT);
         }
 
         reverb = new SoftReverb();
@@ -348,40 +341,32 @@ public class SoftMainMixer {
         if (nrofchannels != 1)
             agc.setOutput(1, buffers[CHANNEL_RIGHT]);
 
-        InputStream in = new InputStream() {
+        AudioInputStream.SynthInputStream in = new AudioInputStream.SynthInputStream() {
 
-            private SoftAudioBuffer[] buffers = SoftMainMixer.this.buffers;
             private int nrofchannels = AudioFormat.STEREO_FORMAT.getChannels();
             private int buffersize = buffers[0].getSize();
             private byte[] bbuffer = new byte[buffersize * (AudioFormat.STEREO_FORMAT.getSampleSizeInBits() / 8) * nrofchannels];
             private int bbuffer_pos = 0;
 
-            public int read(@NonNull byte[] b, int off, int len) {
-                int bbuffer_len = bbuffer.length;
+            public int read(byte[] outputBuffer, int off, int len) {
                 int offlen = off + len;
                 int orgoff = off;
-                byte[] bbuffer = this.bbuffer;
                 while (off < offlen) {
                     if (available() == 0) {
                         processAudioBuffers();
                         for (int i = 0; i < nrofchannels; i++)
                             buffers[i].get(bbuffer, i);
                         bbuffer_pos = 0;
-                    }
-                    else {
+                    } else {
                         int bbuffer_pos = this.bbuffer_pos;
-                        while (off < offlen && bbuffer_pos < bbuffer_len)
-                            b[off++] = bbuffer[bbuffer_pos++];
+                        while (off < offlen && bbuffer_pos < bbuffer.length)
+                            outputBuffer[off++] = bbuffer[bbuffer_pos++];
                         this.bbuffer_pos = bbuffer_pos;
                         if (!readfully)
                             return off - orgoff;
                     }
                 }
                 return len;
-            }
-
-            public int read() {
-                throw new RuntimeException("THIS SHOULD NEVER HAPPEN");
             }
 
             public int available() {

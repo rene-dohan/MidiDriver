@@ -45,14 +45,11 @@ public class SF2Soundbank {
 
     // The Sample Data loaded from the SoundFont
     private ModelByteBuffer sampleData;
-    private List<SF2Instrument> instruments;
-    private List<SF2Layer> layers;
-    private List<SF2Sample> samples;
+    private List<SF2Instrument> instruments = new ArrayList<>();
+    private List<SF2Layer> layers = new ArrayList<>();
+    private List<SF2Sample> samples = new ArrayList<>();
 
     public SF2Soundbank(InputStream inputstream) throws IOException {
-        instruments = new ArrayList<>();
-        layers = new ArrayList<>();
-        samples = new ArrayList<>();
         readSoundbank(inputstream);
     }
 
@@ -67,12 +64,17 @@ public class SF2Soundbank {
         while (riff.hasNextChunk()) {
             RIFFReader chunk = riff.nextChunk();
             if (chunk.getFormat().equals("LIST")) {
-                if (chunk.getType().equals("INFO"))
-                    readInfoChunk(chunk);
-                if (chunk.getType().equals("sdta"))
-                    readSdtaChunk(chunk);
-                if (chunk.getType().equals("pdta"))
-                    readPdtaChunk(chunk);
+                switch (chunk.getType()) {
+                    case "INFO":
+                        readInfoChunk(chunk);
+                        break;
+                    case "sdta":
+                        readSdtaChunk(chunk);
+                        break;
+                    case "pdta":
+                        readPdtaChunk(chunk);
+                        break;
+                }
             }
         }
     }
@@ -139,8 +141,7 @@ public class SF2Soundbank {
 
         while (riff.hasNextChunk()) {
             RIFFReader chunk = riff.nextChunk();
-            String format = chunk.getFormat();
-            switch (format) {
+            switch (chunk.getFormat()) {
                 case "phdr": {
                     // Preset Header / Instrument
                     if (chunk.available() % 38 != 0)
@@ -353,7 +354,7 @@ public class SF2Soundbank {
                 }
             }
             if (globalsplit != null) {
-                layer.getRegions().remove(globalsplit);
+                layer.regions.remove(globalsplit);
             }
         }
 

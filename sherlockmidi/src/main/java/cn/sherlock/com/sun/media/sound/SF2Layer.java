@@ -36,7 +36,4 @@ public class SF2Layer {
 
     protected List<SF2LayerRegion> regions = new ArrayList<>();
 
-    public List<SF2LayerRegion> getRegions() {
-        return regions;
-    }
 }
