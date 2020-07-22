@@ -35,8 +35,6 @@ public class MainActivity extends Activity {
 					soundbank = new SF2Soundbank(soundbankStream);
 					synth = new SoftSynthesizer();
 					channel = synth.getChannels()[0];
-
-					synth.open();
 					changeInstrument(1); // Piano is program 1
 				} catch (IOException e) {
 					throw new RuntimeException(e);
@@ -47,39 +45,40 @@ public class MainActivity extends Activity {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
-					new Thread(new Runnable() {
+						final int pause = 350;
+						channel.controlChange(65, 127);
+						channel.controlChange(5, 80);
+						new Thread(new Runnable() {
 
-						@Override
-						public void run() {
-							int pause = 500;
-							channel.controlChange(65, 127);
-							channel.controlChange(5, 80);
-							try {
-								channel.noteOn(60, 64);
-								Thread.sleep(pause);
-								channel.noteOff(60);
+							@Override
+							public void run() {
+								try {
+									synth.open();
 
-								channel.noteOn(62, 64);
-								Thread.sleep(pause);
-								channel.noteOff(62);
+									channel.noteOn(60, 64);
+									Thread.sleep(pause);
+									channel.noteOff(60);
 
-								channel.noteOn(64, 64);
-								Thread.sleep(pause);
-								channel.noteOff(64);
+									channel.noteOn(62, 64);
+									Thread.sleep(pause);
+									channel.noteOff(62);
 
-								channel.noteOn(65, 64);
-								Thread.sleep(pause);
-								channel.noteOff(65);
+									channel.noteOn(64, 64);
+									Thread.sleep(pause);
+									channel.noteOff(64);
 
-								channel.noteOn(67, 64);
-								Thread.sleep(pause);
-								channel.noteOff(67);
+									channel.noteOn(65, 64);
+									Thread.sleep(pause);
+									channel.noteOff(65);
 
-							} catch (InterruptedException e) {
-								throw new RuntimeException(e);
+									channel.noteOn(67, 64);
+									Thread.sleep(pause);
+									channel.noteOff(67);
+								} catch (InterruptedException e) {
+									throw new RuntimeException(e);
+								}
 							}
-						}
-					}).start();
+						}).start();
 				}
 				return true;
 			}

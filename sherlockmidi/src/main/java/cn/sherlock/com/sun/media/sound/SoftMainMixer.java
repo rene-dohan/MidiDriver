@@ -385,7 +385,4 @@ public class SoftMainMixer {
     public AudioInputStream getInputStream() {
         return ais;
     }
-
-    public void close() {
-    }
 }

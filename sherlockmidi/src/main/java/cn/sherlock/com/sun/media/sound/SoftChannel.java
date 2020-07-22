@@ -218,78 +218,33 @@ public class SoftChannel implements MidiChannel {
                 return i;
 
         // No free voice was found, we must steal one
+        // Default Voice Allocation
+        //  * Find voice that is on
+        //      and Find voice which has lowest voiceID ( oldest voice)
+        //  * Or find voice that is off
+        //      and Find voice which has lowest voiceID ( oldest voice)
 
-        int vmode = synthesizer.getVoiceAllocationMode();
-        if (vmode == 1) {
-            // DLS Static Voice Allocation
+        int voiceNo = -1;
 
-            //  * priority ( 10, 1-9, 11-16)
-            // Search for channel to steal from
-            int steal_channel = channel;
-            for (SoftVoice voice : voices) {
-                if (voice.stealer_channel == null) {
-                    if (steal_channel == 9) {
-                        steal_channel = voice.channel;
-                    } else {
-                        if (voice.channel != 9) {
-                            if (voice.channel > steal_channel)
-                                steal_channel = voice.channel;
-                        }
-                    }
+        SoftVoice v = null;
+        // Search for oldest voice in off state
+        for (int j = 0; j < voices.length; j++) {
+            if (voices[j].stealer_channel == null && !voices[j].on) {
+                if (v == null) {
+                    v = voices[j];
+                    voiceNo = j;
+                }
+                if (voices[j].voiceID < v.voiceID) {
+                    v = voices[j];
+                    voiceNo = j;
                 }
             }
+        }
+        // Search for oldest voice in on state
+        if (voiceNo == -1) {
 
-            int voiceNo = -1;
-
-            SoftVoice v = null;
-            // Search for oldest voice in off state on steal_channel
             for (int j = 0; j < voices.length; j++) {
-                if (voices[j].channel == steal_channel) {
-                    if (voices[j].stealer_channel == null && !voices[j].on) {
-                        if (v == null) {
-                            v = voices[j];
-                            voiceNo = j;
-                        }
-                        if (voices[j].voiceID < v.voiceID) {
-                            v = voices[j];
-                            voiceNo = j;
-                        }
-                    }
-                }
-            }
-            // Search for oldest voice in on state on steal_channel
-            if (voiceNo == -1) {
-                for (int j = 0; j < voices.length; j++) {
-                    if (voices[j].channel == steal_channel) {
-                        if (voices[j].stealer_channel == null) {
-                            if (v == null) {
-                                v = voices[j];
-                                voiceNo = j;
-                            }
-                            if (voices[j].voiceID < v.voiceID) {
-                                v = voices[j];
-                                voiceNo = j;
-                            }
-                        }
-                    }
-                }
-            }
-
-            return voiceNo;
-
-        } else {
-            // Default Voice Allocation
-            //  * Find voice that is on
-            //      and Find voice which has lowest voiceID ( oldest voice)
-            //  * Or find voice that is off
-            //      and Find voice which has lowest voiceID ( oldest voice)
-
-            int voiceNo = -1;
-
-            SoftVoice v = null;
-            // Search for oldest voice in off state
-            for (int j = 0; j < voices.length; j++) {
-                if (voices[j].stealer_channel == null && !voices[j].on) {
+                if (voices[j].stealer_channel == null) {
                     if (v == null) {
                         v = voices[j];
                         voiceNo = j;
@@ -300,25 +255,9 @@ public class SoftChannel implements MidiChannel {
                     }
                 }
             }
-            // Search for oldest voice in on state
-            if (voiceNo == -1) {
-
-                for (int j = 0; j < voices.length; j++) {
-                    if (voices[j].stealer_channel == null) {
-                        if (v == null) {
-                            v = voices[j];
-                            voiceNo = j;
-                        }
-                        if (voices[j].voiceID < v.voiceID) {
-                            v = voices[j];
-                            voiceNo = j;
-                        }
-                    }
-                }
-            }
-
-            return voiceNo;
         }
+
+        return voiceNo;
 
     }
 
@@ -959,35 +898,33 @@ public class SoftChannel implements MidiChannel {
                 + " " + Integer.toHexString(value & 127) + ")");
          */
 
-        if (synthesizer.getGeneralMidiMode() == 0) {
-            if (controller == (0x01 << 7) + (0x08)) // Vibrato Rate
-                controlChange(76, value >> 7);
-            if (controller == (0x01 << 7) + (0x09)) // Vibrato Depth
-                controlChange(77, value >> 7);
-            if (controller == (0x01 << 7) + (0x0A)) // Vibrato Delay
-                controlChange(78, value >> 7);
-            if (controller == (0x01 << 7) + (0x20)) // Brightness
-                controlChange(74, value >> 7);
-            if (controller == (0x01 << 7) + (0x21)) // Filter Resonance
-                controlChange(71, value >> 7);
-            if (controller == (0x01 << 7) + (0x63)) // Attack Time
-                controlChange(73, value >> 7);
-            if (controller == (0x01 << 7) + (0x64)) // Decay Time
-                controlChange(75, value >> 7);
-            if (controller == (0x01 << 7) + (0x66)) // Release Time
-                controlChange(72, value >> 7);
+        if (controller == (0x01 << 7) + (0x08)) // Vibrato Rate
+            controlChange(76, value >> 7);
+        if (controller == (0x01 << 7) + (0x09)) // Vibrato Depth
+            controlChange(77, value >> 7);
+        if (controller == (0x01 << 7) + (0x0A)) // Vibrato Delay
+            controlChange(78, value >> 7);
+        if (controller == (0x01 << 7) + (0x20)) // Brightness
+            controlChange(74, value >> 7);
+        if (controller == (0x01 << 7) + (0x21)) // Filter Resonance
+            controlChange(71, value >> 7);
+        if (controller == (0x01 << 7) + (0x63)) // Attack Time
+            controlChange(73, value >> 7);
+        if (controller == (0x01 << 7) + (0x64)) // Decay Time
+            controlChange(75, value >> 7);
+        if (controller == (0x01 << 7) + (0x66)) // Release Time
+            controlChange(72, value >> 7);
 
-            if (controller >> 7 == 0x18) // Pitch coarse
-                controlChangePerNote(controller % 128, 120, value >> 7);
-            if (controller >> 7 == 0x1A) // Volume
-                controlChangePerNote(controller % 128, 7, value >> 7);
-            if (controller >> 7 == 0x1C) // Panpot
-                controlChangePerNote(controller % 128, 10, value >> 7);
-            if (controller >> 7 == 0x1D) // Reverb
-                controlChangePerNote(controller % 128, 91, value >> 7);
-            if (controller >> 7 == 0x1E) // Chorus
-                controlChangePerNote(controller % 128, 93, value >> 7);
-        }
+        if (controller >> 7 == 0x18) // Pitch coarse
+            controlChangePerNote(controller % 128, 120, value >> 7);
+        if (controller >> 7 == 0x1A) // Volume
+            controlChangePerNote(controller % 128, 7, value >> 7);
+        if (controller >> 7 == 0x1C) // Panpot
+            controlChangePerNote(controller % 128, 10, value >> 7);
+        if (controller >> 7 == 0x1D) // Reverb
+            controlChangePerNote(controller % 128, 91, value >> 7);
+        if (controller >> 7 == 0x1E) // Chorus
+            controlChangePerNote(controller % 128, 93, value >> 7);
 
         int[] val_i = co_midi_nrpn_nrpn_i.get(controller);
         double[] val_d = co_midi_nrpn_nrpn.get(controller);

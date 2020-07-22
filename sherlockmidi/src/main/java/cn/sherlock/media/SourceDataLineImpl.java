@@ -32,8 +32,7 @@ public class SourceDataLineImpl {
 		} else if (format.getChannels() == 2) {
 			channelConfig = android.media.AudioFormat.CHANNEL_OUT_STEREO;
 		} else {
-			throw new IllegalArgumentException(
-					"format.getChannels() must in (1,2)");
+			throw new IllegalArgumentException("format.getChannels() must in (1,2)");
 		}
 		audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, sampleRateInHz,
 				channelConfig, android.media.AudioFormat.ENCODING_PCM_16BIT,

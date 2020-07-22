@@ -63,7 +63,7 @@ public class SF2Instrument {
         if (performers == null) {
             int performercount = 0;
             for (SF2InstrumentRegion presetzone : regions)
-                performercount += presetzone.layer.regions.size();
+                performercount += presetzone.layerRegions.size();
 
             performers = new ModelPerformer[performercount];
             int pi = 0;
@@ -71,7 +71,7 @@ public class SF2Instrument {
             for (SF2InstrumentRegion presetzone : regions) {
                 Map<Integer, Short> pgenerators = new HashMap<>(presetzone.getGenerators());
 
-                for (SF2LayerRegion layerzone : presetzone.layer.regions) {
+                for (SF2LayerRegion layerzone : presetzone.layerRegions) {
                     ModelPerformer performer = new ModelPerformer();
 
                     performers[pi++] = performer;

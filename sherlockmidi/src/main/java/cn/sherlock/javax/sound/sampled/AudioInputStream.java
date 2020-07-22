@@ -36,7 +36,6 @@ public class AudioInputStream {
     public interface SynthInputStream {
         int read(byte[] outputBuffer, int off, int len);
         int available();
-        void close();
     }
 
     /**
@@ -197,14 +196,5 @@ public class AudioInputStream {
         } else {
             return temp;
         }
-    }
-
-
-    /**
-     * Closes this audio input stream and releases any system resources associated
-     * with the stream.
-     */
-    public void close() {
-        stream.close();
     }
 }

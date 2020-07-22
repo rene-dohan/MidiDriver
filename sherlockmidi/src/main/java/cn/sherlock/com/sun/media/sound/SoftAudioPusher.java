@@ -47,8 +47,7 @@ public class SoftAudioPusher implements Runnable {
     }
 
     public synchronized void start() {
-        if (active)
-            return;
+        if (active) return;
         active = true;
         audiothread = new Thread(this);
         audiothread.setDaemon(true);
@@ -71,7 +70,7 @@ public class SoftAudioPusher implements Runnable {
         while (active) {
             // Read from audio source
             int count = ais.read(buffer, 0, buffer.length);
-            if(count < 0) break;
+            if(count < 0) return;
             // Write byte buffer to source output
             sourceDataLine.write(buffer, 0, count);
         }

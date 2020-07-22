@@ -49,41 +49,51 @@ public class SoftSynthesizer {
 
     protected int voiceIDCounter = 0;
 
-    // 0: default
-    // 1: DLS Voice Allocation
-    protected int voice_allocation_mode = 0;
-
     protected boolean reverb_light = true;
     protected boolean reverb_on = true;
     protected boolean chorus_on = true;
     protected boolean agc_on = true;
 
-    protected SoftChannel[] channels;
-    protected SoftChannelProxy[] external_channels = null;
-
-    // 0: GM Mode off (default)
-    // 1: GM Level 1
-    // 2: GM Level 2
-    private int gmmode = 0;
-
-    private SourceDataLineImpl sourceDataLine = null;
-
-    private SoftAudioPusher pusher = null;
-    private AudioInputStream pusher_stream = null;
-
-    private boolean open = false;
-
     private SoftLinearResampler2 resampler = new SoftLinearResampler2();
 
-    private SoftMainMixer mainmixer;
-    private SoftVoice[] voices;
+    private SoftMainMixer mainmixer = new SoftMainMixer(this);
+    private SoftVoice[] voices = new SoftVoice[MAX_POLY];
+    {
+        for (int i = 0; i < MAX_POLY; i++) {
+            voices[i] = new SoftVoice(this);
+            voices[i].resampler = resampler.openStreamer();
+        }
+    }
+
+    protected SoftChannel[] channels = new SoftChannel[16];
+    {
+        for (int i = 0; i < channels.length; i++) {
+            channels[i] = new SoftChannel(this, i);
+        }
+    }
+
+    protected SoftChannelProxy[] external_channels = new SoftChannelProxy[channels.length];
+    {
+        for (int i = 0; i < external_channels.length; i++) {
+            external_channels[i] = new SoftChannelProxy();
+            external_channels[i].setChannel(channels[i]);
+        }
+    }
+
+    private SourceDataLineImpl sourceDataLine = new SourceDataLineImpl(
+            AudioFormat.STEREO_FORMAT,
+            AudioFormat.STEREO_FORMAT.getFrameSize() * (int)(AudioFormat.STEREO_FORMAT.getFrameRate() * (120000L/1000000f))
+    );
+
+    private SoftAudioPusher pusher = new SoftAudioPusher(sourceDataLine,  mainmixer.getInputStream());
 
     private Map<String, SoftTuning> tunings = new HashMap<>();
     private Map<String, SoftInstrument> inslist = new HashMap<>();
 
+    private boolean open = false;
+
     private boolean loadInstruments(List<SF2Instrument> instruments) {
         synchronized (control_mutex) {
-            if (!open) return false;
             if (channels != null)
                 for (SoftChannel c : channels)
                 {
@@ -107,8 +117,6 @@ public class SoftSynthesizer {
     }
 
     protected SoftMainMixer getMainMixer() {
-        if (!isOpen())
-            return null;
         return mainmixer;
     }
 
@@ -168,14 +176,6 @@ public class SoftSynthesizer {
         return current_instrument;
     }
 
-    protected int getVoiceAllocationMode() {
-        return voice_allocation_mode;
-    }
-
-    protected int getGeneralMidiMode() {
-        return gmmode;
-    }
-
     protected float getControlRate() {
         return 147f;
     }
@@ -195,23 +195,8 @@ public class SoftSynthesizer {
     }
 
     public MidiChannel[] getChannels() {
-
         synchronized (control_mutex) {
-            // if (external_channels == null) => the synthesizer is not open,
-            // create 16 proxy channels
-            // otherwise external_channels has the same length as channels array
-            if (external_channels == null) {
-                external_channels = new SoftChannelProxy[16];
-                for (int i = 0; i < external_channels.length; i++)
-                    external_channels[i] = new SoftChannelProxy();
-            }
-            MidiChannel[] ret;
-            if (isOpen())
-                ret = new MidiChannel[channels.length];
-            else
-                ret = new MidiChannel[16];
-            System.arraycopy(external_channels, 0, ret, 0, ret.length);
-            return ret;
+            return external_channels;
         }
     }
 
@@ -228,8 +213,6 @@ public class SoftSynthesizer {
         if (instrument == null) {
             throw new IllegalArgumentException("Instrument is null");
         }
-        if (!isOpen())
-            return;
 
         String pat = patchToString(instrument.getPatch());
         synchronized (control_mutex) {
@@ -242,130 +225,22 @@ public class SoftSynthesizer {
         }
     }
 
-    public void open() {
+    public void open() throws InterruptedException {
         synchronized (control_mutex) {
             if (open) return;
-            try {
-
-                pusher_stream = openStream();
-
-                double latency = 120000L;
-                int bufferSize = AudioFormat.STEREO_FORMAT.getFrameSize() * (int)(AudioFormat.STEREO_FORMAT.getFrameRate() * (latency/1000000f));
-                // can throw LineUnavailableException,
-                // IllegalArgumentException, SecurityException
-
-                sourceDataLine = new SourceDataLineImpl(AudioFormat.STEREO_FORMAT, bufferSize);
-                sourceDataLine.start();
-
-                pusher = new SoftAudioPusher(sourceDataLine,  pusher_stream);
-                pusher.start();
-
-            } catch (IllegalArgumentException | SecurityException e) {
-                if (open) close();
-                throw e;
-            }
-        }
-    }
-
-    private AudioInputStream openStream() {
-
-        synchronized (control_mutex) {
-            if (open) throw new RuntimeException("Synthesizer is already open");
-
-            gmmode = 0;
-            voice_allocation_mode = 0;
-
+            sourceDataLine.start();
+            pusher.start();
+            Thread.sleep(160);
             open = true;
-
-            voices = new SoftVoice[MAX_POLY];
-            for (int i = 0; i < MAX_POLY; i++)
-                voices[i] = new SoftVoice(this);
-
-            mainmixer = new SoftMainMixer(this);
-
-            int number_of_midi_channels = 16;
-            channels = new SoftChannel[number_of_midi_channels];
-            for (int i = 0; i < channels.length; i++)
-                channels[i] = new SoftChannel(this, i);
-
-            if (external_channels == null) {
-                // Always create external_channels array
-                // with 16 or more channels
-                // so getChannels works correctly
-                // when the synhtesizer is closed.
-                if (channels.length < 16)
-                    external_channels = new SoftChannelProxy[16];
-                else
-                    external_channels = new SoftChannelProxy[channels.length];
-                for (int i = 0; i < external_channels.length; i++)
-                    external_channels[i] = new SoftChannelProxy();
-            }  // We must resize external_channels array
-            // but we must also copy the old SoftChannelProxy
-            // into the new one
-
-
-            for (int i = 0; i < channels.length; i++)
-                external_channels[i].setChannel(channels[i]);
-
-            for (SoftVoice voice: getVoices())
-                voice.resampler = resampler.openStreamer();
-
-            return mainmixer.getInputStream();
         }
     }
 
     public void close() {
 
-        if (!isOpen())
-            return;
-
-        SoftAudioPusher pusher_to_be_closed = null;
-        AudioInputStream pusher_stream_to_be_closed = null;
-        synchronized (control_mutex) {
-            if (pusher != null) {
-                pusher_to_be_closed = pusher;
-                pusher_stream_to_be_closed = pusher_stream;
-                pusher = null;
-                pusher_stream = null;
-            }
-        }
-
-        if (pusher_to_be_closed != null) {
-            // Pusher must not be closed synchronized against control_mutex,
-            // this may result in synchronized conflict between pusher
-            // and current thread.
-            pusher_to_be_closed.stop();
-
-            pusher_stream_to_be_closed.close();
-        }
+        pusher.stop();
 
         synchronized (control_mutex) {
-
-            if (mainmixer != null)
-                mainmixer.close();
-            open = false;
-            mainmixer = null;
-            voices = null;
-            channels = null;
-
-            if (external_channels != null)
-                for (SoftChannelProxy external_channel : external_channels)
-                    external_channel.setChannel(null);
-
-            if (sourceDataLine != null) {
-                sourceDataLine.close();
-                sourceDataLine = null;
-            }
-
-            inslist.clear();
-            tunings.clear();
-
-        }
-    }
-
-    private boolean isOpen() {
-        synchronized (control_mutex) {
-            return open;
+            sourceDataLine.close();
         }
     }
 }

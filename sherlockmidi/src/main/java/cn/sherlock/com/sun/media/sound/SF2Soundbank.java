@@ -46,7 +46,7 @@ public class SF2Soundbank {
     // The Sample Data loaded from the SoundFont
     private ModelByteBuffer sampleData;
     private List<SF2Instrument> instruments = new ArrayList<>();
-    private List<SF2Layer> layers = new ArrayList<>();
+    private List<List<SF2LayerRegion>> layers = new ArrayList<>();
     private List<SF2Sample> samples = new ArrayList<>();
 
     public SF2Soundbank(InputStream inputstream) throws IOException {
@@ -231,11 +231,10 @@ public class SF2Soundbank {
                         throw new IOException();
                     int count = chunk.available() / 22;
                     for (int i = 0; i < count; i++) {
-                        SF2Layer layer = new SF2Layer();
                         chunk.readString(20);
                         instruments_bagNdx.add(chunk.readUnsignedShort());
                         if (i != count - 1)
-                            this.layers.add(layer);
+                            this.layers.add(new ArrayList<SF2LayerRegion>());
                     }
                     break;
                 }
@@ -264,14 +263,14 @@ public class SF2Soundbank {
 
                     for (int i = 0; i < instruments_bagNdx.size() - 1; i++) {
                         int zone_count = instruments_bagNdx.get(i + 1) - instruments_bagNdx.get(i);
-                        SF2Layer layer = layers.get(i);
+                        List<SF2LayerRegion> layerRegions = layers.get(i);
                         for (int ii = 0; ii < zone_count; ii++) {
                             if (count == 0)
                                 throw new IOException();
                             int gencount = chunk.readUnsignedShort();
                             int modcount = chunk.readUnsignedShort();
                             SF2LayerRegion split = new SF2LayerRegion();
-                            layer.regions.add(split);
+                            layerRegions.add(split);
                             while (instruments_splits_gen.size() < gencount)
                                 instruments_splits_gen.add(split);
                             while (instruments_splits_mod.size() < modcount)
@@ -339,8 +338,8 @@ public class SF2Soundbank {
             }
         }
 
-        for (SF2Layer layer : this.layers) {
-            Iterator<SF2LayerRegion> siter = layer.regions.iterator();
+        for (List<SF2LayerRegion> layerRegions : this.layers) {
+            Iterator<SF2LayerRegion> siter = layerRegions.iterator();
             SF2Region globalsplit = null;
             while (siter.hasNext()) {
                 SF2LayerRegion split = siter.next();
@@ -354,7 +353,7 @@ public class SF2Soundbank {
                 }
             }
             if (globalsplit != null) {
-                layer.regions.remove(globalsplit);
+                layerRegions.remove(globalsplit);
             }
         }
 
@@ -367,7 +366,7 @@ public class SF2Soundbank {
                 if (split.generators.get(SF2LayerRegion.GENERATOR_INSTRUMENT) != null) {
                     int instrumentid = split.generators.get(SF2Region.GENERATOR_INSTRUMENT);
                     split.generators.remove(SF2LayerRegion.GENERATOR_INSTRUMENT);
-                    split.layer = layers.get(instrumentid);
+                    split.layerRegions = layers.get(instrumentid);
                 } else {
                     globalsplit = split;
                 }

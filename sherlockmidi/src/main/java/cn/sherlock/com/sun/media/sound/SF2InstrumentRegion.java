@@ -24,6 +24,9 @@
  */
 package cn.sherlock.com.sun.media.sound;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Soundfont instrument region.
  *
@@ -31,6 +34,6 @@ package cn.sherlock.com.sun.media.sound;
  */
 public class SF2InstrumentRegion extends SF2Region {
 
-    protected SF2Layer layer;
+    protected List<SF2LayerRegion> layerRegions = new ArrayList<>();
 
 }
