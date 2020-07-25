@@ -1,10 +1,29 @@
-package javax.sound.sampled;
-
 /*
  * Copyright (c) 1999, 2005, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
+ * This code is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 only, as
+ * published by the Free Software Foundation.  Oracle designates this
+ * particular file as subject to the "Classpath" exception as provided
+ * by Oracle in the LICENSE file that accompanied this code.
+ *
+ * This code is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ * version 2 for more details (a copy is included in the LICENSE file that
+ * accompanied this code).
+ *
+ * You should have received a copy of the GNU General Public License version
+ * 2 along with this work; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
+ * or visit www.oracle.com if you need additional information or have any
+ * questions.
  */
+
+package javax.sound.sampled;
 
 import java.io.InputStream;
 import java.io.PushbackInputStream;
@@ -123,27 +142,27 @@ public class AudioInputStream extends InputStream {
     }
 
 
-//    /**
-//     * Constructs an audio input stream that reads its data from the target
-//     * data line indicated.  The format of the stream is the same as that of
-//     * the target data line, and the length is AudioSystem#NOT_SPECIFIED.
-//     * @param line the target data line from which this stream obtains its data.
-//     * @see AudioSystem#NOT_SPECIFIED
-//     */
-//    public AudioInputStream(TargetDataLine line) {
-//
-//        TargetDataLineInputStream tstream = new TargetDataLineInputStream(line);
-//        format = line.getFormat();
-//        frameLength = AudioSystem.NOT_SPECIFIED;
-//        frameSize = format.getFrameSize();
-//
-//        if( frameSize == AudioSystem.NOT_SPECIFIED || frameSize <= 0) {
-//            frameSize = 1;
-//        }
-//        this.stream = tstream;
-//        framePos = 0;
-//        markpos = 0;
-//    }
+    /**
+     * Constructs an audio input stream that reads its data from the target
+     * data line indicated.  The format of the stream is the same as that of
+     * the target data line, and the length is AudioSystem#NOT_SPECIFIED.
+     * @param line the target data line from which this stream obtains its data.
+     * @see AudioSystem#NOT_SPECIFIED
+     */
+    public AudioInputStream(TargetDataLine line) {
+
+        TargetDataLineInputStream tstream = new TargetDataLineInputStream(line);
+        format = line.getFormat();
+        frameLength = AudioSystem.NOT_SPECIFIED;
+        frameSize = format.getFrameSize();
+
+        if( frameSize == AudioSystem.NOT_SPECIFIED || frameSize <= 0) {
+            frameSize = 1;
+        }
+        this.stream = tstream;
+        framePos = 0;
+        markpos = 0;
+    }
 
 
     /**
@@ -432,65 +451,65 @@ public class AudioInputStream extends InputStream {
     }
 
 
-//    /**
-//     * Private inner class that makes a TargetDataLine look like an InputStream.
-//     */
-//    private class TargetDataLineInputStream extends InputStream {
-//
-//        /**
-//         * The TargetDataLine on which this TargetDataLineInputStream is based.
-//         */
-//        TargetDataLine line;
-//
-//
-//        TargetDataLineInputStream(TargetDataLine line) {
-//            super();
-//            this.line = line;
-//        }
-//
-//
-//        public int available() throws IOException {
-//            return line.available();
-//        }
-//
-//        //$$fb 2001-07-16: added this method to correctly close the underlying TargetDataLine.
-//        // fixes bug 4479984
-//        public void close() throws IOException {
-//            // the line needs to be flushed and stopped to avoid a dead lock...
-//            // Probably related to bugs 4417527, 4334868, 4383457
-//            if (line.isActive()) {
-//                line.flush();
-//                line.stop();
-//            }
-//            line.close();
-//        }
-//
-//        public int read() throws IOException {
-//
-//            byte[] b = new byte[1];
-//
-//            int value = read(b, 0, 1);
-//
-//            if (value == -1) {
-//                return -1;
-//            }
-//
-//            value = (int)b[0];
-//
-//            if (line.getFormat().getEncoding().equals(AudioFormat.Encoding.PCM_SIGNED)) {
-//                value += 128;
-//            }
-//
-//            return value;
-//        }
-//
-//
-//        public int read(byte[] b, int off, int len) throws IOException {
-//            try {
-//                return line.read(b, off, len);
-//            } catch (IllegalArgumentException e) {
-//                throw new IOException(e.getMessage());
-//            }
-//        }
-//    }
+    /**
+     * Private inner class that makes a TargetDataLine look like an InputStream.
+     */
+    private class TargetDataLineInputStream extends InputStream {
+
+        /**
+         * The TargetDataLine on which this TargetDataLineInputStream is based.
+         */
+        TargetDataLine line;
+
+
+        TargetDataLineInputStream(TargetDataLine line) {
+            super();
+            this.line = line;
+        }
+
+
+        public int available() throws IOException {
+            return line.available();
+        }
+
+        //$$fb 2001-07-16: added this method to correctly close the underlying TargetDataLine.
+        // fixes bug 4479984
+        public void close() throws IOException {
+            // the line needs to be flushed and stopped to avoid a dead lock...
+            // Probably related to bugs 4417527, 4334868, 4383457
+            if (line.isActive()) {
+                line.flush();
+                line.stop();
+            }
+            line.close();
+        }
+
+        public int read() throws IOException {
+
+            byte[] b = new byte[1];
+
+            int value = read(b, 0, 1);
+
+            if (value == -1) {
+                return -1;
+            }
+
+            value = (int)b[0];
+
+            if (line.getFormat().getEncoding().equals(AudioFormat.Encoding.PCM_SIGNED)) {
+                value += 128;
+            }
+
+            return value;
+        }
+
+
+        public int read(byte[] b, int off, int len) throws IOException {
+            try {
+                return line.read(b, off, len);
+            } catch (IllegalArgumentException e) {
+                throw new IOException(e.getMessage());
+            }
+        }
+    }
 }

@@ -1,12 +1,12 @@
 /*
- * Copyright 2007 Sun Microsystems, Inc.  All Rights Reserved.
+ * Copyright (c) 2007, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 2 only, as
- * published by the Free Software Foundation.  Sun designates this
+ * published by the Free Software Foundation.  Oracle designates this
  * particular file as subject to the "Classpath" exception as provided
- * by Sun in the LICENSE file that accompanied this code.
+ * by Oracle in the LICENSE file that accompanied this code.
  *
  * This code is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
@@ -18,9 +18,9 @@
  * 2 along with this work; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Please contact Sun Microsystems, Inc., 4150 Network Circle, Santa Clara,
- * CA 95054 USA or visit www.sun.com if you need additional information or
- * have any questions.
+ * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
+ * or visit www.oracle.com if you need additional information or have any
+ * questions.
  */
 package com.sun.media.sound;
 
@@ -36,7 +36,7 @@ import javax.sound.midi.VoiceStatus;
  *
  * @author Karl Helgason
  */
-public class SoftVoice extends VoiceStatus {
+public final class SoftVoice extends VoiceStatus {
 
     public int exclusiveClass = 0;
     public boolean releaseTriggered = false;
@@ -44,32 +44,32 @@ public class SoftVoice extends VoiceStatus {
     private int noteOn_velocity = 0;
     private int noteOff_velocity = 0;
     private int delay = 0;
-    protected ModelChannelMixer channelmixer = null;
-    protected double tunedKey = 0;
-    protected SoftTuning tuning = null;
-    protected SoftChannel stealer_channel = null;
-    protected ModelConnectionBlock[] stealer_extendedConnectionBlocks = null;
-    protected SoftPerformer stealer_performer = null;
-    protected ModelChannelMixer stealer_channelmixer = null;
-    protected int stealer_voiceID = -1;
-    protected int stealer_noteNumber = 0;
-    protected int stealer_velocity = 0;
-    protected boolean stealer_releaseTriggered = false;
-    protected int voiceID = -1;
-    protected boolean sustain = false;
-    protected boolean sostenuto = false;
-    protected boolean portamento = false;
-    private SoftFilter filter_left;
-    private SoftFilter filter_right;
-    private SoftProcess eg = new SoftEnvelopeGenerator();
-    private SoftProcess lfo = new SoftLowFrequencyOscillator();
-    protected Map<String, SoftControl> objects =
+    ModelChannelMixer channelmixer = null;
+    double tunedKey = 0;
+    SoftTuning tuning = null;
+    SoftChannel stealer_channel = null;
+    ModelConnectionBlock[] stealer_extendedConnectionBlocks = null;
+    SoftPerformer stealer_performer = null;
+    ModelChannelMixer stealer_channelmixer = null;
+    int stealer_voiceID = -1;
+    int stealer_noteNumber = 0;
+    int stealer_velocity = 0;
+    boolean stealer_releaseTriggered = false;
+    int voiceID = -1;
+    boolean sustain = false;
+    boolean sostenuto = false;
+    boolean portamento = false;
+    private final SoftFilter filter_left;
+    private final SoftFilter filter_right;
+    private final SoftProcess eg = new SoftEnvelopeGenerator();
+    private final SoftProcess lfo = new SoftLowFrequencyOscillator();
+    Map<String, SoftControl> objects =
             new HashMap<String, SoftControl>();
-    protected SoftSynthesizer synthesizer;
-    protected SoftInstrument instrument;
-    protected SoftPerformer performer;
-    protected SoftChannel softchannel = null;
-    protected boolean on = false;
+    SoftSynthesizer synthesizer;
+    SoftInstrument instrument;
+    SoftPerformer performer;
+    SoftChannel softchannel = null;
+    boolean on = false;
     private boolean audiostarted = false;
     private boolean started = false;
     private boolean stopping = false;
@@ -87,7 +87,7 @@ public class SoftVoice extends VoiceStatus {
     private float last_out_mixer_right = 0;
     private float last_out_mixer_effect1 = 0;
     private float last_out_mixer_effect2 = 0;
-    protected ModelConnectionBlock[] extendedConnectionBlocks = null;
+    ModelConnectionBlock[] extendedConnectionBlocks = null;
     private ModelConnectionBlock[] connections;
     // Last value added to destination
     private double[] connections_last = new double[50];
@@ -100,10 +100,10 @@ public class SoftVoice extends VoiceStatus {
     private boolean soundoff = false;
     private float lastMuteValue = 0;
     private float lastSoloMuteValue = 0;
-    protected double[] co_noteon_keynumber = new double[1];
-    protected double[] co_noteon_velocity = new double[1];
-    protected double[] co_noteon_on = new double[1];
-    private SoftControl co_noteon = new SoftControl() {
+    double[] co_noteon_keynumber = new double[1];
+    double[] co_noteon_velocity = new double[1];
+    double[] co_noteon_on = new double[1];
+    private final SoftControl co_noteon = new SoftControl() {
         double[] keynumber = co_noteon_keynumber;
         double[] velocity = co_noteon_velocity;
         double[] on = co_noteon_on;
@@ -119,13 +119,13 @@ public class SoftVoice extends VoiceStatus {
             return null;
         }
     };
-    private double[] co_mixer_active = new double[1];
-    private double[] co_mixer_gain = new double[1];
-    private double[] co_mixer_pan = new double[1];
-    private double[] co_mixer_balance = new double[1];
-    private double[] co_mixer_reverb = new double[1];
-    private double[] co_mixer_chorus = new double[1];
-    private SoftControl co_mixer = new SoftControl() {
+    private final double[] co_mixer_active = new double[1];
+    private final double[] co_mixer_gain = new double[1];
+    private final double[] co_mixer_pan = new double[1];
+    private final double[] co_mixer_balance = new double[1];
+    private final double[] co_mixer_reverb = new double[1];
+    private final double[] co_mixer_chorus = new double[1];
+    private final SoftControl co_mixer = new SoftControl() {
         double[] active = co_mixer_active;
         double[] gain = co_mixer_gain;
         double[] pan = co_mixer_pan;
@@ -150,8 +150,8 @@ public class SoftVoice extends VoiceStatus {
             return null;
         }
     };
-    private double[] co_osc_pitch = new double[1];
-    private SoftControl co_osc = new SoftControl() {
+    private final double[] co_osc_pitch = new double[1];
+    private final SoftControl co_osc = new SoftControl() {
         double[] pitch = co_osc_pitch;
         public double[] get(int instance, String name) {
             if (name == null)
@@ -161,10 +161,10 @@ public class SoftVoice extends VoiceStatus {
             return null;
         }
     };
-    private double[] co_filter_freq = new double[1];
-    private double[] co_filter_type = new double[1];
-    private double[] co_filter_q = new double[1];
-    private SoftControl co_filter = new SoftControl() {
+    private final double[] co_filter_freq = new double[1];
+    private final double[] co_filter_type = new double[1];
+    private final double[] co_filter_q = new double[1];
+    private final SoftControl co_filter = new SoftControl() {
         double[] freq = co_filter_freq;
         double[] ftype = co_filter_type;
         double[] q = co_filter_q;
@@ -180,8 +180,8 @@ public class SoftVoice extends VoiceStatus {
             return null;
         }
     };
-    protected SoftResamplerStreamer resampler;
-    private int nrofchannels;
+    SoftResamplerStreamer resampler;
+    private final int nrofchannels;
 
     public SoftVoice(SoftSynthesizer synth) {
         synthesizer = synth;
@@ -278,7 +278,7 @@ public class SoftVoice extends VoiceStatus {
         // co_mixer_gain[0] = 0;
     }
 
-    protected void updateTuning(SoftTuning newtuning) {
+    void updateTuning(SoftTuning newtuning) {
         tuning = newtuning;
         tunedKey = tuning.getTuning(note) / 100.0;
         if (!portamento) {
@@ -293,12 +293,12 @@ public class SoftVoice extends VoiceStatus {
         }
     }
 
-    protected void setNote(int noteNumber) {
+    void setNote(int noteNumber) {
         note = noteNumber;
         tunedKey = tuning.getTuning(noteNumber) / 100.0;
     }
 
-    protected void noteOn(int noteNumber, int velocity, int delay) {
+    void noteOn(int noteNumber, int velocity, int delay) {
 
         sustain = false;
         sostenuto = false;
@@ -435,7 +435,7 @@ public class SoftVoice extends VoiceStatus {
 
     }
 
-    protected void setPolyPressure(int pressure) {
+    void setPolyPressure(int pressure) {
         if(performer == null)
             return;
         int[] c = performer.midi_connections[2];
@@ -445,7 +445,7 @@ public class SoftVoice extends VoiceStatus {
             processConnection(c[i]);
     }
 
-    protected void setChannelPressure(int pressure) {
+    void setChannelPressure(int pressure) {
         if(performer == null)
             return;
         int[] c = performer.midi_connections[1];
@@ -455,7 +455,7 @@ public class SoftVoice extends VoiceStatus {
             processConnection(c[i]);
     }
 
-    protected void controlChange(int controller, int value) {
+    void controlChange(int controller, int value) {
         if(performer == null)
             return;
         int[] c = performer.midi_ctrl_connections[controller];
@@ -465,7 +465,7 @@ public class SoftVoice extends VoiceStatus {
             processConnection(c[i]);
     }
 
-    protected void nrpnChange(int controller, int value) {
+    void nrpnChange(int controller, int value) {
         if(performer == null)
             return;
         int[] c = performer.midi_nrpn_connections.get(controller);
@@ -475,7 +475,7 @@ public class SoftVoice extends VoiceStatus {
             processConnection(c[i]);
     }
 
-    protected void rpnChange(int controller, int value) {
+    void rpnChange(int controller, int value) {
         if(performer == null)
             return;
         int[] c = performer.midi_rpn_connections.get(controller);
@@ -485,7 +485,7 @@ public class SoftVoice extends VoiceStatus {
             processConnection(c[i]);
     }
 
-    protected void setPitchBend(int bend) {
+    void setPitchBend(int bend) {
         if(performer == null)
             return;
         int[] c = performer.midi_connections[0];
@@ -495,19 +495,19 @@ public class SoftVoice extends VoiceStatus {
             processConnection(c[i]);
     }
 
-    protected void setMute(boolean mute) {
+    void setMute(boolean mute) {
         co_mixer_gain[0] -= lastMuteValue;
         lastMuteValue = mute ? -960 : 0;
         co_mixer_gain[0] += lastMuteValue;
     }
 
-    protected void setSoloMute(boolean mute) {
+    void setSoloMute(boolean mute) {
         co_mixer_gain[0] -= lastSoloMuteValue;
         lastSoloMuteValue = mute ? -960 : 0;
         co_mixer_gain[0] += lastSoloMuteValue;
     }
 
-    protected void shutdown() {
+    void shutdown() {
         if (co_noteon_on[0] < -0.5)
             return;
         on = false;
@@ -523,12 +523,12 @@ public class SoftVoice extends VoiceStatus {
             processConnection(c[i]);
     }
 
-    protected void soundOff() {
+    void soundOff() {
         on = false;
         soundoff = true;
     }
 
-    protected void noteOff(int velocity) {
+    void noteOff(int velocity) {
         if (!on)
             return;
         on = false;
@@ -553,7 +553,7 @@ public class SoftVoice extends VoiceStatus {
             processConnection(c[i]);
     }
 
-    protected void redamp() {
+    void redamp() {
         if (co_noteon_on[0] > 0.5)
             return;
         if (co_noteon_on[0] < -0.5)
@@ -571,7 +571,7 @@ public class SoftVoice extends VoiceStatus {
             processConnection(c[i]);
     }
 
-    protected void processControlLogic() {
+    void processControlLogic() {
         if (stopping) {
             active = false;
             stopping = false;
@@ -580,7 +580,7 @@ public class SoftVoice extends VoiceStatus {
             performer = null;
             connections = null;
             extendedConnectionBlocks = null;
-            channelmixer = null;            
+            channelmixer = null;
             if (osc_stream != null)
                 try {
                     osc_stream.close();
@@ -760,9 +760,9 @@ public class SoftVoice extends VoiceStatus {
 
     }
 
-    protected void mixAudioStream(SoftAudioBuffer in, SoftAudioBuffer out,
-            SoftAudioBuffer dout,
-            float amp_from, float amp_to) {
+    void mixAudioStream(SoftAudioBuffer in, SoftAudioBuffer out,
+                                SoftAudioBuffer dout, float amp_from,
+                                float amp_to) {
         int bufferlen = in.getSize();
         if (amp_from < 0.000000001 && amp_to < 0.000000001)
             return;
@@ -770,7 +770,7 @@ public class SoftVoice extends VoiceStatus {
         {
             if (amp_from == amp_to) {
                 float[] fout = out.array();
-                float[] fin = in.array();                
+                float[] fin = in.array();
                 int j = 0;
                 for (int i = delay; i < bufferlen; i++)
                     fout[i] += fin[j++] * amp_to;
@@ -791,7 +791,7 @@ public class SoftVoice extends VoiceStatus {
                 for (int i = 0; i < delay; i++) {
                     amp += amp_delta;
                     fout[i] += fin[j++] * amp;
-                }                
+                }
             }
         }
         else
@@ -815,7 +815,7 @@ public class SoftVoice extends VoiceStatus {
 
     }
 
-    protected void processAudioLogic(SoftAudioBuffer[] buffer) {
+    void processAudioLogic(SoftAudioBuffer[] buffer) {
         if (!audiostarted)
             return;
 
@@ -851,7 +851,7 @@ public class SoftVoice extends VoiceStatus {
         SoftAudioBuffer dmono = buffer[SoftMainMixer.CHANNEL_DELAY_MONO];
         SoftAudioBuffer deff1 = buffer[SoftMainMixer.CHANNEL_DELAY_EFFECT1];
         SoftAudioBuffer deff2 = buffer[SoftMainMixer.CHANNEL_DELAY_EFFECT2];
-        
+
         SoftAudioBuffer leftdry = buffer[SoftMainMixer.CHANNEL_LEFT_DRY];
         SoftAudioBuffer rightdry = buffer[SoftMainMixer.CHANNEL_RIGHT_DRY];
 
@@ -871,7 +871,7 @@ public class SoftVoice extends VoiceStatus {
                 mixAudioStream(rightdry, left, dleft, last_out_mixer_left,
                         out_mixer_left);
         } else {
-            if(rightdry == null && 
+            if(rightdry == null &&
                     last_out_mixer_left == last_out_mixer_right &&
                     out_mixer_left == out_mixer_right)
             {

@@ -1,9 +1,29 @@
-package javax.sound.sampled;
 /*
  * Copyright (c) 1999, 2010, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ *
+ * This code is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 only, as
+ * published by the Free Software Foundation.  Oracle designates this
+ * particular file as subject to the "Classpath" exception as provided
+ * by Oracle in the LICENSE file that accompanied this code.
+ *
+ * This code is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ * version 2 for more details (a copy is included in the LICENSE file that
+ * accompanied this code).
+ *
+ * You should have received a copy of the GNU General Public License version
+ * 2 along with this work; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
+ * or visit www.oracle.com if you need additional information or have any
+ * questions.
  */
 
+package javax.sound.sampled;
 
 /**
  * The <code>Line</code> interface represents a mono or multi-channel
@@ -50,14 +70,14 @@ package javax.sound.sampled;
  * @see LineEvent
  * @since 1.3
  */
-public interface Line extends javax.sound.sampled.AutoCloseable {
+public interface Line extends AutoCloseable {
 
     /**
      * Obtains the <code>Line.Info</code> object describing this
      * line.
      * @return description of the line
      */
-    public Info getLineInfo();
+    public Line.Info getLineInfo();
 
     /**
      * Opens the line, indicating that it should acquire any required
@@ -135,6 +155,59 @@ public interface Line extends javax.sound.sampled.AutoCloseable {
 
 
     /**
+     * Obtains the set of controls associated with this line.
+     * Some controls may only be available when the line is open.
+     * If there are no controls, this method returns an array of length 0.
+     * @return the array of controls
+     * @see #getControl
+     */
+    public Control[] getControls();
+
+    /**
+     * Indicates whether the line supports a control of the specified type.
+     * Some controls may only be available when the line is open.
+     * @param control the type of the control for which support is queried
+     * @return <code>true</code> if at least one control of the specified type is
+     * supported, otherwise <code>false</code>.
+     */
+    public boolean isControlSupported(Control.Type control);
+
+
+    /**
+     * Obtains a control of the specified type,
+     * if there is any.
+     * Some controls may only be available when the line is open.
+     * @param control the type of the requested control
+     * @return a control of the specified type
+     * @throws IllegalArgumentException if a control of the specified type
+     * is not supported
+     * @see #getControls
+     * @see #isControlSupported(Control.Type control)
+     */
+    public Control getControl(Control.Type control);
+
+
+    /**
+     * Adds a listener to this line.  Whenever the line's status changes, the
+     * listener's <code>update()</code> method is called with a <code>LineEvent</code> object
+     * that describes the change.
+     * @param listener the object to add as a listener to this line
+     * @see #removeLineListener
+     * @see LineListener#update
+     * @see LineEvent
+     */
+    public void addLineListener(LineListener listener);
+
+
+    /**
+     * Removes the specified listener from this line's list of listeners.
+     * @param listener listener to remove
+     * @see #addLineListener
+     */
+    public void removeLineListener(LineListener listener);
+
+
+    /**
      * A <code>Line.Info</code> object contains information about a line.
      * The only information provided by <code>Line.Info</code> itself
      * is the Java class of the line.
@@ -155,8 +228,8 @@ public interface Line extends javax.sound.sampled.AutoCloseable {
      * @see Mixer#getSourceLineInfo
      * @see Mixer#getTargetLineInfo
      * @see Mixer#getLine <code>Mixer.getLine(Line.Info)</code>
-     * @see Mixer#getSourceLineInfo(Info) <code>Mixer.getSourceLineInfo(Line.Info)</code>
-     * @see Mixer#getSourceLineInfo(Info) <code>Mixer.getTargetLineInfo(Line.Info)</code>
+     * @see Mixer#getSourceLineInfo(Line.Info) <code>Mixer.getSourceLineInfo(Line.Info)</code>
+     * @see Mixer#getSourceLineInfo(Line.Info) <code>Mixer.getTargetLineInfo(Line.Info)</code>
      * @see Mixer#isLineSupported <code>Mixer.isLineSupported(Line.Info)</code>
      * @see AudioSystem#getLine <code>AudioSystem.getLine(Line.Info)</code>
      * @see AudioSystem#getSourceLineInfo <code>AudioSystem.getSourceLineInfo(Line.Info)</code>

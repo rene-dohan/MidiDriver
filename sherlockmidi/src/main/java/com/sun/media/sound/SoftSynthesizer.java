@@ -1,12 +1,12 @@
 /*
- * Copyright 2008-2010 Sun Microsystems, Inc.  All Rights Reserved.
+ * Copyright (c) 2008, 2014, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 2 only, as
- * published by the Free Software Foundation.  Sun designates this
+ * published by the Free Software Foundation.  Oracle designates this
  * particular file as subject to the "Classpath" exception as provided
- * by Sun in the LICENSE file that accompanied this code.
+ * by Oracle in the LICENSE file that accompanied this code.
  *
  * This code is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
@@ -18,15 +18,21 @@
  * 2 along with this work; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Please contact Sun Microsystems, Inc., 4150 Network Circle, Santa Clara,
- * CA 95054 USA or visit www.sun.com if you need additional information or
- * have any questions.
+ * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
+ * or visit www.oracle.com if you need additional information or have any
+ * questions.
  */
 
 package com.sun.media.sound;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -43,6 +49,7 @@ import java.util.prefs.Preferences;
 import javax.sound.midi.Instrument;
 import javax.sound.midi.MidiChannel;
 import javax.sound.midi.MidiDevice;
+import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Patch;
 import javax.sound.midi.Receiver;
@@ -60,10 +67,10 @@ import javax.sound.sampled.SourceDataLine;
  *
  * @author Karl Helgason
  */
-public class SoftSynthesizer implements AudioSynthesizer,
+public final class SoftSynthesizer implements AudioSynthesizer,
         ReferenceCountingDevice {
 
-    protected static class WeakAudioStream extends InputStream
+    protected static final class WeakAudioStream extends InputStream
     {
         private volatile AudioInputStream stream;
         public SoftAudioPusher pusher = null;
@@ -124,7 +131,7 @@ public class SoftSynthesizer implements AudioSynthesizer,
                                     _jitter_stream.close();
                                 } catch (IOException e) {
                                     e.printStackTrace();
-                                } 
+                                }
                              if(_sourceDataLine != null)
                                  _sourceDataLine.close();
                          }
@@ -160,39 +167,39 @@ public class SoftSynthesizer implements AudioSynthesizer,
     }
 
     private static class Info extends MidiDevice.Info {
-        public Info() {
+        Info() {
             super(INFO_NAME, INFO_VENDOR, INFO_DESCRIPTION, INFO_VERSION);
         }
     }
 
-    protected static final String INFO_NAME = "Gervill";
-    protected static final String INFO_VENDOR = "OpenJDK";
-    protected static final String INFO_DESCRIPTION = "Software MIDI Synthesizer";
-    protected static final String INFO_VERSION = "1.0";
-    protected final static MidiDevice.Info info = new Info();
+    static final String INFO_NAME = "Gervill";
+    static final String INFO_VENDOR = "OpenJDK";
+    static final String INFO_DESCRIPTION = "Software MIDI Synthesizer";
+    static final String INFO_VERSION = "1.0";
+    final static MidiDevice.Info info = new Info();
 
     private static SourceDataLine testline = null;
 
     private static Soundbank defaultSoundBank = null;
 
-    protected WeakAudioStream weakstream = null;
+    WeakAudioStream weakstream = null;
 
-    protected Object control_mutex = this;
+    final Object control_mutex = this;
 
-    protected int voiceIDCounter = 0;
+    int voiceIDCounter = 0;
 
     // 0: default
     // 1: DLS Voice Allocation
-    protected int voice_allocation_mode = 0;
+    int voice_allocation_mode = 0;
 
-    protected boolean load_default_soundbank = false;
-    protected boolean reverb_light = true;
-    protected boolean reverb_on = true;
-    protected boolean chorus_on = true;
-    protected boolean agc_on = true;
+    boolean load_default_soundbank = false;
+    boolean reverb_light = true;
+    boolean reverb_on = true;
+    boolean chorus_on = true;
+    boolean agc_on = true;
 
-    protected SoftChannel[] channels;
-    protected SoftChannelProxy[] external_channels = null;
+    SoftChannel[] channels;
+    SoftChannelProxy[] external_channels = null;
 
     private boolean largemode = false;
 
@@ -365,7 +372,7 @@ public class SoftSynthesizer implements AudioSynthesizer,
         this.format = format;
     }
 
-    protected void removeReceiver(Receiver recv) {
+    void removeReceiver(Receiver recv) {
         boolean perform_close = false;
         synchronized (control_mutex) {
             if (recvslist.remove(recv)) {
@@ -377,13 +384,13 @@ public class SoftSynthesizer implements AudioSynthesizer,
             close();
     }
 
-    protected SoftMainMixer getMainMixer() {
+    SoftMainMixer getMainMixer() {
         if (!isOpen())
             return null;
         return mainmixer;
     }
 
-    protected SoftInstrument findInstrument(int program, int bank, int channel) {
+    SoftInstrument findInstrument(int program, int bank, int channel) {
 
         // Add support for GM2 banks 0x78 and 0x79
         // as specified in DLS 2.2 in Section 1.4.6
@@ -444,31 +451,31 @@ public class SoftSynthesizer implements AudioSynthesizer,
         return null;
     }
 
-    protected int getVoiceAllocationMode() {
+    int getVoiceAllocationMode() {
         return voice_allocation_mode;
     }
 
-    protected int getGeneralMidiMode() {
+    int getGeneralMidiMode() {
         return gmmode;
     }
 
-    protected void setGeneralMidiMode(int gmmode) {
+    void setGeneralMidiMode(int gmmode) {
         this.gmmode = gmmode;
     }
 
-    protected int getDeviceID() {
+    int getDeviceID() {
         return deviceid;
     }
 
-    protected float getControlRate() {
+    float getControlRate() {
         return controlrate;
     }
 
-    protected SoftVoice[] getVoices() {
+    SoftVoice[] getVoices() {
         return voices;
     }
 
-    protected SoftTuning getTuning(Patch patch) {
+    SoftTuning getTuning(Patch patch) {
         String t_id = patchToString(patch);
         SoftTuning tuning = tunings.get(t_id);
         if (tuning == null) {
@@ -617,7 +624,176 @@ public class SoftSynthesizer implements AudioSynthesizer,
     }
 
     public Soundbank getDefaultSoundbank() {
-    	return null;
+        synchronized (SoftSynthesizer.class) {
+            if (defaultSoundBank != null)
+                return defaultSoundBank;
+
+            List<PrivilegedAction<InputStream>> actions =
+                new ArrayList<PrivilegedAction<InputStream>>();
+
+            actions.add(new PrivilegedAction<InputStream>() {
+                public InputStream run() {
+                    File javahome = new File(System.getProperties()
+                            .getProperty("java.home"));
+                    File libaudio = new File(new File(javahome, "lib"), "audio");
+                    if (libaudio.exists()) {
+                        File foundfile = null;
+                        File[] files = libaudio.listFiles();
+                        if (files != null) {
+                            for (int i = 0; i < files.length; i++) {
+                                File file = files[i];
+                                if (file.isFile()) {
+                                    String lname = file.getName().toLowerCase();
+                                    if (lname.endsWith(".sf2")
+                                            || lname.endsWith(".dls")) {
+                                        if (foundfile == null
+                                                || (file.length() > foundfile
+                                                        .length())) {
+                                            foundfile = file;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (foundfile != null) {
+                            try {
+                                return new FileInputStream(foundfile);
+                            } catch (IOException e) {
+                            }
+                        }
+                    }
+                    return null;
+                }
+            });
+
+            actions.add(new PrivilegedAction<InputStream>() {
+                public InputStream run() {
+                    if (System.getProperties().getProperty("os.name")
+                            .startsWith("Linux")) {
+
+                        File[] systemSoundFontsDir = new File[] {
+                            /* Arch, Fedora, Mageia */
+                            new File("/usr/share/soundfonts/"),
+                            new File("/usr/local/share/soundfonts/"),
+                            /* Debian, Gentoo, OpenSUSE, Ubuntu */
+                            new File("/usr/share/sounds/sf2/"),
+                            new File("/usr/local/share/sounds/sf2/"),
+                        };
+
+                        /*
+                         * Look for a default.sf2
+                         */
+                        for (File systemSoundFontDir : systemSoundFontsDir) {
+                            if (systemSoundFontDir.exists()) {
+                                File defaultSoundFont = new File(systemSoundFontDir, "default.sf2");
+                                if (defaultSoundFont.exists()) {
+                                    try {
+                                        return new FileInputStream(defaultSoundFont);
+                                    } catch (IOException e) {
+                                        // continue with lookup
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    return null;
+                }
+            });
+
+            actions.add(new PrivilegedAction<InputStream>() {
+                public InputStream run() {
+                    if (System.getProperties().getProperty("os.name")
+                            .startsWith("Windows")) {
+                        File gm_dls = new File(System.getenv("SystemRoot")
+                                + "\\system32\\drivers\\gm.dls");
+                        if (gm_dls.exists()) {
+                            try {
+                                return new FileInputStream(gm_dls);
+                            } catch (IOException e) {
+                            }
+                        }
+                    }
+                    return null;
+                }
+            });
+
+            actions.add(new PrivilegedAction<InputStream>() {
+                public InputStream run() {
+                    /*
+                     * Try to load saved generated soundbank
+                     */
+                    File userhome = new File(System.getProperty("user.home"),
+                            ".gervill");
+                    File emg_soundbank_file = new File(userhome,
+                            "soundbank-emg.sf2");
+                    if (emg_soundbank_file.exists()) {
+                        try {
+                            return new FileInputStream(emg_soundbank_file);
+                        } catch (IOException e) {
+                        }
+                    }
+                    return null;
+                }
+            });
+
+            for (PrivilegedAction<InputStream> action : actions) {
+                try {
+                    InputStream is = AccessController.doPrivileged(action);
+                    if(is == null) continue;
+                    Soundbank sbk;
+                    try {
+                        sbk = MidiSystem.getSoundbank(new BufferedInputStream(is));
+                    } finally {
+                        is.close();
+                    }
+                    if (sbk != null) {
+                        defaultSoundBank = sbk;
+                        return defaultSoundBank;
+                    }
+                } catch (Exception e) {
+                }
+            }
+
+            try {
+                /*
+                 * Generate emergency soundbank
+                 */
+                defaultSoundBank = EmergencySoundbank.createSoundbank();
+            } catch (Exception e) {
+            }
+
+            if (defaultSoundBank != null) {
+                /*
+                 * Save generated soundbank to disk for faster future use.
+                 */
+                OutputStream out = AccessController
+                        .doPrivileged((PrivilegedAction<OutputStream>) () -> {
+                            try {
+                                File userhome = new File(System
+                                        .getProperty("user.home"), ".gervill");
+                                if (!userhome.exists()) {
+                                    userhome.mkdirs();
+                                }
+                                File emg_soundbank_file = new File(
+                                        userhome, "soundbank-emg.sf2");
+                                if (emg_soundbank_file.exists()) {
+                                    return null;
+                                }
+                                return new FileOutputStream(emg_soundbank_file);
+                            } catch (final FileNotFoundException ignored) {
+                            }
+                            return null;
+                        });
+                if (out != null) {
+                    try {
+                        ((SF2Soundbank) defaultSoundBank).save(out);
+                        out.close();
+                    } catch (final IOException ignored) {
+                    }
+                }
+            }
+        }
+        return defaultSoundBank;
     }
 
     public Instrument[] getAvailableInstruments() {
@@ -699,29 +875,27 @@ public class SoftSynthesizer implements AudioSynthesizer,
     public MidiDevice.Info getDeviceInfo() {
         return info;
     }
-    
+
     private Properties getStoredProperties() {
         return AccessController
-                .doPrivileged(new PrivilegedAction<Properties>() {
-                    public Properties run() {
-                        Properties p = new Properties();
-                        String notePath = "/com/sun/media/sound/softsynthesizer";
-                        try {
-                            Preferences prefroot = Preferences.userRoot();
-                            if (prefroot.nodeExists(notePath)) {
-                                Preferences prefs = prefroot.node(notePath);
-                                String[] prefs_keys = prefs.keys();
-                                for (String prefs_key : prefs_keys) {
-                                    String val = prefs.get(prefs_key, null);
-                                    if (val != null)
-                                        p.setProperty(prefs_key, val);
+                .doPrivileged((PrivilegedAction<Properties>) () -> {
+                    Properties p = new Properties();
+                    String notePath = "/com/sun/media/sound/softsynthesizer";
+                    try {
+                        Preferences prefroot = Preferences.userRoot();
+                        if (prefroot.nodeExists(notePath)) {
+                            Preferences prefs = prefroot.node(notePath);
+                            String[] prefs_keys = prefs.keys();
+                            for (String prefs_key : prefs_keys) {
+                                String val = prefs.get(prefs_key, null);
+                                if (val != null) {
+                                    p.setProperty(prefs_key, val);
                                 }
                             }
-                        } catch (BackingStoreException e) {
-                        } catch (SecurityException e) {
                         }
-                        return p;
+                    } catch (final BackingStoreException ignored) {
                     }
+                    return p;
                 });
     }
 
@@ -791,16 +965,16 @@ public class SoftSynthesizer implements AudioSynthesizer,
         item = new AudioSynthesizerPropertyInfo("light reverb", o?reverb_light:true);
         item.description = "Turn light reverb mode on or off";
         list.add(item);
-        
+
         item = new AudioSynthesizerPropertyInfo("load default soundbank", o?load_default_soundbank:true);
         item.description = "Enabled/disable loading default soundbank";
         list.add(item);
-        
+
         AudioSynthesizerPropertyInfo[] items;
         items = list.toArray(new AudioSynthesizerPropertyInfo[list.size()]);
-        
+
         Properties storedProperties = getStoredProperties();
-        
+
         for (AudioSynthesizerPropertyInfo item2 : items) {
             Object v = (info == null) ? null : info.get(item2.name);
             v = (v != null) ? v : storedProperties.getProperty(item2.name);
@@ -900,7 +1074,6 @@ public class SoftSynthesizer implements AudioSynthesizer,
             return;
         }
         synchronized (control_mutex) {
-            Throwable causeException = null;
             try {
                 if (line != null) {
                     // can throw IllegalArgumentException
@@ -973,24 +1146,17 @@ public class SoftSynthesizer implements AudioSynthesizer,
                     weakstream.sourceDataLine = sourceDataLine;
                 }
 
-            } catch (LineUnavailableException e) {
-                causeException = e;
-            } catch (IllegalArgumentException e) {
-                causeException = e;
-            } catch (SecurityException e) {
-                causeException = e;
-            }
-
-            if (causeException != null) {
-                if (isOpen())
+            } catch (final LineUnavailableException | SecurityException
+                    | IllegalArgumentException e) {
+                if (isOpen()) {
                     close();
+                }
                 // am: need MidiUnavailableException(Throwable) ctor!
                 MidiUnavailableException ex = new MidiUnavailableException(
                         "Can not open line");
-                ex.initCause(causeException);
+                ex.initCause(e);
                 throw ex;
             }
-
         }
     }
 

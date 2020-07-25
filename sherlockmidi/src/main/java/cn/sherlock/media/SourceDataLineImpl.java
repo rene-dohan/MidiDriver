@@ -3,6 +3,8 @@ package cn.sherlock.media;
 import android.media.AudioManager;
 import android.media.AudioTrack;
 import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.Control;
+import javax.sound.sampled.LineListener;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 
@@ -58,6 +60,31 @@ public class SourceDataLineImpl implements SourceDataLine {
 	@Override
 	public boolean isOpen() {
 		return audioTrack != null;
+	}
+
+	@Override
+	public Control[] getControls() {
+		return new Control[0];
+	}
+
+	@Override
+	public boolean isControlSupported(Control.Type control) {
+		return false;
+	}
+
+	@Override
+	public Control getControl(Control.Type control) {
+		return null;
+	}
+
+	@Override
+	public void addLineListener(LineListener listener) {
+
+	}
+
+	@Override
+	public void removeLineListener(LineListener listener) {
+
 	}
 
 	@Override

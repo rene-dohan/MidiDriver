@@ -1,12 +1,12 @@
 /*
- * Copyright 2007 Sun Microsystems, Inc.  All Rights Reserved.
+ * Copyright (c) 2007, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 2 only, as
- * published by the Free Software Foundation.  Sun designates this
+ * published by the Free Software Foundation.  Oracle designates this
  * particular file as subject to the "Classpath" exception as provided
- * by Sun in the LICENSE file that accompanied this code.
+ * by Oracle in the LICENSE file that accompanied this code.
  *
  * This code is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
@@ -18,9 +18,9 @@
  * 2 along with this work; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Please contact Sun Microsystems, Inc., 4150 Network Circle, Santa Clara,
- * CA 95054 USA or visit www.sun.com if you need additional information or
- * have any questions.
+ * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
+ * or visit www.oracle.com if you need additional information or have any
+ * questions.
  */
 package com.sun.media.sound;
 
@@ -43,10 +43,10 @@ import javax.sound.sampled.spi.AudioFileReader;
 
 /**
  * WAVE file reader for files using format WAVE_FORMAT_EXTENSIBLE (0xFFFE).
- * 
+ *
  * @author Karl Helgason
  */
-public class WaveExtensibleFileReader extends AudioFileReader {
+public final class WaveExtensibleFileReader extends AudioFileReader {
 
     static private class GUID {
         long i1;
@@ -74,7 +74,7 @@ public class WaveExtensibleFileReader extends AudioFileReader {
         private GUID() {
         }
 
-        public GUID(long i1, int s1, int s2, int x1, int x2, int x3, int x4,
+        GUID(long i1, int s1, int s2, int x1, int x2, int x3, int x4,
                 int x5, int x6, int x7, int x8) {
             this.i1 = i1;
             this.s1 = s1;
@@ -140,13 +140,13 @@ public class WaveExtensibleFileReader extends AudioFileReader {
 
     }
 
-    private static String[] channelnames = { "FL", "FR", "FC", "LF",
+    private static final String[] channelnames = { "FL", "FR", "FC", "LF",
             "BL",
             "BR", // 5.1
             "FLC", "FLR", "BC", "SL", "SR", "TC", "TFL", "TFC", "TFR", "TBL",
             "TBC", "TBR" };
 
-    private static String[] allchannelnames = { "w1", "w2", "w3", "w4", "w5",
+    private static final String[] allchannelnames = { "w1", "w2", "w3", "w4", "w5",
             "w6", "w7", "w8", "w9", "w10", "w11", "w12", "w13", "w14", "w15",
             "w16", "w17", "w18", "w19", "w20", "w21", "w22", "w23", "w24",
             "w25", "w26", "w27", "w28", "w29", "w30", "w31", "w32", "w33",
@@ -155,10 +155,10 @@ public class WaveExtensibleFileReader extends AudioFileReader {
             "w52", "w53", "w54", "w55", "w56", "w57", "w58", "w59", "w60",
             "w61", "w62", "w63", "w64" };
 
-    private static GUID SUBTYPE_PCM = new GUID(0x00000001, 0x0000, 0x0010,
+    private static final GUID SUBTYPE_PCM = new GUID(0x00000001, 0x0000, 0x0010,
             0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71);
 
-    private static GUID SUBTYPE_IEEE_FLOAT = new GUID(0x00000003, 0x0000,
+    private static final GUID SUBTYPE_IEEE_FLOAT = new GUID(0x00000003, 0x0000,
             0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71);
 
     private String decodeChannelMask(long channelmask) {
@@ -271,7 +271,7 @@ public class WaveExtensibleFileReader extends AudioFileReader {
                         bits, channels, framesize, samplerate, false, p);
             }
         } else if (subFormat.equals(SUBTYPE_IEEE_FLOAT)) {
-            audioformat = new AudioFormat(AudioFloatConverter.PCM_FLOAT,
+            audioformat = new AudioFormat(Encoding.PCM_FLOAT,
                     samplerate, bits, channels, framesize, samplerate, false, p);
         } else
             throw new UnsupportedAudioFileException();

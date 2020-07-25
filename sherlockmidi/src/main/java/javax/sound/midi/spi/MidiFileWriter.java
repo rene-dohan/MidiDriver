@@ -1,6 +1,29 @@
-package javax.sound.midi.spi;
+/*
+ * Copyright (c) 1999, 2014, Oracle and/or its affiliates. All rights reserved.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ *
+ * This code is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 only, as
+ * published by the Free Software Foundation.  Oracle designates this
+ * particular file as subject to the "Classpath" exception as provided
+ * by Oracle in the LICENSE file that accompanied this code.
+ *
+ * This code is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ * version 2 for more details (a copy is included in the LICENSE file that
+ * accompanied this code).
+ *
+ * You should have received a copy of the GNU General Public License version
+ * 2 along with this work; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
+ * or visit www.oracle.com if you need additional information or have any
+ * questions.
+ */
 
-import android.support.annotation.NonNull;
+package javax.sound.midi.spi;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,81 +32,106 @@ import java.io.OutputStream;
 import javax.sound.midi.Sequence;
 
 /**
- * Abstract class for MIDI File Writer
+ * A {@code MidiFileWriter} supplies MIDI file-writing services. Classes that
+ * implement this interface can write one or more types of MIDI file from a
+ * {@link Sequence} object.
  *
- * @author K.Shoji
+ * @author Kara Kytle
+ * @since 1.3
  */
 public abstract class MidiFileWriter {
 
     /**
-     * Get the all of the file types ID
+     * Obtains the set of MIDI file types for which file writing support is
+     * provided by this file writer.
      *
-     * @return the array of file type
+     * @return array of file types. If no file types are supported, an array of
+     *         length 0 is returned.
      */
-    @NonNull
     public abstract int[] getMidiFileTypes();
 
     /**
-     * Get the all of the file types ID on the specified {@link Sequence}
+     * Obtains the file types that this file writer can write from the sequence
+     * specified.
      *
-     * @param sequence the sequence
-     * @return the array of file type
+     * @param  sequence the sequence for which MIDI file type support is
+     *         queried
+     * @return array of file types. If no file types are supported, returns an
+     *         array of length 0.
      */
-    @NonNull
-    public abstract int[] getMidiFileTypes(@NonNull Sequence sequence);
+    public abstract int[] getMidiFileTypes(Sequence sequence);
 
     /**
-     * Check if the specified file type is supported
+     * Indicates whether file writing support for the specified MIDI file type
+     * is provided by this file writer.
      *
-     * @param fileType the file type
-     * @return true if the specified file type is supported
+     * @param  fileType the file type for which write capabilities are queried
+     * @return {@code true} if the file type is supported, otherwise
+     *         {@code false}
      */
-	public boolean isFileTypeSupported(int fileType) {
-		int[] supported = getMidiFileTypes();
-		for (int element : supported) {
-			if (fileType == element) {
-				return true;
-			}
-		}
-		return false;
-	}
+    public boolean isFileTypeSupported(int fileType) {
+
+        int types[] = getMidiFileTypes();
+        for(int i=0; i<types.length; i++) {
+            if( fileType == types[i] ) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
-     * Check if the specified file type is supported on the specified {@link Sequence}
+     * Indicates whether a MIDI file of the file type specified can be written
+     * from the sequence indicated.
      *
-     * @param fileType the file type
-     * @param sequence the sequence
-     * @return true if the specified file type is supported on the sequence
+     * @param  fileType the file type for which write capabilities are queried
+     * @param  sequence the sequence for which file writing support is queried
+     * @return {@code true} if the file type is supported for this sequence,
+     *         otherwise {@code false}
      */
-	public boolean isFileTypeSupported(int fileType, @NonNull Sequence sequence) {
-		int[] supported = getMidiFileTypes(sequence);
-		for (int element : supported) {
-			if (fileType == element) {
-				return true;
-			}
-		}
-		return false;
-	}
+    public boolean isFileTypeSupported(int fileType, Sequence sequence) {
+
+        int types[] = getMidiFileTypes( sequence );
+        for(int i=0; i<types.length; i++) {
+            if( fileType == types[i] ) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
-     * Write the {@link Sequence} to the {@link File} with the file type
+     * Writes a stream of bytes representing a MIDI file of the file type
+     * indicated to the output stream provided.
      *
-     * @param sequence the sequence
-     * @param fileType the file type
-     * @param file the file
-     * @return the written data length
-     * @throws IOException
+     * @param  in sequence containing MIDI data to be written to the file
+     * @param  fileType type of the file to be written to the output stream
+     * @param  out stream to which the file data should be written
+     * @return the number of bytes written to the output stream
+     * @throws IOException if an I/O exception occurs
+     * @throws IllegalArgumentException if the file type is not supported by
+     *         this file writer
+     * @see #isFileTypeSupported(int, Sequence)
+     * @see #getMidiFileTypes(Sequence)
      */
-	public abstract int write(@NonNull Sequence sequence, int fileType, @NonNull File file) throws IOException;
+    public abstract int write(Sequence in, int fileType, OutputStream out)
+            throws IOException;
 
     /**
-     * Write the {@link Sequence} to the {@link OutputStream} with the file type
+     * Writes a stream of bytes representing a MIDI file of the file type
+     * indicated to the external file provided.
      *
-     * @param sequence the sequence
-     * @param fileType the file type
-     * @param outputStream the OutputStream
-     * @return the written data length
-     * @throws IOException
+     * @param  in sequence containing MIDI data to be written to the external
+     *         file
+     * @param  fileType type of the file to be written to the external file
+     * @param  out external file to which the file data should be written
+     * @return the number of bytes written to the file
+     * @throws IOException if an I/O exception occurs
+     * @throws IllegalArgumentException if the file type is not supported by
+     *         this file writer
+     * @see #isFileTypeSupported(int, Sequence)
+     * @see #getMidiFileTypes(Sequence)
      */
-	public abstract int write(@NonNull Sequence sequence, int fileType, @NonNull OutputStream outputStream) throws IOException;
+    public abstract int write(Sequence in, int fileType, File out)
+            throws IOException;
 }

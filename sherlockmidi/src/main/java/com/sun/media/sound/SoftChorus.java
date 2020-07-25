@@ -1,12 +1,12 @@
 /*
- * Copyright 2007 Sun Microsystems, Inc.  All Rights Reserved.
+ * Copyright (c) 2007, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 2 only, as
- * published by the Free Software Foundation.  Sun designates this
+ * published by the Free Software Foundation.  Oracle designates this
  * particular file as subject to the "Classpath" exception as provided
- * by Sun in the LICENSE file that accompanied this code.
+ * by Oracle in the LICENSE file that accompanied this code.
  *
  * This code is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
@@ -18,9 +18,9 @@
  * 2 along with this work; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Please contact Sun Microsystems, Inc., 4150 Network Circle, Santa Clara,
- * CA 95054 USA or visit www.sun.com if you need additional information or
- * have any questions.
+ * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
+ * or visit www.oracle.com if you need additional information or have any
+ * questions.
  */
 package com.sun.media.sound;
 
@@ -32,11 +32,11 @@ import java.util.Arrays;
  *
  * @author Karl Helgason
  */
-public class SoftChorus implements SoftAudioProcessor {
+public final class SoftChorus implements SoftAudioProcessor {
 
     private static class VariableDelay {
 
-        private float[] delaybuffer;
+        private final float[] delaybuffer;
         private int rovepos = 0;
         private float gain = 1;
         private float rgain = 0;
@@ -44,7 +44,7 @@ public class SoftChorus implements SoftAudioProcessor {
         private float lastdelay = 0;
         private float feedback = 0;
 
-        public VariableDelay(int maxbuffersize) {
+        VariableDelay(int maxbuffersize) {
             delaybuffer = new float[maxbuffersize];
         }
 
@@ -119,10 +119,10 @@ public class SoftChorus implements SoftAudioProcessor {
         private double phase_step = 0;
         private double depth = 0;
         private VariableDelay vdelay;
-        private double samplerate;
-        private double controlrate;
+        private final double samplerate;
+        private final double controlrate;
 
-        public LFODelay(double samplerate, double controlrate) {
+        LFODelay(double samplerate, double controlrate) {
             this.samplerate = samplerate;
             this.controlrate = controlrate;
             // vdelay = new VariableDelay((int)(samplerate*4));
@@ -157,14 +157,14 @@ public class SoftChorus implements SoftAudioProcessor {
         }
 
         public void processMix(float[] in, float[] out, float[] rout) {
-            phase += phase_step; 
+            phase += phase_step;
             while(phase > (Math.PI * 2)) phase -= (Math.PI * 2);
             vdelay.setDelay((float) (depth * 0.5 * (Math.cos(phase) + 2)));
             vdelay.processMix(in, out, rout);
         }
 
         public void processReplace(float[] in, float[] out, float[] rout) {
-            phase += phase_step; 
+            phase += phase_step;
             while(phase > (Math.PI * 2)) phase -= (Math.PI * 2);
             vdelay.setDelay((float) (depth * 0.5 * (Math.cos(phase) + 2)));
             vdelay.processReplace(in, out, rout);
