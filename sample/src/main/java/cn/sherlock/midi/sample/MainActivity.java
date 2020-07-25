@@ -8,12 +8,12 @@ import android.view.View;
 
 import java.io.IOException;
 
-import cn.sherlock.com.sun.media.sound.SF2Soundbank;
-import cn.sherlock.com.sun.media.sound.SoftSynthesizer;
-import jp.kshoji.javax.sound.midi.InvalidMidiDataException;
-import jp.kshoji.javax.sound.midi.MidiUnavailableException;
-import jp.kshoji.javax.sound.midi.Receiver;
-import jp.kshoji.javax.sound.midi.ShortMessage;
+import com.sun.media.sound.SF2Soundbank;
+import com.sun.media.sound.SoftSynthesizer;
+import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.MidiUnavailableException;
+import javax.sound.midi.Receiver;
+import javax.sound.midi.ShortMessage;
 
 public class MainActivity extends Activity {
 
