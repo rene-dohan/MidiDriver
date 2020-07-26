@@ -2,11 +2,11 @@ package cn.sherlock.media;
 
 import android.media.AudioManager;
 import android.media.AudioTrack;
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.Control;
-import javax.sound.sampled.LineListener;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.SourceDataLine;
+import gervill.javax.sound.sampled.AudioFormat;
+import gervill.javax.sound.sampled.Control;
+import gervill.javax.sound.sampled.LineListener;
+import gervill.javax.sound.sampled.LineUnavailableException;
+import gervill.javax.sound.sampled.SourceDataLine;
 
 public class SourceDataLineImpl implements SourceDataLine {
 

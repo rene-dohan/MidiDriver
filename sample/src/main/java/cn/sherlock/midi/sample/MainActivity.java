@@ -9,17 +9,16 @@ import android.view.MotionEvent;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.sun.media.sound.SF2Instrument;
-import com.sun.media.sound.SF2Soundbank;
-import com.sun.media.sound.SoftSynthesizer;
+import gervill.com.sun.media.sound.SF2Instrument;
+import gervill.com.sun.media.sound.SF2Soundbank;
+import gervill.com.sun.media.sound.SoftSynthesizer;
 
-import javax.sound.midi.Instrument;
-import javax.sound.midi.MidiChannel;
-import javax.sound.midi.MidiSystem;
-import javax.sound.midi.MidiUnavailableException;
-import javax.sound.midi.Patch;
-import javax.sound.midi.Soundbank;
-import javax.sound.midi.Synthesizer;
+import gervill.javax.sound.midi.Instrument;
+import gervill.javax.sound.midi.MidiChannel;
+import gervill.javax.sound.midi.MidiUnavailableException;
+import gervill.javax.sound.midi.Patch;
+import gervill.javax.sound.midi.Soundbank;
+import gervill.javax.sound.midi.Synthesizer;
 
 public class MainActivity extends Activity {
 
